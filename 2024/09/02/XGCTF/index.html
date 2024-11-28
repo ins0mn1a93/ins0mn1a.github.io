@@ -110,7 +110,7 @@
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2024-11-28T08:40:30.055Z" itemprop="dateUpdated">2024-11-28</time>
+              <time  class="article-updated" datetime="2024-11-28T12:37:51.346Z" itemprop="dateUpdated">2024-11-28</time>
             </h2>
           
           
@@ -146,7 +146,7 @@
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Author: h1xa</span></span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="title function_ invoke__">show_source</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">eval</span>(<span class="string">&quot;var_dump((Object)<span class="subst">$_POST</span>[1]);&quot;</span>); </span><br></pre></td></tr></table></figure>
 <p>正常输入是要将你输入的数据转换成Object类型并以var_dump形式输出，所以肯定不会执行你输入的命令</p>
 <p>不过呢这似乎存在一个闭合问题呢，试着传入<code>1);//</code></p>
-<p><img src="../XGCTF/image-20240902130743641.png" alt="image-20240902130743641"></p>
+<p><img src="image-20240902130743641.png" alt="image-20240902130743641"></p>
 <p>那么原来的代码就可以等效为<code>eval(“var_dump((object)1);//);”)</code></p>
 <p>注意了，这里的<code>//</code>是被当做字符串处理了，所以它不会过滤外部的语句，由于<code>eval()</code>是把传入的参数当做php语句进行处理，相当于在<code>&lt;?php xxxx ?&gt;</code>中把xxxx替换为传入的参数。所以<code>//</code>过滤的实际上是<code>var_dump((object)1);//);</code>中的<code>);</code></p>
 <p>成功闭合后就可以开始输入命令了</p>
