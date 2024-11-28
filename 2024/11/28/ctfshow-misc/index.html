@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#3367D6"/>
+  <link rel="apple-touch-icon" href="/icons-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <meta name="generator" content="Hexo 7.3.0">
+
+  
+    <meta name="description" content="怎么样才能睡个好觉呢zzz......">
+  
+
+  
+
+  
+    <meta name="author" content="Ins0mn1a93">
+  
+
+  
+
+  
+
+  <title>ctfshow-misc篇 | 逃离失眠</title>
+
+  
+
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+
+  
+
+  
+
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="root-container">
+    
+<!-- header container -->
+<header class="header-container post">
+  
+    <div class="post-image" style="background-image: url(https://qiniu.sukoshi.xyz/src/images/68686407_p0.jpg)"></div>
+  
+
+  <!-- navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <!-- logo -->
+    <div class="navbar-logo">
+      <a href="/">
+        
+          逃离失眠
+        
+      </a>
+    </div>
+    <!-- link -->
+    <div class="navbar-link">
+      <div class="navbar-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <ul class="navbar-list">
+        
+          <li class="navbar-list-item"><a href="/">首页</a></li>
+        
+          <li class="navbar-list-item"><a href="/archives">归档</a></li>
+        
+          <li class="navbar-list-item"><a href="/links">友链</a></li>
+        
+          <li class="navbar-list-item"><a href="/about">关于</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <div class="header-content">
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">ctfshow-misc篇</h1>
+          <h2 class="title-sub-wrap">
+            <strong>Ins0mn1a93</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2024-11-28T08:36:42.737Z" itemprop="datePublished">2024-11-28</time>
+          </h2>
+          
+          
+          <ul class="wrap-list dark">
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+</ul>
+        </div>
+      </div>
+    </div>
+  
+
+  
+  
+  
+</header>
+
+    <!-- 文章 -->
+
+<!-- 文章内容 -->
+<div class="body-container">
+  <article class="content-container layout-block post-container">
+    <div class="article-info">
+      
+      
+      
+      
+      <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
+        <h1>图片篇（基础操作）</h1>
+<h2 id="Misc1"><a class="header-anchor" href="#Misc1">¶</a>Misc1</h2>
+<p>打开图片就是</p>
+<h2 id="Misc2"><a class="header-anchor" href="#Misc2">¶</a>Misc2</h2>
+<p>把后缀改成png即可</p>
+<h2 id="Misc3"><a class="header-anchor" href="#Misc3">¶</a>Misc3</h2>
+<p>bpg也是一个图片文件，用于代替jpeg</p>
+<p><img src="../ctfshow-misc/image-20241125190807531.png" alt="image-20241125190807531"></p>
+<p>（原来已经都十年了吗）</p>
+<p>用bpgviewer打开即可：<a target="_blank" rel="noopener" href="https://downloads.onworks.net/softwaredownload.php?link=https%3A%2F%2Fdownloads.onworks.net%2Fdownloadapp%2FSOFTWARE%2Fbpgviewer-1.28-win64-setup.exe%3Fservice%3Dservice01&amp;filename=bpgviewer-1.28-win64-setup.exe">下载链接</a></p>
+<h2 id="Misc4"><a class="header-anchor" href="#Misc4">¶</a>Misc4</h2>
+<p>几个常见的图片把flag截取掉而已</p>
+<p>第一个：png</p>
+<p>第二个：有exif图片信息，改成jpg就行</p>
+<p>第三个：42 4D文件头为BM，很显然是BMP文件</p>
+<p>第四个：文件头是GIF89a，很显然是gif文件</p>
+<p>第五个：从格式很容易判断是webp文件</p>
+<p>第六个：52 49 46 46文件头，搜了一下是wav文件，但是打不开。在网上找wp才知道是tif文件（不过后来想想，这一个专题讲的是图片，怎么会出现音频文件呢）</p>
+<p>可能在第三个图片中可能会出现有的工具打不开的情况。但由于它们都是图片，所以改后缀直接查看也是没有问题的（比如全改成png）</p>
+<h1>图片篇(信息附加)</h1>
+<h2 id="Misc5"><a class="header-anchor" href="#Misc5">¶</a>Misc5</h2>
+<p>010editor打开查看文件尾部即可</p>
+<h2 id="Misc6、Misc7、Misc9，Misc15"><a class="header-anchor" href="#Misc6、Misc7、Misc9，Misc15">¶</a>Misc6、Misc7、Misc9，Misc15</h2>
+<p>010打开后ctrl+f就行</p>
+<p>Misc16属实不知道为什么要放在中间，也不知道跟提示有什么直接联系</p>
+<h2 id="Misc8"><a class="header-anchor" href="#Misc8">¶</a>Misc8</h2>
+<p>拖进010分析后发现存在png藏png，考虑用binwalk</p>
+<p><img src="../ctfshow-misc/image-20241126102325505.png" alt="image-20241126102325505"></p>
+<p>分离未果，用foremost分离</p>
+<p><img src="../ctfshow-misc/image-20241125210322036.png" alt="image-20241125210322036"></p>
+<p><img src="../ctfshow-misc/image-20241125210307561.png" alt="image-20241125210307561"></p>
+<p><img src="../ctfshow-misc/image-20241126102356580.png" alt="image-20241126102356580"></p>
+<h2 id="Misc10"><a class="header-anchor" href="#Misc10">¶</a>Misc10</h2>
+<p>分析这张图片，纵观下来这部分XMP数据是比较可疑的，加上它还在iTXt块中，所以很难不想到里面是嵌套了一些东西进去的</p>
+<p><img src="../ctfshow-misc/image-20241126103326460.png" alt="image-20241126103326460"></p>
+<p>考虑用binwalk分离一下，在10E5处得到flag</p>
+<p><img src="../ctfshow-misc/image-20241126103550261.png" alt="image-20241126103550261"></p>
+<h2 id="Misc11"><a class="header-anchor" href="#Misc11">¶</a>Misc11</h2>
+<p>010分析后没有什么明显的信息，不过看到了两个IDAT块，Ctrl+f看一下</p>
+<p><img src="../ctfshow-misc/image-20241126104452996.png" alt="image-20241126104452996"></p>
+<p>很明显，两个IDAT块相距没有ffff（即65535），再根据题目提示，得知有图片被前面的挡住了</p>
+<p>IDAT在存储数据时，只有前面的数据块填充满后才会填充下一个数据块（65535还是65536我忘了，应该是65535）。如果前面的IDAT块没有填充满却有其他IDAT块出现时，那么这个数据块就是异常的（这么说总感觉不严谨，我是这么理解的），图片在显示的时候可能不会报错，但是只会显示前面的IDAT数据块的内容，后面的则不显示、</p>
+<p>据此，我们可以用tweakpng来进行分析</p>
+<p><img src="../ctfshow-misc/image-20241126110106289.png" alt="image-20241126110106289"></p>
+<p>删除选中的IDAT块后再次查看</p>
+<p><img src="../ctfshow-misc/image-20241126110146679.png" alt="image-20241126110146679"></p>
+<h2 id="Misc12"><a class="header-anchor" href="#Misc12">¶</a>Misc12</h2>
+<p>跟上一题一样，不过这次有许多个异常的IDAT块，一个个删就行，最后在CRC为4159a66d处得到flag</p>
+<p><img src="../ctfshow-misc/image-20241126110708730.png" alt="image-20241126110708730"></p>
+<h2 id="Misc13"><a class="header-anchor" href="#Misc13">¶</a>Misc13</h2>
+<p>根据提示与010分析，发现最后有一个疑似flag片段</p>
+<p><img src="../ctfshow-misc/image-20241126111930078.png" alt="image-20241126111930078"></p>
+<p>简单看了一下发现flag分布是有规律的：flag每两个字符中间插入了一个字符，写个脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">result = <span class="string">&quot;631A74B96685738668AA6F4B77B07B216114655336A5655433346578612534DD38EF66AB35103195381F628237BA6545347C3254647E373A64E465F136FA66F5341E3107321D665438F1333239E9616C7D&quot;</span></span><br><span class="line">flag = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(result),<span class="number">4</span>):</span><br><span class="line">    str1 = <span class="built_in">int</span>(result[i:i+<span class="number">2</span>],<span class="number">16</span>)</span><br><span class="line">    str2 = <span class="built_in">chr</span>(str1)</span><br><span class="line">    flag += str2</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
+<p>在写脚本的时候需要注意一个点就是不能直接从010复制右边文本过来，因为它在经过16进制处理后会变成这样：</p>
+<p><img src="../ctfshow-misc/image-20241126113234688.png" alt="image-20241126113234688"></p>
+<p>但是你比对之后就会发现cyberchef里面多出来几个你没看到的</p>
+<h2 id="Misc14"><a class="header-anchor" href="#Misc14">¶</a>Misc14</h2>
+<p>图片为jpg格式，010分析后没有什么东西，根据提示猜测是图片藏图片，找一下jpeg文件头比如FF D8或者说找JFIF</p>
+<p><img src="../ctfshow-misc/image-20241126121305284.png" alt="image-20241126121305284"></p>
+<p>由于后续是没有其他文件头的，所以可以考虑直接拉到底后新建一个hex文件进行复制粘贴</p>
+<p><img src="../ctfshow-misc/image-20241126121354808.png" alt="image-20241126121354808"></p>
+<p>打开后得到：</p>
+<p><img src="../ctfshow-misc/image-20241126121409868.png" alt="image-20241126121409868"></p>
+<h2 id="Misc16"><a class="header-anchor" href="#Misc16">¶</a>Misc16</h2>
+<p><s>跟Misc12一样，有多个IDAT嵌套，一个个删就行</s></p>
+<p>想当然了，用binwalk分离一下：</p>
+<p><img src="../ctfshow-misc/image-20241126122308330.png" alt="image-20241126122308330"></p>
+<h2 id="Misc17"><a class="header-anchor" href="#Misc17">¶</a>Misc17*</h2>
+<p>这题用到zsteg，不过因为电脑原因就先跳过这道题吧</p>
+<h2 id="Misc18"><a class="header-anchor" href="#Misc18">¶</a>Misc18</h2>
+<p>根据题目提示直接查图片属性就行</p>
+<h2 id="Misc19，Misc20，Misc21"><a class="header-anchor" href="#Misc19，Misc20，Misc21">¶</a>Misc19，Misc20，Misc21</h2>
+<p>在Exif查看器查看即可</p>
+<p>Misc19：</p>
+<p><img src="../ctfshow-misc/image-20241126123317007.png" alt="image-20241126123317007"></p>
+<p>:Misc20：</p>
+<p><img src="../ctfshow-misc/image-20241126123522314.png" alt="image-20241126123522314"></p>
+<p>Misc21:</p>
+<p>直接把序列号交上去不对，那么把序列号hex解码一下：</p>
+<p><img src="../ctfshow-misc/image-20241126123907065.png" alt="image-20241126123907065"></p>
+<p>根据提示，说是要把x和y连起来并转换为16进制</p>
+<p><img src="../ctfshow-misc/image-20241126123940051.png" alt="image-20241126123940051"></p>
+<p>那么根据提示，就是要把有关x，y的连起来后再进行编码</p>
+<p>不过是个错家伙：（谁没事会把后面全设为0啊）</p>
+<p><img src="../ctfshow-misc/image-20241126124824608.png" alt="image-20241126124824608"></p>
+<p>所以改变一下思路，每一段先hex后再拼接就对了：ctfshow{e8a221498d5c073b4084eb51b1a1686d}</p>
+<h2 id="Misc22"><a class="header-anchor" href="#Misc22">¶</a>Misc22</h2>
+<p>010分析没有什么东西，需要用到magicexif工具（他喵的c盘不够了，早知道当初买电脑的时候就不分盘了，之前开始买的时候也没想到后面学习的时候会下那么多东西）</p>
+<p>ctfshow{dbf7d3f84b0125e833dfd3c80820a129}</p>
+<h2 id="Misc23"><a class="header-anchor" href="#Misc23">¶</a>Misc23</h2>
+<p>这里exif查看器只能看到一个时间，要在kali用到exiftool（还是上面的那个问题，我的kali是在wsl里的，c盘不够也别想着启动了）</p>
+<h2 id="Misc41"><a class="header-anchor" href="#Misc41">¶</a>Misc41</h2>
+<p>这题需要一小点点脑洞，提示在题目中：<strong>H4ppy Apr1l F001’s D4y！</strong></p>
+<p>再根据010分析就会发现左边有很多F001字段，搜索高亮得到：</p>
+<p><img src="../ctfshow-misc/image-20241126130402308.png" alt="image-20241126130402308"></p>
+<p>高亮显示的字母即为flag</p>
+<h1>图片篇(文件结构)</h1>
+<h2 id="Misc24，Misc25，Misc27，Misc28，Misc29"><a class="header-anchor" href="#Misc24，Misc25，Misc27，Misc28，Misc29">¶</a>Misc24，Misc25，Misc27，Misc28，Misc29</h2>
+<p>根据题目提示，修改一下图片高度看看</p>
+<p>misc24：</p>
+<p><img src="../ctfshow-misc/image-20241126201241689.png" alt="image-20241126201241689"></p>
+<p>misc25：</p>
+<p><img src="../ctfshow-misc/image-20241126201503686.png" alt="image-20241126201503686"></p>
+<p>misc27：</p>
+<p><img src="../ctfshow-misc/image-20241126224721841.png" alt="image-20241126224721841"></p>
+<p><span id='jump'>misc28：</span></p>
+<p>由于gif是一个动态图，所以要修改高度时需要精确到每一帧，并且我们知道图片高度为150像素，转换为16进制就是96。</p>
+<p><img src="../ctfshow-misc/image-20241126225259552.png" alt="image-20241126225259552"></p>
+<p>至于为什么是<code>96 00</code>，是因为gif的文件头格式：</p>
+<p><img src="../ctfshow-misc/image-20241126225526054.png" alt="image-20241126225526054"></p>
+<p>它的长宽是由两个字节表达的，且最低有效位在前，最高有效位在后，比如这个图片的宽度是900像素，按照16进制来表示的话应该是0384，但是在gif中是这样的：</p>
+<p><img src="../ctfshow-misc/image-20241126230158039.png" alt="image-20241126230158039"></p>
+<p>所以我们会查找<code>96 00</code>来修改高度</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Swallow_he/article/details/76165202">沉迷WebRTC</a></p>
+<p>Misc29：</p>
+<p>跟misc28一样，不过要一眼盯帧：</p>
+<p><img src="../ctfshow-misc/image-20241126230635143.png" alt="image-20241126230635143"></p>
+<p>用Stegsolve也可以，要用到Frame Browser：<span id='jump3'></span></p>
+<p><img src="../ctfshow-misc/image-20241126231435501.png" alt="image-20241126231435501"></p>
+<h2 id="Misc26，Misc32，Misc33"><a class="header-anchor" href="#Misc26，Misc32，Misc33">¶</a>Misc26，Misc32，Misc33</h2>
+<p>misc26：</p>
+<p><img src="../ctfshow-misc/image-20241126201657879.png" alt="image-20241126201657879"></p>
+<p>实际高度需要用CRC来算：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">import zlib</span><br><span class="line">import struct</span><br><span class="line">import argparse</span><br><span class="line">import itertools</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(&quot;-f&quot;, type=str, default=None, required=True,</span><br><span class="line">                    help=&quot;输入同级目录下图片的名称&quot;)</span><br><span class="line">args  = parser.parse_args()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bin_data = open(args.f, &#x27;rb&#x27;).read()</span><br><span class="line">crc32key = zlib.crc32(bin_data[12:29]) # 计算crc</span><br><span class="line">original_crc32 = int(bin_data[29:33].hex(), 16) # 原始crc</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if crc32key == original_crc32: # 计算crc对比原始crc</span><br><span class="line">    print(&#x27;宽高没有问题!&#x27;)</span><br><span class="line">else:</span><br><span class="line">    input_ = input(&quot;宽高被改了, 是否CRC爆破宽高? (Y/n):&quot;)</span><br><span class="line">    if input_ not in [&quot;Y&quot;, &quot;y&quot;, &quot;&quot;]:</span><br><span class="line">        exit()</span><br><span class="line">    else: </span><br><span class="line">        for i, j in itertools.product(range(4095), range(4095)): # 理论上0x FF FF FF FF，但考虑到屏幕实际/cpu，0x 0F FF就差不多了，也就是4095宽度和高度</span><br><span class="line">            data = bin_data[12:16] + struct.pack(&#x27;&gt;i&#x27;, i) + struct.pack(&#x27;&gt;i&#x27;, j) + bin_data[24:29]</span><br><span class="line">            crc32 = zlib.crc32(data)</span><br><span class="line">            if(crc32 == original_crc32): # 计算当图片大小为i:j时的CRC校验值，与图片中的CRC比较，当相同，则图片大小已经确定</span><br><span class="line">                print(f&quot;\nCRC32: &#123;hex(original_crc32)&#125;&quot;)</span><br><span class="line">                print(f&quot;宽度: &#123;i&#125;, hex: &#123;hex(i)&#125;&quot;)</span><br><span class="line">                print(f&quot;高度: &#123;j&#125;, hex: &#123;hex(j)&#125;&quot;)</span><br><span class="line">                exit(0)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="../ctfshow-misc/image-20241126223427334.png" alt="image-20241126223427334"></p>
+<p>脚本参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_47875210/article/details/126171502">Byxs20</a></p>
+<p>Misc32：</p>
+<p><img src="../ctfshow-misc/image-20241127090108404.png" alt="image-20241127090108404"></p>
+<p>misc33：</p>
+<p><img src="../ctfshow-misc/image-20241127090853499.png" alt="image-20241127090853499"></p>
+<h2 id="Misc30"><a class="header-anchor" href="#Misc30">¶</a>Misc30</h2>
+<p>bmp图片修改宽度（答案人家都贴脸上了）：</p>
+<p><img src="../ctfshow-misc/image-20241126230957291.png" alt="image-20241126230957291"></p>
+<h2 id="Misc31"><a class="header-anchor" href="#Misc31">¶</a>Misc31</h2>
+<p>这里可以根据图片大小与文件头大小计算一下宽度：</p>
+<p>bmp有53个字节，按蓝、绿、红存储一个颜色值，且颜色由一个字节进行控制，所以实际的像素值为：(487256-53)/3 = 162401</p>
+<p>由于高度已知，因此宽度为162401 / 150 = 1082.67</p>
+<p>那么在1082与1083之间试一试：</p>
+<p><img src="../ctfshow-misc/image-20241126235431468.png" alt="image-20241126235431468"></p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qingchuwudi">qingchuwudi</a></p>
+<h2 id="Misc34，Misc35，Misc36"><a class="header-anchor" href="#Misc34，Misc35，Misc36">¶</a>Misc34，Misc35，Misc36</h2>
+<p>misc34：</p>
+<p>由于CRC被修改了（我猜是在原图的基础上修改宽高之后又计算修改后的图片的CRC，所以MIsc26的脚本并不管用），所以这里就考虑爆破宽度：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zlib</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line">filename = <span class="string">&quot;./../misc34.png&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(filename, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    all_bytes = f.read()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">901</span>, <span class="number">1200</span>):</span><br><span class="line">    new_filename = <span class="string">f&quot;<span class="subst">&#123;i&#125;</span>.png&quot;</span> </span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(new_filename, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f1: </span><br><span class="line">        modified_bytes = all_bytes[:<span class="number">16</span>] + struct.pack(<span class="string">&#x27;&gt;i&#x27;</span>, i) + all_bytes[<span class="number">20</span>:]</span><br><span class="line">        f1.write(modified_bytes)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在宽度为1123时有flag</p>
+<p><img src="../ctfshow-misc/image-20241127092226271.png" alt="image-20241127092226271"></p>
+<p>misc35：</p>
+<p>这里用的是jpg，所以需要把上面的脚本修改一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zlib</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line">filename = <span class="string">&quot;./../misc35.jpg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(filename, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    all_bytes = f.read()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">901</span>, <span class="number">1200</span>):</span><br><span class="line">    new_filename = <span class="string">f&quot;<span class="subst">&#123;i&#125;</span>.jpg&quot;</span> </span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(new_filename, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f1: </span><br><span class="line">        modified_bytes = all_bytes[:<span class="number">159</span>] + struct.pack(<span class="string">&#x27;&gt;h&#x27;</span>, i) + all_bytes[<span class="number">161</span>:]</span><br><span class="line">        f1.write(modified_bytes)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>至于为什么要这么写，首先，以本题为例，jpg中记录高度的数据为第157和158字节中，宽度为第159和160字节中</p>
+<p><img src="../ctfshow-misc/image-20241127093409284.png" alt="image-20241127093409284"></p>
+<p>所以我们要用到<code>struct.pack('&gt;h', i)</code>，其中，h相当于<code>short int</code>，占两个字节；而上一题的<code>struct.pack('&gt;i', i) </code>中，i相当于int，占4个字节，同时png记录宽高时也是分别占4个字节（感觉解释起来感觉有点怪怪的）</p>
+<p>爆破之后发现全是空白的（好像原图就是空白的来着？），那就先在原图片上改一下高度后再爆破（这里我改到了0x296）</p>
+<p>爆破后发现993-1000都有flag</p>
+<p>Misc36：</p>
+<p>这次是gif图，先修改一下高度，相关要求在<a href="#jump">misc28</a>有写</p>
+<p>然后再爆破一下宽度（区间题目有写）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import zlib</span><br><span class="line">import struct</span><br><span class="line"></span><br><span class="line">filename = &quot;./../misc36.gif&quot;</span><br><span class="line"></span><br><span class="line">with open(filename, &#x27;rb&#x27;) as f:</span><br><span class="line">    all_bytes = f.read()</span><br><span class="line"></span><br><span class="line">for i in range(920, 950):</span><br><span class="line">    new_filename = f&quot;&#123;i&#125;.gif&quot;</span><br><span class="line">    with open(new_filename, &quot;wb&quot;) as f1:</span><br><span class="line">        modified_bytes = all_bytes[:38] + struct.pack(&#x27;&gt;h&#x27;,i)[::-1] + all_bytes[40:]</span><br><span class="line">        f1.write(modified_bytes)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这里反而不用修改第一个<code>84 03</code>，修改第二个即可（<a href="#jump2">思考ing…</a>）</p>
+<p>在宽度为940和941时有flag：</p>
+<p><img src="../ctfshow-misc/image-20241127110711405.png" alt="image-20241127110711405"></p>
+<h2 id="Misc37"><a class="header-anchor" href="#Misc37">¶</a>Misc37</h2>
+<p>这会儿看上去是真正意义上的动图了（</p>
+<p>不过定格下来观察发现flag被分成几个部分并放在几个图片里了，这里用wps的图片查看器或者<a href="#jump3">Stegsolve</a>都行</p>
+<p>对了，盯帧之前要不先改改高度？</p>
+<p>ctfshow{2056782cd57b13261dcbbe3d6eecda17}</p>
+<h2 id="Misc38"><a class="header-anchor" href="#Misc38">¶</a>Misc38</h2>
+<p>010分析一下，没有啥特别明显的提示信息，但是考虑到还是有一点点点大的，所以利用里面的template分析一下，发现两个重复率特别高的chunk：<code>fcTL，fdAT</code></p>
+<p>问了下gpt，得知这两个chunk涉及到动图：</p>
+<p><img src="../ctfshow-misc/image-20241127112826960.png" alt="image-20241127112826960"></p>
+<p>用honeyview盯帧就行：ctfshow{48b722b570c603ef58cc0b83bbf7680d}</p>
+<h2 id="Misc39"><a class="header-anchor" href="#Misc39">¶</a>Misc39*</h2>
+<p>看了wp后才得知flag的隐写是根据每个帧的不同延迟来进行隐写的，这里就让gpt帮我干了：</p>
+<p><img src="../ctfshow-misc/image-20241127161921844.png" alt="image-20241127161921844"></p>
+<p>然后把字符串进行二进制解码：</p>
+<p><img src="../ctfshow-misc/image-20241127161953452.png" alt="image-20241127161953452"></p>
+<p>这里先记录一下，因为010的gif的template需要1.4版本的才能用，不过因为电脑原因没法安，等后续修理一下再回过头来弄</p>
+<p>工具方面用的是**<code>identify</code>**</p>
+<h2 id="Misc40"><a class="header-anchor" href="#Misc40">¶</a>Misc40</h2>
+<p>这个我就跳过不做了，看看wp</p>
+<h2 id="Misc42"><a class="header-anchor" href="#Misc42">¶</a>Misc42</h2>
+<p>拖进010分析后发现有很多个IDAT块，用<code>tweakpng</code>看看</p>
+<p><img src="../ctfshow-misc/image-20241127164032153.png" alt="image-20241127164032153"></p>
+<p>全是一大堆异常的IDAT块，不过观察一下，有点像可见字符的ascii编码，<s>让gpt帮我们做做</s>（不让它做了，识别不出来，导出的数组是个错家伙）</p>
+<p>直接手打：ctfshow{078cbd0f9c8d3f2158e70529f8913c65}（从CRC为d639e056开始）</p>
+<h2 id="Misc43，Misc44"><a class="header-anchor" href="#Misc43，Misc44">¶</a>Misc43，Misc44</h2>
+<p>misc43：</p>
+<p>进行分析时010报错：<img src="../ctfshow-misc/image-20241127164900489.png" alt="image-20241127164900489"></p>
+<p>有个块报CRC的错了，png-debugger看看：</p>
+<p><img src="../ctfshow-misc/image-20241127165257743.png" alt="image-20241127165257743"></p>
+<p>发现有几个CRC都是错的，那都是错的就不是图片的问题了而是出题人的小心思，根据题目提示，把错的CRC连起来转换一下：</p>
+<p><img src="../ctfshow-misc/image-20241127165613578.png" alt="image-20241127165613578"></p>
+<p>misc44：</p>
+<p>依旧是几个png块，不过有点区别就是这IDAT块太多了：</p>
+<p><img src="../ctfshow-misc/image-20241127170128610.png" alt="image-20241127170128610"></p>
+<p>于是乎猜猜二进制一下呢，把ok当做1，把failed当做0，脚本如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">str1 = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;1.txt&quot;</span>,<span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;=&gt;	CRC OK!&quot;</span> <span class="keyword">in</span> line:</span><br><span class="line">            str1 += <span class="string">&quot;1&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;CRC FAILED&quot;</span> <span class="keyword">in</span> line:</span><br><span class="line">            str1 += <span class="string">&quot;0&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(str1)</span><br></pre></td></tr></table></figure>
+<p>再用Cyberchef转换一下</p>
+<p>这里不知道为什么前面会多输出一个1，导致后面转换过来是个乱码</p>
+<h2 id="MIsc45"><a class="header-anchor" href="#MIsc45">¶</a>MIsc45</h2>
+<p>我刚开始一看还以为是LSB隐写，后来想想颜色通道还没做到呢，应该还没涉及到（反正后面用stegsolve分析时也没分析出个所以然）</p>
+<p>读题目我还不知道要做什么，后面看wp才发现需要转换成bmp格式（不是直接改后缀！！）</p>
+<p>转换之后binwalk分离即可：</p>
+<p><img src="../ctfshow-misc/image-20241127172838570.png" alt="image-20241127172838570"></p>
+<p>剩下的暂时不做</p>
+<h1>图片篇(颜色通道)</h1>
+<h2 id="Misc50，Misc53，Misc54"><a class="header-anchor" href="#Misc50，Misc53，Misc54">¶</a>Misc50，Misc53，Misc54</h2>
+<p>misc50：</p>
+<p>用Stegsolve查看几个不同的通道即可</p>
+<p>ctfshow{84470883ee1eec2e886436461bf79111}</p>
+<p>misc51：</p>
+<p>Data Analyse红绿蓝通道都设为0就行</p>
+<p><img src="../ctfshow-misc/image-20241127173500975.png" alt="image-20241127173500975"></p>
+<p>misc54：</p>
+<p>思路差不多，但是有点小抽象，如果不仔细看的话你还真想不到哪里有信息隐藏：</p>
+<p><img src="../ctfshow-misc/image-20241127173943420.png" alt="image-20241127173943420"></p>
+<p>有个Gray bits隐藏的一竖列东西，data analyse后就一通乱试：</p>
+<p><img src="../ctfshow-misc/image-20241127174049158.png" alt="image-20241127174049158"></p>
+<h2 id="Misc55"><a class="header-anchor" href="#Misc55">¶</a>Misc55</h2>
+<h1>几个正在想的问题</h1>
+<h2 id="gif的宽高修改"><a class="header-anchor" href="#gif的宽高修改">¶</a>gif的宽高修改</h2>
+<p><span id='jump2'></span></p>
+<p>gif是由多个图片组成的一张动态图，每一个帧就是一个图片，所以按道理来说我们需要找到所有帧的原始宽高并将其修改。但是在做到Misc36时我发现，第一个记录宽高的部分并不影响图片的生成，反而是下一个记录宽高的部分会影响。是因为第一个记录宽高的部分在文件头的缘故吗？（后续再看看gif是怎么个事）</p>
+
+      </section>
+
+      
+      
+        <nav class="article-nav">
+          
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/2024/11/13/DSBCTF/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">DSBCTF复现</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
+          
+        </nav>
+      
+
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+    <div class="valine-container comments-container content-padding--primary soft-size--large soft-style--box">
+      <div id="valine_thread" class="valine-thread"></div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/leancloud-storage@3.15.0/dist/av-min.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
+    <script type="text/javascript">
+      new Valine({
+        el: "#valine_thread",
+        appId: "aVkLSx5WxYz0QVDh2Vo6bAfL-gzGzoHsz",
+        appKey: "Fr4YvenWWx1qOkxmdS2Vow7Z",
+        placeholder: "随便说点什么叭～",
+        avatar: "mp",
+        pageSize: 10,
+        lang: "zh-cn",
+        visitor: true,
+        recordIP: true,
+        enableQQ: true,
+        meta: ['nick', 'mail', 'link'],
+        requiredFields: ['nick'],
+        
+        // Bilibili 表情包插件
+        // 设置 Bilibili 表情包地址
+        emojiCDN: '//i0.hdslb.com/bfs/emote/', 
+        // 表情 title 和图片映射
+        emojiMaps: {
+            // 小黄脸
+            "2023": "fa6dda8b876ed38609de38aa604be5ad109b8591.png",
+            "足球": "f9157d9fa5ac3b8339cb8a8b7ad70eb40d4113c9.png",
+            "脱单doge": "bf7e00ecab02171f8461ee8cf439c73db9797748.png",
+            "微笑": "685612eadc33f6bc233776c6241813385844f182.png",
+            "口罩": "3ad2f66b151496d2a5fb0a8ea75f32265d778dd3.png",
+            "doge": "3087d273a78ccaff4bb1e9972e2ba2a7583c9f11.png",
+            "妙啊": "b4cb77159d58614a9b787b91b1cd22a81f383535.png",
+            "OK": "4683fd9ffc925fa6423110979d7dcac5eda297f4.png",
+            "星星眼": "63c9d1a31c0da745b61cdb35e0ecb28635675db2.png",
+            "辣眼睛": "35d62c496d1e4ea9e091243fa812866f5fecc101.png",
+            "吃瓜": "4191ce3c44c2b3df8fd97c33f85d3ab15f4f3c84.png",
+            "滑稽": "d15121545a99ac46774f1f4465b895fe2d1411c3.png",
+            "呲牙": "b5a5898491944a4268360f2e7a84623149672eb6.png",
+            "打call": "431432c43da3ee5aab5b0e4f8931953e649e9975.png",
+            "歪嘴": "4384050fbab0586259acdd170b510fe262f08a17.png",
+            "调皮": "8290b7308325e3179d2154327c85640af1528617.png",
+            "2022": "a783df2ce72952c44004007462324bde4b092a0c.png",
+            "虎年": "a062f5fa2bafe677e49b6963a2bbb11dd4fe1e11.png",
+            "豹富": "3d1dbe52ea16e12ff7b1c371196f728a4097fb33.png",
+            "嗑瓜子": "28a91da1685d90124cfeead74622e1ebb417c0eb.png",
+            "笑哭": "c3043ba94babf824dea03ce500d0e73763bf4f40.png",
+            "藏狐": "ba0937ef6f3ccca85e2e0047e6263f3b4da37201.png",
+            "脸红": "0922c375da40e6b69002bd89b858572f424dcfca.png",
+            "给心心": "1597302b98827463f5b75c7cac1f29ea6ce572c4.png",
+            "嘟嘟": "abd7404537d8162720ccbba9e0a8cdf75547e07a.png",
+            "哦呼": "362bded07ea5434886271d23fa25f5d85d8af06c.png",
+            "喜欢": "8a10a4d73a89f665feff3d46ca56e83dc68f9eb8.png",
+            "酸了": "92b1c8cbceea3ae0e8e32253ea414783e8ba7806.png",
+            "嫌弃": "de4c0783aaa60ec03de0a2b90858927bfad7154b.png",
+            "大哭": "2caafee2e5db4db72104650d87810cc2c123fc86.png",
+            "害羞": "9d2ec4e1fbd6cb1b4d12d2bbbdd124ccb83ddfda.png",
+            "疑惑": "b7840db4b1f9f4726b7cb23c0972720c1698d661.png",
+            "喜极而泣": "485a7e0c01c2d70707daae53bee4a9e2e31ef1ed.png",
+            "奸笑": "bb84906573472f0a84cebad1e9000eb6164a6f5a.png",
+            "笑": "81edf17314cea3b48674312b4364df44d5c01f17.png",
+            "偷笑": "6c49d226e76c42cd8002abc47b3112bc5a92f66a.png",
+            "惊讶": "f8e9a59cad52ae1a19622805696a35f0a0d853f3.png",
+            "捂脸": "6921bb43f0c634870b92f4a8ad41dada94a5296d.png",
+            "阴险": "ba8d5f8e7d136d59aab52c40fd3b8a43419eb03c.png",
+            "囧": "12e41d357a9807cc80ef1e1ed258127fcc791424.png",
+            "呆": "33ad6000d9f9f168a0976bc60937786f239e5d8c.png",
+            "抠鼻": "cb89184c97e3f6d50acfd7961c313ce50360d70f.png",
+            "大笑": "ca94ad1c7e6dac895eb5b33b7836b634c614d1c0.png",
+            "惊喜": "0afecaf3a3499479af946f29749e1a6c285b6f65.png",
+            "无语": "44667b7d9349957e903b1b62cb91fb9b13720f04.png",
+            "点赞": "1a67265993913f4c35d15a6028a30724e83e7d35.png",
+            "鼓掌": "895d1fc616b4b6c830cf96012880818c0e1de00d.png",
+            "尴尬": "cb321684ed5ce6eacdc2699092ab8fe7679e4fda.png",
+            "灵魂出窍": "43d3db7d97343c01b47e22cfabeca84b4251f35a.png",
+            "委屈": "d2f26cbdd6c96960320af03f5514c5b524990840.png",
+            "傲娇": "010540d0f61220a0db4922e4a679a1d8eca94f4e.png",
+            "疼": "905fd9a99ec316e353b9bd4ecd49a5f0a301eabf.png",
+            "冷": "cb0ebbd0668640f07ebfc0e03f7a18a8cd00b4ed.png",
+            "热": "4e58a2a6f5f1580ac33df2d2cf7ecad7d9ab3635.png",
+            "生病": "0f25ce04ae1d7baf98650986454c634f6612cb76.png",
+            "吓": "9c10c5ebc7bef27ec641b8a1877674e0c65fea5d.png",
+            "吐": "06946bfe71ac48a6078a0b662181bb5cad09decc.png",
+            "捂眼": "c5c6d6982e1e53e478daae554b239f2b227b172b.png",
+            "嘘声": "e64af664d20716e090f10411496998095f62f844.png",
+            "思考": "cfa9b7e89e4bfe04bbcd34ccb1b0df37f4fa905c.png",
+            "再见": "fc510306bae26c9aec7e287cdf201ded27b065b9.png",
+            "翻白眼": "eba54707c7168925b18f6f8b1f48d532fe08c2b1.png",
+            "哈欠": "888d877729cbec444ddbd1cf4c9af155a7a06086.png",
+            "奋斗": "bb2060c15dba7d3fd731c35079d1617f1afe3376.png",
+            "墨镜": "3a03aebfc06339d86a68c2d893303b46f4b85771.png",
+            "难过": "a651db36701610aa70a781fa98c07c9789b11543.png",
+            "撇嘴": "531863568e5668c5ac181d395508a0eeb1f0cda4.png",
+            "抓狂": "4c87afff88c22439c45b79e9d2035d21d5622eba.png",
+            "生气": "3195714219c4b582a4fb02033dd1519913d0246d.png",
+            "水稻": "d530fcaa5100ba12a17a79b55bad342d530c54e3.png",
+            "奶茶干杯": "d5a491990be551ce69f9660da948050df4eab331.png",
+            "汤圆": "93609633a9d194cf336687eb19c01dca95bde719.png",
+            "锦鲤": "643d6c19c8164ffd89e3e9cdf093cf5d773d979c.png",
+            "弹幕破百亿": "80891223ba023dff3141e377f4ea3b89918eb6a4.png",
+            "福到了": "5de5373d354c373cf1617b6b836f3a8d53c5a655.png",
+            "鸡腿": "c7860392815d345fa69c4f00ef18d67dccfbd574.png",
+            "雪花": "a41813c4edf8782047e172c884ebd4507ce5e449.png",
+            "视频卫星": "dce6fc7d6dfeafff01241924db60f8251cca5307.png",
+            "干杯": "8da12d5f55a2c7e9778dcc05b40571979fe208e6.png",
+            "黑洞": "e90ec4c799010f25391179118ccd9f66b3b279ba.png",
+            "爱心": "ed04066ea7124106d17ffcaf75600700e5442f5c.png",
+            "胜利": "b49fa9f4b1e7c3477918153b82c60b114d87347c.png",
+            "加油": "c7aaeacb21e107292d3bb053e5abde4a4459ed30.png",
+            "抱拳": "89516218158dbea18ab78e8873060bf95d33bbbe.png",
+            "响指": "1b5c53cf14336903e1d2ae3527ca380a1256a077.png",
+            "保佑": "fafe8d3de0dc139ebe995491d2dac458a865fb30.png",
+            "福": "802429a301ac5b35a0480d9526a070ce67cd8097.png",
+            "支持": "3c210366a5585706c09d4c686a9d942b39feeb50.png",
+            "拥抱": "41780a4254750cdaaccb20735730a36044e98ef3.png",
+            "跪了": "f2b3aee7e521de7799d4e3aa379b01be032698ac.png",
+            "怪我咯": "07cc6077f7f7d75b8d2c722dd9d9828a9fb9e46d.png",
+            "老鼠": "8e6fb491eb1bb0d5862e7ec8ccf9a3da12b6c155.png",
+            "牛年": "9275275ff1f2659310648221107d20bc4970f106.png",
+            "三星堆": "fc7dadaa6986e75b813aa26f3eff3281d5f1a6d1.png",
+            "洛天依": "9fe06f3594d9afaf4ee2b74770f1c3086ae0ba11.png",
+            "坎公骑冠剑_吃鸡": "c4248a7b6ab326d66c83fd1fb58f1a50f99df332.png",
+            "坎公骑冠剑_钻石": "0b97c7e50e0cc963370e62fbb9b55f51bbe7f8ab.png",
+            "坎公骑冠剑_无语": "80eba0ce64c3fc1279b4daede2f1979cb2380e78.png",
+            "来古-沉思": "4ee07ff03266d62b246be0b950bebb2abf3d997c.png",
+            "来古-呆滞": "9a70b365e523f2379f395031ceefcebb75a45903.png",
+            "来古-疑问": "032fdc0d9d9fe6334776f6c39518a959b73b98f4.png",
+            "来古-震撼": "8b40f228675602a317d32007de6b795c101135ec.png",
+            "来古-注意": "4b671ba32a2581cf40e5cd41c67b111eb8010de0.png",
+            "初音未来_大笑": "8e7f71cda83ce407b0684702983399f8ed982f17.png",
+            "原神_哇": "8188ddf95bace929d382c7a83214afde79d83bfc.png",
+            "原神_哼": "91ed33b74bc36873c3ac8b2648f70d7ab6d8ab78.png",
+            "原神_嗯": "8b0a87e414f453a29730b6e0f45ca61f2f898688.png",
+            "原神_欸嘿": "8fba438fcbe0550877b04efd768d857082307c5e.png",
+            "原神_喝茶": "1de5789fbb3526ef7823c54db7081790a38e7044.png",
+            "原神_生气": "90a38c34742899f8e84138ed55f56cad3ba611fb.png",
+            "保卫萝卜_白眼": "9fce63f38288700bf7be84f3be336cf895ba0902.png",
+            "保卫萝卜_笔芯": "5ff2ed5cb71b02010018cc5910ac7052a03769af.png",
+            "保卫萝卜_哭哭": "7d249f7c990111d3e2982f7477af15b7eb29cbd9.png",
+            "保卫萝卜_哇": "5f2370e561c32d841245f7b1aab2eef43aeb9544.png",
+            "保卫萝卜_问号": "41eb93f09fc4a4d0692a310e8a1f85ba60e96060.png",
+            "无悔华夏_不愧是你": "c58002c32ee78d45366e126f294cb3149dd64ac2.png",
+            "无悔华夏_吃瓜": "273dcff577551bafff4f1eae18561f871e73a6ba.png",
+            "无悔华夏_达咩": "cffab383f47bab7f6736ba9c8d6ac098113410d9.png",
+            "无悔华夏_点赞": "b0f2e8db405ec667c3e6aaabd7c15155b6ea8710.png",
+            "无悔华夏_好耶": "324cd79784aeb37dbf2f47f68bbe8ed5d01f975e.png",
+            "奥比岛_搬砖": "1fab697214918d91087373a999cc7ef8040ddf85.png",
+            "奥比岛_点赞": "fb0b476fe2ff30cd59385ea7d616627ac114161f.png",
+            "奥比岛_击爪": "35bba1bb8f164c5e844155548438248e6eaa8382.png",
+            "奥比岛_委屈": "fda155e7c33b40dbb94c24644e0635d47b6ef3cc.png",
+            "奥比岛_喜欢": "ed64e0c81ee194138bd9df30c65077ed978fb88c.png",
+            // tv_小电视
+            "tv_白眼": "c1d59f439e379ee50eef488bcb5e5378e5044ea4.png",
+            "tv_doge": "6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png",
+            "tv_坏笑": "1f0b87f731a671079842116e0991c91c2c88645a.png",
+            "tv_难过": "87f46748d3f142ebc6586ff58860d0e2fc8263ba.png",
+            "tv_生气": "26702dcafdab5e8225b43ffd23c94ac1ff932654.png",
+            "tv_委屈": "d04dba7b5465779e9755d2ab6f0a897b9b33bb77.png",
+            "tv_斜眼笑": "911f987aa8bc1bee12d52aafe62bc41ef4474e6c.png",
+            "tv_呆": "fe1179ebaa191569b0d31cecafe7a2cd1c951c9d.png",
+            "tv_发怒": "34ba3cd204d5b05fec70ce08fa9fa0dd612409ff.png",
+            "tv_惊吓": "0d15c7e2ee58e935adc6a7193ee042388adc22af.png",
+            "tv_呕吐": "9f996894a39e282ccf5e66856af49483f81870f3.png",
+            "tv_思考": "90cf159733e558137ed20aa04d09964436f618a1.png",
+            "tv_微笑": "70dc5c7b56f93eb61bddba11e28fb1d18fddcd4c.png",
+            "tv_疑问": "0793d949b18d7be716078349c202c15ff166f314.png",
+            "tv_大哭": "23269aeb35f99daee28dda129676f6e9ea87934f.png",
+            "tv_鼓掌": "1d21793f96ef4e6f48b23e53e3b9e42da833a0f6.png",
+            "tv_抠鼻": "c666f55e88d471e51bbd9fab9bb308110824a6eb.png",
+            "tv_亲亲": "a8111ad55953ef5e3be3327ef94eb4a39d535d06.png",
+            "tv_调皮": "b9c41de8e82dd7a8515ae5e3cb63e898bf245186.png",
+            "tv_笑哭": "1abc628f6d4f4caf9d0e7800878f4697abbc8273.png",
+            "tv_晕": "5443c22b4d07fb1907ccc610c8e6db254f2461b7.png",
+            "tv_点赞": "f85c354995bd99e28fc76c869bfe42ba6438eff4.png",
+            "tv_害羞": "a37683fb5642fa3ddfc7f4e5525fd13e42a2bdb1.png",
+            "tv_睡着": "8b196675b53af58264f383c50ad0945048290b33.png",
+            "tv_色": "61822c7e9aae5da76475e7892534545336b23a6f.png",
+            "tv_吐血": "09dd16a7aa59b77baa1155d47484409624470c77.png",
+            "tv_无奈": "ea8ed89ee9878f2fece2dda0ea8a5dbfe21b5751.png",
+            "tv_再见": "180129b8ea851044ce71caf55cc8ce44bd4a4fc8.png",
+            "tv_流汗": "cead1c351ab8d79e9f369605beb90148db0fbed3.png",
+            "tv_偷笑": "bb690d4107620f1c15cff29509db529a73aee261.png",
+            "tv_抓狂": "fe31c08edad661d63762b04e17b8d5ae3c71a757.png",
+            "tv_黑人问号": "45821a01f51bc867da9edbaa2e070410819a95b2.png",
+            "tv_困": "241ee304e44c0af029adceb294399391e4737ef2.png",
+            "tv_打脸": "56ab10b624063e966bfcb76ea5dc4794d87dfd47.png",
+            "tv_闭嘴": "c9e990da7f6e93975e25fd8b70e2e290aa4086ef.png",
+            "tv_鄙视": "6e72339f346a692a495b123174b49e4e8e781303.png",
+            "tv_腼腆": "89712c0d4af73e67f89e35cbc518420380a7f6f4.png",
+            "tv_馋": "fc7e829b845c43c623c8b490ee3602b7f0e76a31.png",
+            "tv_可爱": "9e55fd9b500ac4b96613539f1ce2f9499e314ed9.png",
+            "tv_发财": "34db290afd2963723c6eb3c4560667db7253a21a.png",
+            "tv_生病": "8b0ec90e6b86771092a498c54f09fc94621c1900.png",
+            "tv_流鼻血": "c32d39db2737f89b904ca32700d140a9241b0767.png",
+            "tv_尴尬": "7cfa62dafc59798a3d3fb262d421eeeff166cfa4.png",
+            "tv_大佬": "093c1e2c490161aca397afc45573c877cdead616.png",
+            "tv_流泪": "7e71cde7858f0cd50d74b0264aa26db612a8a167.png",
+            "tv_冷漠": "b9cbc755c2b3ee43be07ca13de84e5b699a3f101.png",
+            "tv_皱眉": "72ccad6679fea0d14cce648b4d818e09b8ffea2d.png",
+            "tv_鬼脸": "0ffbbddf8a94d124ca2f54b360bbc04feb6bbfea.png",
+            "tv_调侃": "4bc022533ef31544ca0d72c12c808cf4a1cce3e3.png",
+            "tv_目瞪口呆": "0b8cb81a68de5d5365212c99375e7ace3e7891b7.png",
+            // ... 更多表情
+        }
+        
+      });
+    </script>
+  
+
+  
+  
+
+
+      </section>
+    </div>
+    <div class="widget-info">
+      <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-body">
+    
+      <img src="https://github.com/ins0mn1a93/Static/blob/main/images/profile%20picture/Clove.jpg" class="soft-size--round soft-style--box" alt="Ins0mn1a">
+    
+    
+      <h2>Ins0mn1a</h2>
+    
+    
+      <p>想睡个好觉zzz......</p>
+    
+
+    <div class="count-box">
+      <div class="count-box--item">
+        <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
+</svg>
+        <span>5</span>
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+        1
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+        0
+      </div>
+    </div>
+  </div>
+</section>
+
+      
+
+      
+<section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-notice" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 945.02305225v28.15620663a24.27259221 24.27259221 0 0 1-24.27259221 24.27259335H394.0352a48.54518557 48.54518557 0 0 1-41.74885888-23.78714112l-110.68302222-184.47170332a132.04290333 132.04290333 0 0 1-17.47626667-48.54518557h118.4502511a200.97706667 200.97706667 0 0 1 76.21594113 14.56355556l20.38897777 133.49925888a48.54518557 48.54518557 0 0 0 36.40888888 27.67075555l16.01991111 2.91271112a24.27259221 24.27259221 0 0 1 20.38897778 25.72894889zM997.45185223 463.45481443a194.18074112 194.18074112 0 0 1-38.8361489 116.50844445 24.75804445 24.75804445 0 0 1-36.4088889 0l-34.95253333-34.95253333a24.27259221 24.27259221 0 0 1-2.91271111-30.58346667 97.09036999 97.09036999 0 0 0 0-106.79940665 24.27259221 24.27259221 0 0 1 2.91271111-30.58346666l34.95253333-34.95253334a24.75804445 24.75804445 0 0 1 18.93262223-7.28177777 26.2144 26.2144 0 0 1 17.47626667 9.70903665A194.18074112 194.18074112 0 0 1 997.45185223 463.45481443z m-194.18074112-388.36148111v776.72296335a48.54518557 48.54518557 0 0 1-48.54518556 48.54518443h-28.64165888a48.54518557 48.54518557 0 0 1-33.98163001-14.07810332l-145.63555556-143.20829668A291.27111111 291.27111111 0 0 0 342.57730333 657.63555556H172.18370333a145.63555556 145.63555556 0 0 1-145.63555556-145.63555556v-97.09036999a145.63555556 145.63555556 0 0 1 145.63555556-145.63555556h170.3936a291.27111111 291.27111111 0 0 0 206.31703779-85.43952668l145.63555555-143.20829554a48.54518557 48.54518557 0 0 1 33.98162888-14.07810446H754.72592555a48.54518557 48.54518557 0 0 1 48.54518556 48.54518555z" fill="currentColor"></path>
+</svg>
+    <span>NOTICE</span>
+  </div>
+  <div class="widget-body">
+    <p>Just For Test</p>
+  </div>
+</section>
+
+
+      <section class="widget-categories widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+      <span>CATEGORIES</span>
+  </div>
+  <div class="widget-body">
+    <ul class="categories-list">
+      
+        <li class="categories-list-item">
+          <a href="/categories/buu%E5%B9%B3%E5%8F%B0/">
+            buu平台 (2)
+          </a>
+        </li>
+        
+    </ul>
+  </div>
+</section>
+
+      <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+    <span>TAGS</span>
+  </div>
+  <div class="widget-body">
+    <div class="tags-cloud">
+      
+    </div>
+  </div>
+</section>
+    </div>
+  </article>
+</div>
+
+    <!-- footer container -->
+<footer id="footer" class="footer">
+  <div class="footer-container">
+    
+    <div class="social-icons">
+      
+        
+      
+        
+      
+        
+      
+        
+          <a href="https://github.com/ins0mn1a93/" class="soft-size--primary soft-style--box" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon-github" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M64.6 512c0 195.6 125.4 361.9 300.1 422.9 23.5 5.9 19.9-10.8 19.9-22.2v-77.6c-135.8 15.9-141.3-74-150.5-89-18.5-31.5-61.9-39.5-49-54.5 31-15.9 62.5 4 98.9 58 26.4 39.1 77.9 32.5 104.1 26 5.7-23.5 17.9-44.5 34.7-60.9-140.7-25.2-199.4-111.1-199.4-213.3 0-49.5 16.4-95.1 48.4-131.8-20.4-60.6 1.9-112.4 4.9-120.1 58.2-5.2 118.5 41.6 123.3 45.3 33.1-8.9 70.8-13.7 112.9-13.7 42.4 0 80.3 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.4-43.9 2.9 7.7 24.7 58.3 5.5 118.1 32.5 36.8 49 82.8 49 132.4 0 102.3-59 188.3-200.2 213.2 23.5 23.3 38.1 55.5 38.1 91.1v112.7c0.8 9 0 17.9 15.1 17.9C832.7 877 960.4 709.4 960.4 512.1c0-247.5-200.6-447.9-447.9-447.9C265 64.1 64.6 264.5 64.6 512z"></path>
+</svg>
+          </a>
+        
+      
+        
+          <a href="https://twitter.com/guanquanhong" class="soft-size--primary soft-style--box" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon-twitter" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M962.285714 233.142857q-38.285714 56-92.571429 95.428571 0.571429 8 0.571429 24 0 74.285714-21.714286 148.285714t-66 142-105.428571 120.285714-147.428571 83.428571-184.571429 31.142857q-154.857143 0-283.428571-82.857143 20 2.285714 44.571429 2.285714 128.571429 0 229.142857-78.857143-60-1.142857-107.428571-36.857143t-65.142857-91.142857q18.857143 2.857143 34.857143 2.857143 24.571429 0 48.571429-6.285714-64-13.142857-106-63.714286t-42-117.428571l0-2.285714q38.857143 21.714286 83.428571 23.428571-37.714286-25.142857-60-65.714286t-22.285714-88q0-50.285714 25.142857-93.142857 69.142857 85.142857 168.285714 136.285714t212.285714 56.857143q-4.571429-21.714286-4.571429-42.285714 0-76.571429 54-130.571429t130.571429-54q80 0 134.857143 58.285714 62.285714-12 117.142857-44.571429-21.142857 65.714286-81.142857 101.714286 53.142857-5.714286 106.285714-28.571429z"></path>
+</svg>
+          </a>
+        
+      
+    </div>
+     
+    <p>&copy; 2024 <a href="/" target="_blank">Ins0mn1a93</a></p>
+
+    
+
+    <p>Powered by <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> Theme - <a href="https://github.com/miiiku/flex-block" target="_blank" rel="noopener noreferrer author">flex-block</a></p>
+
+    <p>
+      <a href="javascript:;" id="theme-light">🌞 浅色</a>
+      <a href="javascript:;" id="theme-dark">🌛 深色</a>
+      <a href="javascript:;" id="theme-auto">🤖️ 自动</a>
+    </p>
+  </div>
+</footer>
+  </div>
+
+  <div class="back-to-top-fixed soft-size--round soft-style--box">
+    <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>
+      <path d="M298.666667 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8-17.066667-17.066667-17.066667-42.666667 0-59.733333l213.333333-213.333333c17.066667-17.066667 42.666667-17.066667 59.733333 0s17.066667 42.666667 0 59.733333l-213.333333 213.333333C320 422.4 311.466667 426.666667 298.666667 426.666667z"></path>
+      <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
+    </svg>
+  </div>
+
+  
+  
+
+
+
+
+
+
+<!-- copy button  -->
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+
+<!-- https://clipboardjs.com/ -->
+
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+  <!-- 尾部用户自定义相关内容 -->
+</body>
+</html>
