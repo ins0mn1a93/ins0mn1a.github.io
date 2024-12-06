@@ -24,7 +24,7 @@
 
   
 
-  <title>ctfshow-misc篇 | 逃离失眠</title>
+  <title>ctfshow-misc篇 | Ins0mn1a</title>
 
   
 
@@ -58,7 +58,7 @@
     <div class="navbar-logo">
       <a href="/">
         
-          逃离失眠
+          Ins0mn1a
         
       </a>
     </div>
@@ -110,7 +110,7 @@
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2024-12-06T02:26:58.351Z" itemprop="dateUpdated">2024-12-06</time>
+              <time  class="article-updated" datetime="2024-12-06T07:59:41.391Z" itemprop="dateUpdated">2024-12-06</time>
             </h2>
           
           
@@ -118,6 +118,10 @@
   
 </ul>
           <ul class="wrap-list dark">
+  
+    <li><a href="/tags/ctfshow/">🏷️ ctfshow</a></li>
+  
+    <li><a href="/tags/Misc/">🏷️ Misc</a></li>
   
 </ul>
         </div>
@@ -141,17 +145,17 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1>图片篇（基础操作）</h1>
-<h2 id="Misc1"><a class="header-anchor" href="#Misc1">¶</a>Misc1</h2>
+        <h1><span id="图片篇基础操作">图片篇（基础操作）</span></h1>
+<h2><span id="misc1">Misc1</span></h2>
 <p>打开图片就是</p>
-<h2 id="Misc2"><a class="header-anchor" href="#Misc2">¶</a>Misc2</h2>
+<h2><span id="misc2">Misc2</span></h2>
 <p>把后缀改成png即可</p>
-<h2 id="Misc3"><a class="header-anchor" href="#Misc3">¶</a>Misc3</h2>
+<h2><span id="misc3">Misc3</span></h2>
 <p>bpg也是一个图片文件，用于代替jpeg</p>
 <p><img src="image-20241125190807531.png" alt="image-20241125190807531"></p>
 <p>（原来已经都十年了吗）</p>
 <p>用bpgviewer打开即可：<a target="_blank" rel="noopener" href="https://downloads.onworks.net/softwaredownload.php?link=https%3A%2F%2Fdownloads.onworks.net%2Fdownloadapp%2FSOFTWARE%2Fbpgviewer-1.28-win64-setup.exe%3Fservice%3Dservice01&amp;filename=bpgviewer-1.28-win64-setup.exe">下载链接</a></p>
-<h2 id="Misc4"><a class="header-anchor" href="#Misc4">¶</a>Misc4</h2>
+<h2><span id="misc4">Misc4</span></h2>
 <p>几个常见的图片把flag截取掉而已</p>
 <p>第一个：png</p>
 <p>第二个：有exif图片信息，改成jpg就行</p>
@@ -160,25 +164,25 @@
 <p>第五个：从格式很容易判断是webp文件</p>
 <p>第六个：52 49 46 46文件头，搜了一下是wav文件，但是打不开。在网上找wp才知道是tif文件（不过后来想想，这一个专题讲的是图片，怎么会出现音频文件呢）</p>
 <p>可能在第三个图片中可能会出现有的工具打不开的情况。但由于它们都是图片，所以改后缀直接查看也是没有问题的（比如全改成png）</p>
-<h1>图片篇(信息附加)</h1>
-<h2 id="Misc5"><a class="header-anchor" href="#Misc5">¶</a>Misc5</h2>
+<h1><span id="图片篇信息附加">图片篇(信息附加)</span></h1>
+<h2><span id="misc5">Misc5</span></h2>
 <p>010editor打开查看文件尾部即可</p>
-<h2 id="Misc6、Misc7、Misc9，Misc15"><a class="header-anchor" href="#Misc6、Misc7、Misc9，Misc15">¶</a>Misc6、Misc7、Misc9，Misc15</h2>
+<h2><span id="misc6-misc7-misc9misc15">Misc6、Misc7、Misc9，Misc15</span></h2>
 <p>010打开后ctrl+f就行</p>
 <p>Misc16属实不知道为什么要放在中间，也不知道跟提示有什么直接联系</p>
-<h2 id="Misc8"><a class="header-anchor" href="#Misc8">¶</a>Misc8</h2>
+<h2><span id="misc8">Misc8</span></h2>
 <p>拖进010分析后发现存在png藏png，考虑用binwalk</p>
 <p><img src="image-20241126102325505.png" alt="image-20241126102325505"></p>
 <p>分离未果，用foremost分离</p>
 <p><img src="image-20241125210322036.png" alt="image-20241125210322036"></p>
 <p><img src="image-20241125210307561.png" alt="image-20241125210307561"></p>
 <p><img src="image-20241126102356580.png" alt="image-20241126102356580"></p>
-<h2 id="Misc10"><a class="header-anchor" href="#Misc10">¶</a>Misc10</h2>
+<h2><span id="misc10">Misc10</span></h2>
 <p>分析这张图片，纵观下来这部分XMP数据是比较可疑的，加上它还在iTXt块中，所以很难不想到里面是嵌套了一些东西进去的</p>
 <p><img src="image-20241126103326460.png" alt="image-20241126103326460"></p>
 <p>考虑用binwalk分离一下，在10E5处得到flag</p>
 <p><img src="image-20241126103550261.png" alt="image-20241126103550261"></p>
-<h2 id="Misc11"><a class="header-anchor" href="#Misc11">¶</a>Misc11</h2>
+<h2><span id="misc11">Misc11</span></h2>
 <p>010分析后没有什么明显的信息，不过看到了两个IDAT块，Ctrl+f看一下</p>
 <p><img src="image-20241126104452996.png" alt="image-20241126104452996"></p>
 <p>很明显，两个IDAT块相距没有ffff（即65535），再根据题目提示，得知有图片被前面的挡住了</p>
@@ -187,10 +191,10 @@
 <p><img src="image-20241126110106289.png" alt="image-20241126110106289"></p>
 <p>删除选中的IDAT块后再次查看</p>
 <p><img src="image-20241126110146679.png" alt="image-20241126110146679"></p>
-<h2 id="Misc12"><a class="header-anchor" href="#Misc12">¶</a>Misc12</h2>
+<h2><span id="misc12">Misc12</span></h2>
 <p>跟上一题一样，不过这次有许多个异常的IDAT块，一个个删就行，最后在CRC为4159a66d处得到flag</p>
 <p><img src="image-20241126110708730.png" alt="image-20241126110708730"></p>
-<h2 id="Misc13"><a class="header-anchor" href="#Misc13">¶</a>Misc13</h2>
+<h2><span id="misc13">Misc13</span></h2>
 <p>根据提示与010分析，发现最后有一个疑似flag片段</p>
 <p><img src="image-20241126111930078.png" alt="image-20241126111930078"></p>
 <p>简单看了一下发现flag分布是有规律的：flag每两个字符中间插入了一个字符，写个脚本：</p>
@@ -198,22 +202,22 @@
 <p>在写脚本的时候需要注意一个点就是不能直接从010复制右边文本过来，因为它在经过16进制处理后会变成这样：</p>
 <p><img src="image-20241126113234688.png" alt="image-20241126113234688"></p>
 <p>但是你比对之后就会发现cyberchef里面多出来几个你没看到的</p>
-<h2 id="Misc14"><a class="header-anchor" href="#Misc14">¶</a>Misc14</h2>
+<h2><span id="misc14">Misc14</span></h2>
 <p>图片为jpg格式，010分析后没有什么东西，根据提示猜测是图片藏图片，找一下jpeg文件头比如FF D8或者说找JFIF</p>
 <p><img src="image-20241126121305284.png" alt="image-20241126121305284"></p>
 <p>由于后续是没有其他文件头的，所以可以考虑直接拉到底后新建一个hex文件进行复制粘贴</p>
 <p><img src="image-20241126121354808.png" alt="image-20241126121354808"></p>
 <p>打开后得到：</p>
 <p><img src="image-20241126121409868.png" alt="image-20241126121409868"></p>
-<h2 id="Misc16"><a class="header-anchor" href="#Misc16">¶</a>Misc16</h2>
+<h2><span id="misc16">Misc16</span></h2>
 <p><s>跟Misc12一样，有多个IDAT嵌套，一个个删就行</s></p>
 <p>想当然了，用binwalk分离一下：</p>
 <p><img src="image-20241126122308330.png" alt="image-20241126122308330"></p>
-<h2 id="Misc17"><a class="header-anchor" href="#Misc17">¶</a>Misc17*</h2>
+<h2><span id="misc17">Misc17*</span></h2>
 <p>这题用到zsteg，不过因为电脑原因就先跳过这道题吧</p>
-<h2 id="Misc18"><a class="header-anchor" href="#Misc18">¶</a>Misc18</h2>
+<h2><span id="misc18">Misc18</span></h2>
 <p>根据题目提示直接查图片属性就行</p>
-<h2 id="Misc19，Misc20，Misc21"><a class="header-anchor" href="#Misc19，Misc20，Misc21">¶</a>Misc19，Misc20，Misc21</h2>
+<h2><span id="misc19misc20misc21">Misc19，Misc20，Misc21</span></h2>
 <p>在Exif查看器查看即可</p>
 <p>Misc19：</p>
 <p><img src="image-20241126123317007.png" alt="image-20241126123317007"></p>
@@ -228,18 +232,18 @@
 <p>不过是个错家伙：（谁没事会把后面全设为0啊）</p>
 <p><img src="image-20241126124824608.png" alt="image-20241126124824608"></p>
 <p>所以改变一下思路，每一段先hex后再拼接就对了：ctfshow{e8a221498d5c073b4084eb51b1a1686d}</p>
-<h2 id="Misc22"><a class="header-anchor" href="#Misc22">¶</a>Misc22</h2>
+<h2><span id="misc22">Misc22</span></h2>
 <p>010分析没有什么东西，需要用到magicexif工具（他喵的c盘不够了，早知道当初买电脑的时候就不分盘了，之前开始买的时候也没想到后面学习的时候会下那么多东西）</p>
 <p>ctfshow{dbf7d3f84b0125e833dfd3c80820a129}</p>
-<h2 id="Misc23"><a class="header-anchor" href="#Misc23">¶</a>Misc23</h2>
+<h2><span id="misc23">Misc23</span></h2>
 <p>这里exif查看器只能看到一个时间，要在kali用到exiftool（还是上面的那个问题，我的kali是在wsl里的，c盘不够也别想着启动了）</p>
-<h2 id="Misc41"><a class="header-anchor" href="#Misc41">¶</a>Misc41</h2>
+<h2><span id="misc41">Misc41</span></h2>
 <p>这题需要一小点点脑洞，提示在题目中：<strong>H4ppy Apr1l F001’s D4y！</strong></p>
 <p>再根据010分析就会发现左边有很多F001字段，搜索高亮得到：</p>
 <p><img src="image-20241126130402308.png" alt="image-20241126130402308"></p>
 <p>高亮显示的字母即为flag</p>
-<h1>图片篇(文件结构)</h1>
-<h2 id="Misc24，Misc25，Misc27，Misc28，Misc29"><a class="header-anchor" href="#Misc24，Misc25，Misc27，Misc28，Misc29">¶</a>Misc24，Misc25，Misc27，Misc28，Misc29</h2>
+<h1><span id="图片篇文件结构">图片篇(文件结构)</span></h1>
+<h2><span id="misc24misc25misc27misc28misc29">Misc24，Misc25，Misc27，Misc28，Misc29</span></h2>
 <p>根据题目提示，修改一下图片高度看看</p>
 <p>misc24：</p>
 <p><img src="image-20241126201241689.png" alt="image-20241126201241689"></p>
@@ -261,7 +265,7 @@
 <p><img src="image-20241126230635143.png" alt="image-20241126230635143"></p>
 <p>用Stegsolve也可以，要用到Frame Browser：<span id="jump3"></span></p>
 <p><img src="image-20241126231435501.png" alt="image-20241126231435501"></p>
-<h2 id="Misc26，Misc32，Misc33"><a class="header-anchor" href="#Misc26，Misc32，Misc33">¶</a>Misc26，Misc32，Misc33</h2>
+<h2><span id="misc26misc32misc33">Misc26，Misc32，Misc33</span></h2>
 <p>misc26：</p>
 <p><img src="image-20241126201657879.png" alt="image-20241126201657879"></p>
 <p>实际高度需要用CRC来算：</p>
@@ -272,17 +276,17 @@
 <p><img src="image-20241127090108404.png" alt="image-20241127090108404"></p>
 <p>misc33：</p>
 <p><img src="image-20241127090853499.png" alt="image-20241127090853499"></p>
-<h2 id="Misc30"><a class="header-anchor" href="#Misc30">¶</a>Misc30</h2>
+<h2><span id="misc30">Misc30</span></h2>
 <p>bmp图片修改宽度（答案人家都贴脸上了）：</p>
 <p><img src="image-20241126230957291.png" alt="image-20241126230957291"></p>
-<h2 id="Misc31"><a class="header-anchor" href="#Misc31">¶</a>Misc31</h2>
+<h2><span id="misc31">Misc31</span></h2>
 <p>这里可以根据图片大小与文件头大小计算一下宽度：</p>
 <p>bmp有53个字节，按蓝、绿、红存储一个颜色值，且颜色由一个字节进行控制，所以实际的像素值为：(487256-53)/3 = 162401</p>
 <p>由于高度已知，因此宽度为162401 / 150 = 1082.67</p>
 <p>那么在1082与1083之间试一试：</p>
 <p><img src="image-20241126235431468.png" alt="image-20241126235431468"></p>
 <p>参考链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qingchuwudi">qingchuwudi</a></p>
-<h2 id="Misc34，Misc35，Misc36"><a class="header-anchor" href="#Misc34，Misc35，Misc36">¶</a>Misc34，Misc35，Misc36</h2>
+<h2><span id="misc34misc35misc36">Misc34，Misc35，Misc36</span></h2>
 <p>misc34：</p>
 <p>由于CRC被修改了（我猜是在原图的基础上修改宽高之后又计算修改后的图片的CRC，所以MIsc26的脚本并不管用），所以这里就考虑爆破宽度：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zlib</span><br><span class="line"><span class="keyword">import</span> struct</span><br><span class="line"></span><br><span class="line">filename = <span class="string">&quot;./misc34.png&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(filename, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    all_bytes = f.read()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">901</span>, <span class="number">1200</span>):</span><br><span class="line">    new_filename = <span class="string">f&quot;<span class="subst">&#123;i&#125;</span>.png&quot;</span> </span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(new_filename, <span class="string">&quot;wb&quot;</span>) <span class="keyword">as</span> f1: </span><br><span class="line">        modified_bytes = all_bytes[:<span class="number">16</span>] + struct.pack(<span class="string">&#x27;&gt;i&#x27;</span>, i) + all_bytes[<span class="number">20</span>:]</span><br><span class="line">        f1.write(modified_bytes)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -303,31 +307,31 @@
 <p>这里反而不用修改第一个<code>84 03</code>，修改第二个即可（<a href="#jump2">思考ing…</a>）</p>
 <p>在宽度为940和941时有flag：</p>
 <p><img src="image-20241127110711405.png" alt="image-20241127110711405"></p>
-<h2 id="Misc37"><a class="header-anchor" href="#Misc37">¶</a>Misc37</h2>
+<h2><span id="misc37">Misc37</span></h2>
 <p>这会儿看上去是真正意义上的动图了（</p>
 <p>不过定格下来观察发现flag被分成几个部分并放在几个图片里了，这里用wps的图片查看器或者<a href="#jump3">Stegsolve</a>都行</p>
 <p>对了，盯帧之前要不先改改高度？</p>
 <p>ctfshow{2056782cd57b13261dcbbe3d6eecda17}</p>
-<h2 id="Misc38"><a class="header-anchor" href="#Misc38">¶</a>Misc38</h2>
+<h2><span id="misc38">Misc38</span></h2>
 <p>010分析一下，没有啥特别明显的提示信息，但是考虑到还是有一点点点大的，所以利用里面的template分析一下，发现两个重复率特别高的chunk：<code>fcTL，fdAT</code></p>
 <p>问了下gpt，得知这两个chunk涉及到动图：</p>
 <p><img src="image-20241127112826960.png" alt="image-20241127112826960"></p>
 <p>用honeyview盯帧就行：ctfshow{48b722b570c603ef58cc0b83bbf7680d}</p>
-<h2 id="Misc39"><a class="header-anchor" href="#Misc39">¶</a>Misc39*</h2>
+<h2><span id="misc39">Misc39*</span></h2>
 <p>看了wp后才得知flag的隐写是根据每个帧的不同延迟来进行隐写的，这里就让gpt帮我干了：</p>
 <p><img src="image-20241127161921844.png" alt="image-20241127161921844"></p>
 <p>然后把字符串进行二进制解码：</p>
 <p><img src="image-20241127161953452.png" alt="image-20241127161953452"></p>
 <p>这里先记录一下，因为010的gif的template需要1.4版本的才能用，不过因为电脑原因没法安，等后续修理一下再回过头来弄</p>
 <p>工具方面用的是**<code>identify</code>**</p>
-<h2 id="Misc40"><a class="header-anchor" href="#Misc40">¶</a>Misc40</h2>
+<h2><span id="misc40">Misc40</span></h2>
 <p>这个我就跳过不做了，看看wp</p>
-<h2 id="Misc42"><a class="header-anchor" href="#Misc42">¶</a>Misc42</h2>
+<h2><span id="misc42">Misc42</span></h2>
 <p>拖进010分析后发现有很多个IDAT块，用<code>tweakpng</code>看看</p>
 <p><img src="image-20241127164032153.png" alt="image-20241127164032153"></p>
 <p>全是一大堆异常的IDAT块，不过观察一下，有点像可见字符的ascii编码，<s>让gpt帮我们做做</s>（不让它做了，识别不出来，导出的数组是个错家伙）</p>
 <p>直接手打：ctfshow{078cbd0f9c8d3f2158e70529f8913c65}（从CRC为d639e056开始）</p>
-<h2 id="Misc43，Misc44"><a class="header-anchor" href="#Misc43，Misc44">¶</a>Misc43，Misc44</h2>
+<h2><span id="misc43misc44">Misc43，Misc44</span></h2>
 <p>misc43：</p>
 <p>进行分析时010报错：<img src="image-20241127164900489.png" alt="image-20241127164900489"></p>
 <p>有个块报CRC的错了，png-debugger看看：</p>
@@ -341,14 +345,14 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">str1 = <span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;1.txt&quot;</span>,<span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> f:</span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;=&gt;	CRC OK!&quot;</span> <span class="keyword">in</span> line:</span><br><span class="line">            str1 += <span class="string">&quot;1&quot;</span></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&quot;CRC FAILED&quot;</span> <span class="keyword">in</span> line:</span><br><span class="line">            str1 += <span class="string">&quot;0&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(str1)</span><br></pre></td></tr></table></figure>
 <p>再用Cyberchef转换一下</p>
 <p>这里不知道为什么前面会多输出一个1，导致后面转换过来是个乱码</p>
-<h2 id="MIsc45"><a class="header-anchor" href="#MIsc45">¶</a>MIsc45</h2>
+<h2><span id="misc45">MIsc45</span></h2>
 <p>我刚开始一看还以为是LSB隐写，后来想想颜色通道还没做到呢，应该还没涉及到（反正后面用stegsolve分析时也没分析出个所以然）</p>
 <p>读题目我还不知道要做什么，后面看wp才发现需要转换成bmp格式（不是直接改后缀！！）</p>
 <p>转换之后binwalk分离即可：</p>
 <p><img src="image-20241127172838570.png" alt="image-20241127172838570"></p>
 <p>剩下的暂时不做</p>
-<h1>图片篇(颜色通道)</h1>
-<h2 id="Misc50，Misc53，Misc54"><a class="header-anchor" href="#Misc50，Misc53，Misc54">¶</a>Misc50，Misc53，Misc54</h2>
+<h1><span id="图片篇颜色通道">图片篇(颜色通道)</span></h1>
+<h2><span id="misc50misc53misc54">Misc50，Misc53，Misc54</span></h2>
 <p>misc50：</p>
 <p>用Stegsolve查看几个不同的通道即可</p>
 <p>ctfshow{84470883ee1eec2e886436461bf79111}</p>
@@ -360,9 +364,9 @@
 <p><img src="image-20241127173943420.png" alt="image-20241127173943420"></p>
 <p>有个Gray bits隐藏的一竖列东西，data analyse后就一通乱试：</p>
 <p><img src="image-20241127174049158.png" alt="image-20241127174049158"></p>
-<h2 id="Misc55"><a class="header-anchor" href="#Misc55">¶</a>Misc55</h2>
-<h1>几个正在想的问题</h1>
-<h2 id="gif的宽高修改"><a class="header-anchor" href="#gif的宽高修改">¶</a>gif的宽高修改</h2>
+<h2><span id="misc55">Misc55</span></h2>
+<h1><span id="几个正在想的问题">几个正在想的问题</span></h1>
+<h2><span id="gif的宽高修改">gif的宽高修改</span></h2>
 <p><span id="jump2"></span></p>
 <p>gif是由多个图片组成的一张动态图，每一个帧就是一个图片，所以按道理来说我们需要找到所有帧的原始宽高并将其修改。但是在做到Misc36时我发现，第一个记录宽高的部分并不影响图片的生成，反而是下一个记录宽高的部分会影响。是因为第一个记录宽高的部分在文件头的缘故吗？（后续再看看gif是怎么个事）</p>
 
@@ -655,13 +659,25 @@
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        1
+        9
       </div>
     </div>
   </div>
 </section>
 
       
+<section class="widget-toc widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-toc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M134.50666666 767.46666668H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.23999999v50.13333333c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H134.50666666c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.13333333c0.10666668-27.73333333 22.50666668-50.24000001 50.24000001-50.24000001zM84.37333332 541.65333333h326.18666669c27.73333333 0 50.24000001 22.39999999 50.23999999 50.13333334v50.24000001c0 27.73333333-22.50666668 50.24000001-50.24000002 50.23999999H84.37333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.23999999v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333334zM134.50666666 315.83999999H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.24000001v50.24000001c0 27.73333333-22.50666668 50.13333334-50.24000001 50.13333333H134.50666666c-27.73333333 0-50.24000001-22.39999999-50.23999999-50.13333333v-50.24000001c0.10666668-27.84000001 22.50666668-50.24000001 50.24000001-50.23999999zM209.81333332 89.91999999h326.18666671c27.73333333 0 50.24000001 22.39999999 50.23999997 50.13333335v50.23999999c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H209.81333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333333zM692.05333333 623.36l274.66666669 176.00000002c23.36000001 14.93333333 30.08 45.97333334 15.14666666 69.33333332L954.77333334 910.93333333c-14.93333333 23.25333334-45.97333334 30.08-69.33333335 15.14666667l-274.66666666-176c-23.36000001-14.93333333-30.08-45.97333334-15.14666667-69.33333333l27.09333334-42.24000001c14.93333333-23.36000001 46.08000001-30.08 69.33333333-15.14666666z" fill="currentColor"></path>
+</svg>
+    <span>TOC</span>
+  </div>
+  <div class="widget-body">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">图片篇（基础操作）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">Misc1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">Misc2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.3.</span> <span class="toc-text">Misc3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.4.</span> <span class="toc-text">Misc4</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">图片篇(信息附加)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.1.</span> <span class="toc-text">Misc5</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.2.</span> <span class="toc-text">Misc6、Misc7、Misc9，Misc15</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.3.</span> <span class="toc-text">Misc8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.4.</span> <span class="toc-text">Misc10</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.5.</span> <span class="toc-text">Misc11</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.6.</span> <span class="toc-text">Misc12</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.7.</span> <span class="toc-text">Misc13</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.8.</span> <span class="toc-text">Misc14</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.9.</span> <span class="toc-text">Misc16</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.10.</span> <span class="toc-text">Misc17*</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.11.</span> <span class="toc-text">Misc18</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.12.</span> <span class="toc-text">Misc19，Misc20，Misc21</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.13.</span> <span class="toc-text">Misc22</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.14.</span> <span class="toc-text">Misc23</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.15.</span> <span class="toc-text">Misc41</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">图片篇(文件结构)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.1.</span> <span class="toc-text">Misc24，Misc25，Misc27，Misc28，Misc29</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.2.</span> <span class="toc-text">Misc26，Misc32，Misc33</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.3.</span> <span class="toc-text">Misc30</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.4.</span> <span class="toc-text">Misc31</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.5.</span> <span class="toc-text">Misc34，Misc35，Misc36</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.6.</span> <span class="toc-text">Misc37</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.7.</span> <span class="toc-text">Misc38</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.8.</span> <span class="toc-text">Misc39*</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.9.</span> <span class="toc-text">Misc40</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.10.</span> <span class="toc-text">Misc42</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.11.</span> <span class="toc-text">Misc43，Misc44</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.12.</span> <span class="toc-text">MIsc45</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">图片篇(颜色通道)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">4.1.</span> <span class="toc-text">Misc50，Misc53，Misc54</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">4.2.</span> <span class="toc-text">Misc55</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">几个正在想的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">5.1.</span> <span class="toc-text">gif的宽高修改</span></a></li></ol></li></ol>
+  </div>
+</section>
+
 
       
 <section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
@@ -706,7 +722,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a>
+      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a> <a href="/tags/BUU/" style="font-size: 15px;" class="tags-cloud-5">BUU</a> <a href="/tags/CTF/" style="font-size: 20px;" class="tags-cloud-10">CTF</a> <a href="/tags/Misc/" style="font-size: 10px;" class="tags-cloud-0">Misc</a> <a href="/tags/Myself/" style="font-size: 10px;" class="tags-cloud-0">Myself</a> <a href="/tags/SSTI/" style="font-size: 15px;" class="tags-cloud-5">SSTI</a> <a href="/tags/Upload/" style="font-size: 10px;" class="tags-cloud-0">Upload</a> <a href="/tags/Web/" style="font-size: 15px;" class="tags-cloud-5">Web</a> <a href="/tags/ctfshow/" style="font-size: 15px;" class="tags-cloud-5">ctfshow</a>
     </div>
   </div>
 </section>

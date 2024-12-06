@@ -24,7 +24,7 @@
 
   
 
-  <title>upload-labs | 逃离失眠</title>
+  <title>upload-labs | Ins0mn1a</title>
 
   
 
@@ -58,7 +58,7 @@
     <div class="navbar-logo">
       <a href="/">
         
-          逃离失眠
+          Ins0mn1a
         
       </a>
     </div>
@@ -110,7 +110,7 @@
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2024-11-29T00:26:07.000Z" itemprop="dateUpdated">2024-11-29</time>
+              <time  class="article-updated" datetime="2024-12-06T06:38:12.493Z" itemprop="dateUpdated">2024-12-06</time>
             </h2>
           
           
@@ -118,6 +118,8 @@
   
 </ul>
           <ul class="wrap-list dark">
+  
+    <li><a href="/tags/Upload/">🏷️ Upload</a></li>
   
 </ul>
         </div>
@@ -141,21 +143,21 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1>从upload-labs学文件上传</h1>
+        <h1><span id="从upload-labs学文件上传">从upload-labs学文件上传</span></h1>
 <p>进度呢都是根据upload-labs来的，当然如果在真实渗透中也有遇到这种题目并且有另外的思路也拿过来说说（我电脑不知道怎么肥事，怎么连本地的文件上传的包都抓不了，过于抽象，只能用用NSSCTF平台来做做了）</p>
-<h2 id="less-1"><a class="header-anchor" href="#less-1">¶</a>less-1</h2>
+<h2><span id="less-1">less-1</span></h2>
 <p>前端无效检测后缀绕过，抓包修改后缀；或者禁用js就行，因为上传文件的逻辑是写在后端的，所以不必担心上传功能被ban</p>
-<h2 id="less-2"><a class="header-anchor" href="#less-2">¶</a>less-2</h2>
+<h2><span id="less-2">less-2</span></h2>
 <p>mime+前端后缀检测，跟上题一样，只要注意mime类型就行</p>
-<h2 id="less-3"><a class="header-anchor" href="#less-3">¶</a>less-3</h2>
+<h2><span id="less-3">less-3</span></h2>
 <p>过滤了 <code>.jsp</code>，<code>.jspx </code>，<code>.php</code>，用php3、phtml绕过就行，但不知道为什么解析不了</p>
 <p>在网上搜了搜，推测可能是php的配置文件并不支持解析php3，phtml等文件，这里指的应该是<code>.htaccess</code>文件（apache的）</p>
-<h2 id="less-4"><a class="header-anchor" href="#less-4">¶</a>less-4</h2>
+<h2><span id="less-4">less-4</span></h2>
 <p>这里把php以及其他能够解析成php文件的后缀给过滤掉了，由于系统用的是黑名单，所以可以尝试上传<code>.htaccess</code>文件，写入：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AddHandler application/x-httpd-php .jpg</span><br></pre></td></tr></table></figure>
 <p>意为将<code>.jpg</code>当做php文件进行解析处理，解析之后发现还真行</p>
 <p><img src="image-20241023202054901.png" alt="image-20241023202054901"></p>
-<h2 id="less-5"><a class="header-anchor" href="#less-5">¶</a>less-5</h2>
+<h2><span id="less-5">less-5</span></h2>
 <p>过滤了<code>.htaccess</code>，那也许就是用<code>.user.ini</code>文件了（但是不行，看下文笔记），传一个</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=<span class="string">&quot;1.jpg&quot;</span></span><br><span class="line">auto_append_file=<span class="string">&quot;1.jpg&quot;</span></span><br></pre></td></tr></table></figure>
 <p>这俩的区别在于执行的先后，<code>auto_prepend_file</code>在php执行前就会被包含，一般用于初始化；<code>auto_append_file</code>则用于php执行结束之后，一般用于善后。</p>
@@ -169,33 +171,33 @@
 </blockquote>
 <p><img src="image-20241023205634608.png" alt="image-20241023205634608"></p>
 <p>这里没有成功解析也是跟上面的第三关一样的，可能是配置文件没有写入相关后缀导致其不能够将其解析为php文件</p>
-<h2 id="less-6"><a class="header-anchor" href="#less-6">¶</a>less-6</h2>
+<h2><span id="less-6">less-6</span></h2>
 <p>这题有点小意思的，绕过黑名单时可以用空格来进行绕过，即<code>1.php</code> -&gt; <code>1. php</code>，不过还是不能解析成php文件，草</p>
 <p>这里似乎涉及到windows和linux的命名规则，它们在遇到带有空格的文件时会自动将空格去掉（wp如是说）</p>
 <p>但是在经过查资料和拷打gpt后，发现Linux和Windows对空格似乎不是那么重视呢，它是允许空格的存在的，在命令行中也不会对空格进行过滤，无非就是加个引号或者转义符来防止预期文件名和命令输入冲突</p>
 <p><img src="image-20241023212142646.png" alt="image-20241023212142646"></p>
-<h2 id="less-7"><a class="header-anchor" href="#less-7">¶</a>less-7</h2>
+<h2><span id="less-7">less-7</span></h2>
 <p>这会儿应该就是可以用<code>.user.ini</code>了，根据<code>$img_path = UPLOAD_PATH.'/'.$file_name;</code>可知，他改回来辣！这下不用复制粘贴了，直接跑到upload找🐴去！​</p>
-<h2 id="less-8"><a class="header-anchor" href="#less-8">¶</a>less-8</h2>
+<h2><span id="less-8">less-8</span></h2>
 <p>相较于前几题来说少了一个去除<code>::$DATA</code>动作，根据wp所说，<code>::$DATA</code>是一个替代数据流，根据windows文件系统特性，它在命名文件的时候是不允许包含<code>\ / : * ? “ &lt; &gt; |</code>的，当有文件上传到windows系统时，windows会自动处理这些符号。</p>
 <p><img src="image-20241024164847506.png" alt="image-20241024164847506"></p>
 <p>但值得注意的是，windows是允许空格符存在的，所以在对这些符号进行处理时，windows会自动将其转换为Tab键的输出效果或者一个空格；对于Linux文件系统来说，它是允许<code>:</code>存在的，所以在进行文件上传的时候需要注意一下操作系统。至于其他符号的话呢，它们在Linux各有各的用处，<code>/</code>是用来区分目录和文件的，<code>\</code>一般来说是起着连接作用的，所以你会发现<code>touch 1\2</code>后文件名会变成<code>12</code>…………不多说了</p>
 <p>反正我猜这个容器用的是Linux，不然怎么可能不会去掉<code>:</code>呢。</p>
 <p>这里我也抛出一个疑问：既然windows在命名文件和目录时不允许上述符号的存在，那为什么要用到替代数据流呢？难道是因为<code>$DATA</code>在命令行中被识别为环境变量了？我直接用<code>:</code>不就行了？（虽然有点前言不搭后语）</p>
-<h2 id="less-9"><a class="header-anchor" href="#less-9">¶</a>less-9</h2>
+<h2><span id="less-9">less-9</span></h2>
 <p>这题就是在后缀加一个<code>. .</code>就能够上传成功，但是由于系统的诟病，没法直接看到文件是否解析成功</p>
-<h2 id="less-10"><a class="header-anchor" href="#less-10">¶</a>less-10</h2>
+<h2><span id="less-10">less-10</span></h2>
 <p>这里做了一定修改，其中文件名称的处理逻辑改为<code>$file_name = str_ireplace($deny_ext,&quot;&quot;, $file_name);</code>那这个就很好理解了，将含有黑名单的部分替换成空，直接双拼绕过即可（双拼的时候注意位置就行）</p>
 <p><img src="image-20241024205739682.png" alt="image-20241024205739682"></p>
 <p><img src="image-20241024205731270.png" alt="image-20241024205731270"></p>
-<h2 id="less-11"><a class="header-anchor" href="#less-11">¶</a>less-11</h2>
+<h2><span id="less-11">less-11</span></h2>
 <p>这里开始用到白名单了，利用截断绕过即可。不过这里文件路径动了些小手脚：<code>$img_path = $_GET['save_path'].&quot;/&quot;.rand(10, 99).date(&quot;YmdHis&quot;).&quot;.&quot;.$file_ext;</code>，发现save_path是需要我们传上去的，这里用目录穿越到upload即可</p>
 <p>他喵的，这服务器没识别到%00我也是醉了，本地和容器都是一个样，他肯定把<code>1.php%00</code>看成一个目录了草，wp应该是这样的</p>
 <p><img src="image-20241024211732815.png" alt="image-20241024211732815"></p>
 <p>后续我又返回去看了看，NSS的upload-labs用的是5.5.9，但是截断漏洞要求是小于5.3.4（草）</p>
-<h2 id="less-12"><a class="header-anchor" href="#less-12">¶</a>less-12</h2>
+<h2><span id="less-12">less-12</span></h2>
 <p>跟11题一个样</p>
-<h2 id="less-13"><a class="header-anchor" href="#less-13">¶</a>less-13</h2>
+<h2><span id="less-13">less-13</span></h2>
 <p>这里就是文件头检测了，具体代码如下：</p>
 <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getReailFileType</span>(<span class="params"><span class="variable">$filename</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$file</span> = <span class="title function_ invoke__">fopen</span>(<span class="variable">$filename</span>, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    <span class="variable">$bin</span> = <span class="title function_ invoke__">fread</span>(<span class="variable">$file</span>, <span class="number">2</span>); <span class="comment">//只读2字节</span></span><br><span class="line">    <span class="title function_ invoke__">fclose</span>(<span class="variable">$file</span>);</span><br><span class="line">    <span class="variable">$strInfo</span> = @<span class="title function_ invoke__">unpack</span>(<span class="string">&quot;C2chars&quot;</span>, <span class="variable">$bin</span>);    </span><br><span class="line">    <span class="variable">$typeCode</span> = <span class="title function_ invoke__">intval</span>(<span class="variable">$strInfo</span>[<span class="string">&#x27;chars1&#x27;</span>].<span class="variable">$strInfo</span>[<span class="string">&#x27;chars2&#x27;</span>]);    </span><br><span class="line">    <span class="variable">$fileType</span> = <span class="string">&#x27;&#x27;</span>;    </span><br><span class="line">    <span class="keyword">switch</span>(<span class="variable">$typeCode</span>)&#123;      </span><br><span class="line">        <span class="keyword">case</span> <span class="number">255216</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;jpg&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">13780</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;png&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;        </span><br><span class="line">        <span class="keyword">case</span> <span class="number">7173</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;gif&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;unknown&#x27;</span>;</span><br><span class="line">        &#125;    </span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$fileType</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这里不再写labs了，有点缺陷，后续放在ctfshow了。</p>
@@ -489,7 +491,7 @@
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        1
+        9
       </div>
     </div>
   </div>
@@ -540,7 +542,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a>
+      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a> <a href="/tags/BUU/" style="font-size: 15px;" class="tags-cloud-5">BUU</a> <a href="/tags/CTF/" style="font-size: 20px;" class="tags-cloud-10">CTF</a> <a href="/tags/Misc/" style="font-size: 10px;" class="tags-cloud-0">Misc</a> <a href="/tags/Myself/" style="font-size: 10px;" class="tags-cloud-0">Myself</a> <a href="/tags/SSTI/" style="font-size: 15px;" class="tags-cloud-5">SSTI</a> <a href="/tags/Upload/" style="font-size: 10px;" class="tags-cloud-0">Upload</a> <a href="/tags/Web/" style="font-size: 15px;" class="tags-cloud-5">Web</a> <a href="/tags/ctfshow/" style="font-size: 15px;" class="tags-cloud-5">ctfshow</a>
     </div>
   </div>
 </section>

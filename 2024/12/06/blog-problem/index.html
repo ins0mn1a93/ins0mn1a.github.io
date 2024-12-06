@@ -24,7 +24,7 @@
 
   
 
-  <title>关于在做博客时遇到的问题 | 逃离失眠</title>
+  <title>关于在做博客时遇到的问题 | Ins0mn1a</title>
 
   
 
@@ -58,7 +58,7 @@
     <div class="navbar-logo">
       <a href="/">
         
-          逃离失眠
+          Ins0mn1a
         
       </a>
     </div>
@@ -139,25 +139,37 @@
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
         <p>这里记录一下在写文章或者其他与博客生成有关的过程中遇到的问题，只能说这些东西让我无语又好笑的</p>
-<h1>写文章的时候</h1>
-<h2 id="模版问题"><a class="header-anchor" href="#模版问题">¶</a>模版问题</h2>
+<h1><span id="写文章的时候">写文章的时候</span></h1>
+<h2><span id="模版问题">模版问题</span></h2>
 <p>这是目前（2024.12.6）为止让我最好笑也是最气的一个问题。我的模版渲染模块是nunjucks</p>
-<h3 id="s-s-s-因没有闭合而无法显示后文内容"><a class="header-anchor" href="#s-s-s-因没有闭合而无法显示后文内容">¶</a>{s{s}s}因没有闭合而无法显示后文内容</h3>
+<h3><span id="因没有闭合而无法显示后文内容">{{因没有闭合而无法显示后文内容</span></h3>
 <p>起因是在生成ssti-labs文章时发现这篇文章只显示了level1和小部分level2，其他的都没显示。</p>
 <p>于是乎我顺藤摸瓜找到了问题所在点：（这里是修改过的）</p>
 <p><img src="image-20241206111529264.png" alt="image-20241206111529264"></p>
-<p>笑死，因为这里有个<code>&#123;&#123;没有被&#125;&#125;</code>闭合，所以我猜nunjucks渲染的逻辑是找到右侧闭合部分，找不到就一直往下找，不然中间的就没法渲染成功之类的（但是不报错），具体表现如下：</p>
+<p>笑死，因为这里有个<code>{{</code>没有被<code>}}</code>闭合，所以我猜nunjucks渲染的逻辑是找到右侧闭合部分，找不到就一直往下找，不然中间的就没法渲染成功之类的（但是不报错），具体表现如下：</p>
 <p><img src="image-20241206112137354.png" alt="image-20241206112137354"></p>
-<p>反正解决方法就是闭合就行</p>
-<h3 id="Template-render-error-unknown-path-Error-filter-not-found-attr"><a class="header-anchor" href="#Template-render-error-unknown-path-Error-filter-not-found-attr">¶</a>Template render error: (unknown path)Error: filter not found: attr</h3>
+<h4><span id="解决方法">解决方法</span></h4>
+<ol>
+<li>在front-matter中加上disableNunjucks: true即可；</li>
+<li>闭合指定的<code>{{</code>，并将其写在代码块中（否则中间为空时，Nunjucks也会通过渲染将其变成空</li>
+</ol>
+<h3><span id="template-render-error-unknown-patherror-filter-not-found-attr">Template render error: (unknown path)Error: filter not found: attr</span></h3>
 <p>这问题也让我很无语。在解决上文的问题后发现nunjucks报了这么个莫名其妙的错误：</p>
 <p><img src="image-20241206113020739.png" alt="image-20241206113020739"></p>
 <p>我当时问gpt和搜博客，还以为是nunjucks出了问题，选择重装后也没有解决</p>
 <p>上图是我调了一下<code>hexo g --debug</code>，发现问题出现在刚刚写的文章中，所以我一步步删一步步看，最后在这里找到问题：</p>
 <p><img src="image-20241206113203848.png" alt="image-20241206113203848"></p>
 <p>nunjucks在处理的时候误吧这里的<code>attr</code>当做一个过滤器来处理了，因为这句话符合其模版语法，<code>xxx|yyy</code>就代表用<code>yyy</code>过滤器来对<code>xxx</code>进行处理</p>
-<p>解决方法就是把它写在代码块中</p>
+<h4><span id="解决方法">解决方法</span></h4>
+<ol>
+<li>把它写在代码块中；</li>
+<li>在front-matter中加上disableNunjucks: true即可；</li>
+</ol>
 <p>这些问题先放着，放假的时候找时间来看看源代码是怎么个事。</p>
+<h1><span id="阅读的时候">阅读的时候</span></h1>
+<h2><span id="目录问题">目录问题</span></h2>
+<p>在看博客的时候发现文章没有大纲，这样会导致在阅读大文章的时候很不方便，因为你自己还要去找内容在哪</p>
+<h3><span id="初步解决方法">初步解决方法</span></h3>
 
       </section>
 
@@ -434,7 +446,7 @@
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        1
+        9
       </div>
     </div>
   </div>
@@ -485,7 +497,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a>
+      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a> <a href="/tags/BUU/" style="font-size: 15px;" class="tags-cloud-5">BUU</a> <a href="/tags/CTF/" style="font-size: 20px;" class="tags-cloud-10">CTF</a> <a href="/tags/Misc/" style="font-size: 10px;" class="tags-cloud-0">Misc</a> <a href="/tags/Myself/" style="font-size: 10px;" class="tags-cloud-0">Myself</a> <a href="/tags/SSTI/" style="font-size: 15px;" class="tags-cloud-5">SSTI</a> <a href="/tags/Upload/" style="font-size: 10px;" class="tags-cloud-0">Upload</a> <a href="/tags/Web/" style="font-size: 15px;" class="tags-cloud-5">Web</a> <a href="/tags/ctfshow/" style="font-size: 15px;" class="tags-cloud-5">ctfshow</a>
     </div>
   </div>
 </section>
