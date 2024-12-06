@@ -24,7 +24,7 @@
 
   
 
-  <title>御网杯(未参赛版) | 逃离失眠</title>
+  <title>关于在做博客时遇到的问题 | 逃离失眠</title>
 
   
 
@@ -101,11 +101,11 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">御网杯(未参赛版)</h1>
+          <h1 class="title-wrap">关于在做博客时遇到的问题</h1>
           <h2 class="title-sub-wrap">
             <strong>Ins0mn1a93</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2024-12-06T01:58:32.524Z" itemprop="datePublished">2024-12-06</time>
+            <time  class="article-date" datetime="2024-12-06T03:09:26.000Z" itemprop="datePublished">2024-12-06</time>
           </h2>
           
           
@@ -113,6 +113,8 @@
   
 </ul>
           <ul class="wrap-list dark">
+  
+    <li><a href="/tags/About-blog/">🏷️ About blog</a></li>
   
 </ul>
         </div>
@@ -136,40 +138,26 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1>Misc</h1>
-<h2 id="Notice"><a class="header-anchor" href="#Notice">¶</a>Notice</h2>
-<p>Ctrl+A全选发现有个隐藏的文字，直接复制下来就行</p>
-<p><img src="image-20241203205434005-1733451144919-1.png" alt="image-20241203205434005"></p>
-<h2 id="编码转换"><a class="header-anchor" href="#编码转换">¶</a>编码转换</h2>
-<p>三种编码：</p>
-<ol>
-<li>brainfuck：flag{ab71cda1</li>
-<li>jsfuck：b495e13b3f21</li>
-<li>Ook：f6fd50221978}</li>
-</ol>
-<p>随波逐流真好用的</p>
-<h2 id="coding-analyse"><a class="header-anchor" href="#coding-analyse">¶</a>coding_analyse</h2>
-<p>开始能理解这是html的编码，但是字符串倒转是有点没想到的，不会是一直在试才试出来的吧（）</p>
-<p>弄完之后有数字和大小写字母，猜测是base系列，测试发现是base64</p>
-<p>解码后发现这是明显的凯撒（网上的凯撒解密可能会让字母全变为小写，注意下）</p>
-<p><img src="image-20241203211027569-1733451144920-3.png" alt="image-20241203211027569"></p>
-<h2 id="bluetooth"><a class="header-anchor" href="#bluetooth">¶</a>bluetooth</h2>
-<p>一道蓝牙的流量分析题，其实纵观下来，感觉像是电脑跟手机连蓝牙，然后电脑一直在发送信息给手机。</p>
-<p>其中，有一部分流量是用于检测是否连接成功，它们并未包含用户传输的信息，忽略掉就好，我们主要查看像下图这样的包</p>
-<p><img src="image-20241203212108296-1733451144919-2.png" alt="image-20241203212108296"></p>
-<p>不过像这样的数据太多了，试一试直接全局查找flag</p>
-<p>字符串的十六进制找到了，发现有压缩包，把压缩部分的hex部分复制下来打开：</p>
-<p><img src="image-20241204095326356-1733451144920-4.png" alt="image-20241204095326356"></p>
-<p>这里我试了很久都没有成功导出key文件，所以直接拿wp的key来</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">key: </span><br><span class="line">5216294695211820293806247029887026154798297270637676463374801674229881314620340407569315152</span><br><span class="line">flag.txt:</span><br><span class="line">10004583275926070044326083910251708233320797779355779208703097816305188140191914132269450797</span><br></pre></td></tr></table></figure>
-<p>把它转16进制：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">key:28f8bdbc16de4850e05579acf33c8aa08ac3d9e6e3822b8c3081c04700eb25b88a08eb457550</span><br><span class="line">flag.txt:4e94dcdb6de87e65d263419ec45aec93e8a2e1d386b31fb804e0f02366df44dbe86a8a7c462d</span><br></pre></td></tr></table></figure>
-<p>然后进行异或即可得到flag</p>
-<p><img src="image-20241204104522215-1733451144920-5.png" alt="image-20241204104522215"></p>
-<p>至于为什么要用字节来进行异或，我想是因为ascii的范围是0-127，在二进制中用8位（bit）来进行存储（最高的那一位一般用作扩展），加上一个字节是8bit，十六进制中每一位是4bit，所以需要先将十六进制字符串转化为字节对象后再处理</p>
-<p>至于为什么是异或，我想因为是misc，需要点</p>
-<p>web没上，就写这些了（不会二进制和密码…）</p>
-<p>wp参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_68012373/article/details/142521196">路baby</a></p>
+        <p>这里记录一下在写文章或者其他与博客生成有关的过程中遇到的问题，只能说这些东西让我无语又好笑的</p>
+<h1>写文章的时候</h1>
+<h2 id="模版问题"><a class="header-anchor" href="#模版问题">¶</a>模版问题</h2>
+<p>这是目前（2024.12.6）为止让我最好笑也是最气的一个问题。我的模版渲染模块是nunjucks</p>
+<h3 id="s-s-s-因没有闭合而无法显示后文内容"><a class="header-anchor" href="#s-s-s-因没有闭合而无法显示后文内容">¶</a>{s{s}s}因没有闭合而无法显示后文内容</h3>
+<p>起因是在生成ssti-labs文章时发现这篇文章只显示了level1和小部分level2，其他的都没显示。</p>
+<p>于是乎我顺藤摸瓜找到了问题所在点：（这里是修改过的）</p>
+<p><img src="image-20241206111529264.png" alt="image-20241206111529264"></p>
+<p>笑死，因为这里有个<code>&#123;&#123;没有被&#125;&#125;</code>闭合，所以我猜nunjucks渲染的逻辑是找到右侧闭合部分，找不到就一直往下找，不然中间的就没法渲染成功之类的（但是不报错），具体表现如下：</p>
+<p><img src="image-20241206112137354.png" alt="image-20241206112137354"></p>
+<p>反正解决方法就是闭合就行</p>
+<h3 id="Template-render-error-unknown-path-Error-filter-not-found-attr"><a class="header-anchor" href="#Template-render-error-unknown-path-Error-filter-not-found-attr">¶</a>Template render error: (unknown path)Error: filter not found: attr</h3>
+<p>这问题也让我很无语。在解决上文的问题后发现nunjucks报了这么个莫名其妙的错误：</p>
+<p><img src="image-20241206113020739.png" alt="image-20241206113020739"></p>
+<p>我当时问gpt和搜博客，还以为是nunjucks出了问题，选择重装后也没有解决</p>
+<p>上图是我调了一下<code>hexo g --debug</code>，发现问题出现在刚刚写的文章中，所以我一步步删一步步看，最后在这里找到问题：</p>
+<p><img src="image-20241206113203848.png" alt="image-20241206113203848"></p>
+<p>nunjucks在处理的时候误吧这里的<code>attr</code>当做一个过滤器来处理了，因为这句话符合其模版语法，<code>xxx|yyy</code>就代表用<code>yyy</code>过滤器来对<code>xxx</code>进行处理</p>
+<p>解决方法就是把它写在代码块中</p>
+<p>这些问题先放着，放假的时候找时间来看看源代码是怎么个事。</p>
 
       </section>
 
@@ -183,8 +171,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/12/06/ctfshow-misc/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">ctfshow-misc篇</h2>
+        <a href="/2024/12/06/introduce/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">introduce</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -434,7 +422,7 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>8</span>
+        <span>11</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -446,7 +434,7 @@
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        0
+        1
       </div>
     </div>
   </div>
@@ -497,7 +485,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      
+      <a href="/tags/About-blog/" style="font-size: 10px;" class="tags-cloud-0">About blog</a>
     </div>
   </div>
 </section>

