@@ -48,7 +48,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://github.com/ins0mn1a93/Static/blob/main/images/profile%20picture/blog_cover.png)"></div>
+    <div class="post-image" style="background-image: url(/Cover.png)"></div>
   
 
   <!-- navbar -->
@@ -170,9 +170,9 @@
 <p>字符串的十六进制找到了，发现有压缩包，把压缩部分的hex部分复制下来打开：</p>
 <p><img src="image-20241204095326356-1733451144920-4.png" alt="image-20241204095326356"></p>
 <p>这里我试了很久都没有成功导出key文件，所以直接拿wp的key来</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">key: </span><br><span class="line">5216294695211820293806247029887026154798297270637676463374801674229881314620340407569315152</span><br><span class="line">flag.txt:</span><br><span class="line">10004583275926070044326083910251708233320797779355779208703097816305188140191914132269450797</span><br></pre></td></tr></table></figure>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">key:</span> <br><span class="hljs-number">5216294695211820293806247029887026154798297270637676463374801674229881314620340407569315152</span><br><span class="hljs-symbol">flag.txt:</span><br><span class="hljs-number">10004583275926070044326083910251708233320797779355779208703097816305188140191914132269450797</span><br></code></pre></td></tr></table></figure>
 <p>把它转16进制：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">key:28f8bdbc16de4850e05579acf33c8aa08ac3d9e6e3822b8c3081c04700eb25b88a08eb457550</span><br><span class="line">flag.txt:4e94dcdb6de87e65d263419ec45aec93e8a2e1d386b31fb804e0f02366df44dbe86a8a7c462d</span><br></pre></td></tr></table></figure>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><span class="hljs-symbol">key:</span><span class="hljs-number">28</span>f<span class="hljs-number">8</span>bdbc<span class="hljs-number">16</span>de<span class="hljs-number">4850e05579</span>acf<span class="hljs-number">33</span><span class="hljs-keyword">c</span><span class="hljs-number">8</span>aa<span class="hljs-number">08</span>ac<span class="hljs-number">3</span>d<span class="hljs-number">9e6</span>e<span class="hljs-number">3822</span>b<span class="hljs-number">8</span><span class="hljs-keyword">c</span><span class="hljs-number">3081</span><span class="hljs-keyword">c</span><span class="hljs-number">04700</span>eb<span class="hljs-number">25</span>b<span class="hljs-number">88</span>a<span class="hljs-number">08</span>eb<span class="hljs-number">457550</span><br>flag.txt:<span class="hljs-number">4e94</span>dcdb<span class="hljs-number">6</span>de<span class="hljs-number">87e65</span>d<span class="hljs-number">263419</span>ec<span class="hljs-number">45</span>aec<span class="hljs-number">93e8</span>a<span class="hljs-number">2e1</span>d<span class="hljs-number">386</span>b<span class="hljs-number">31</span>fb<span class="hljs-number">804e0</span>f<span class="hljs-number">02366</span>df<span class="hljs-number">44</span>dbe<span class="hljs-number">86</span>a<span class="hljs-number">8</span>a<span class="hljs-number">7</span><span class="hljs-keyword">c</span><span class="hljs-number">462</span>d<br></code></pre></td></tr></table></figure>
 <p>然后进行异或即可得到flag</p>
 <p><img src="image-20241204104522215-1733451144920-5.png" alt="image-20241204104522215"></p>
 <p>至于为什么要用字节来进行异或，我想是因为ascii的范围是0-127，在二进制中用8位（bit）来进行存储（最高的那一位一般用作扩展），加上一个字节是8bit，十六进制中每一位是4bit，所以需要先将十六进制字符串转化为字节对象后再处理</p>

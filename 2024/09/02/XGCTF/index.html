@@ -48,7 +48,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://github.com/ins0mn1a93/Static/blob/main/images/profile%20picture/blog_cover.png)"></div>
+    <div class="post-image" style="background-image: url(/Cover.png)"></div>
   
 
   <!-- navbar -->
@@ -149,7 +149,7 @@
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
         <h1><span id="web">WEB</span></h1>
 <h2><span id="codeinject">CodeInject</span></h2>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#Author: h1xa</span></span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">error_reporting</span>(<span class="number">0</span>);</span><br><span class="line"><span class="title function_ invoke__">show_source</span>(<span class="keyword">__FILE__</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">eval</span>(<span class="string">&quot;var_dump((Object)<span class="subst">$_POST</span>[1]);&quot;</span>); </span><br></pre></td></tr></table></figure>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs php"> <span class="hljs-meta">&lt;?php</span><br><br><span class="hljs-comment">#Author: h1xa</span><br><br><span class="hljs-title function_ invoke__">error_reporting</span>(<span class="hljs-number">0</span>);<br><span class="hljs-title function_ invoke__">show_source</span>(<span class="hljs-keyword">__FILE__</span>);<br><br><span class="hljs-keyword">eval</span>(<span class="hljs-string">&quot;var_dump((Object)<span class="hljs-subst">$_POST</span>[1]);&quot;</span>); <br></code></pre></td></tr></table></figure>
 <p>正常输入是要将你输入的数据转换成Object类型并以var_dump形式输出，所以肯定不会执行你输入的命令</p>
 <p>不过呢这似乎存在一个闭合问题呢，试着传入<code>1);//</code></p>
 <p><img src="image-20240902130743641.png" alt="image-20240902130743641"></p>

@@ -48,7 +48,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://github.com/ins0mn1a93/Static/blob/main/images/profile%20picture/blog_cover.png)"></div>
+    <div class="post-image" style="background-image: url(/Cover.png)"></div>
   
 
   <!-- navbar -->
@@ -163,14 +163,14 @@
 <p><img src="image-20241207164622868.png" alt="image-20241207164622868"></p>
 <h2><span id="测试端口是否正常开放">测试端口是否正常开放</span></h2>
 <p>telnet或者nc就行：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">telnet ip port</span><br><span class="line"></span><br><span class="line">nc -zv ip port</span><br></pre></td></tr></table></figure>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">telnet</span> <span class="hljs-built_in">ip</span> port<br><br><span class="hljs-symbol">nc</span> -zv <span class="hljs-built_in">ip</span> port<br></code></pre></td></tr></table></figure>
 <p><img src="image-20241207165254023.png" alt="image-20241207165254023"></p>
 <p><img src="image-20241207165325834.png" alt="image-20241207165325834"></p>
 <p>只要是Connected就代表这个端口是正常开放的</p>
 <h2><span id="服务器端配置">服务器端配置</span></h2>
 <p>这里就只给docker配置了，如果git，nodejs要弄的话就跟着网上其他师傅的博客走就行，我觉得都是差不多的.</p>
 <p>在/etc/systemd/system/docker.service.d/proxy.conf中输入以下内容：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[Service]</span><br><span class="line">Environment=&quot;HTTP_PROXY=http://&lt;ip&gt;:&lt;port&gt;&quot;,</span><br><span class="line">Environment=&quot;HTTP_PROXY=http://&lt;ip&gt;:&lt;port&gt;&quot;,</span><br><span class="line">Environment=&quot;NO_PROXY=127.0.0.1&quot; # 不用代理的情况下就自定义，比如写本机地址127.0.0.1之类的，或者说用其他服务器的ip也可以</span><br></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Service]</span><br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;HTTP_PROXY=http://&lt;ip&gt;:&lt;port&gt;&quot;</span>,<br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;HTTP_PROXY=http://&lt;ip&gt;:&lt;port&gt;&quot;</span>,<br><span class="hljs-attr">Environment</span>=<span class="hljs-string">&quot;NO_PROXY=127.0.0.1&quot;</span> <span class="hljs-comment"># 不用代理的情况下就自定义，比如写本机地址127.0.0.1之类的，或者说用其他服务器的ip也可以</span><br></code></pre></td></tr></table></figure>
 <p>然后就是<code>systemctl daemon-reload</code> ，<code>systemctl restart docker</code>即可，就配置成功了</p>
 <h1><span id="其他问题">其他问题</span></h1>
 <h2><span id="镜像拉取失败问题">镜像拉取失败问题</span></h2>
