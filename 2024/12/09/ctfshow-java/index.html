@@ -24,7 +24,7 @@
 
   
 
-  <title>sssctf2024-复现 | Ins0mn1a</title>
+  <title>ctfshow-java | Ins0mn1a</title>
 
   
 
@@ -103,32 +103,29 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">sssctf2024-复现</h1>
+          <h1 class="title-wrap">ctfshow-java</h1>
           <h2 class="title-sub-wrap">
             <strong>Ins0mn1a93</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2024-05-07T03:27:59.000Z" itemprop="datePublished">2024-05-07</time>
+            <time  class="article-date" datetime="2024-12-09T06:50:04.000Z" itemprop="datePublished">2024-12-09</time>
           </h2>
           
-            <h2 class="last-time">
-              <span>最后更新于</span>
-              <time  class="article-updated" datetime="2024-12-06T12:40:44.792Z" itemprop="dateUpdated">2024-12-06</time>
-            </h2>
           
-          
-            <h2 id="/2024/05/07/sssctf2024/" class="title-sub-wrap leancloud_visitors" data-flag-title="sssctf2024-复现">
+            <h2 id="/2024/12/09/ctfshow-java/" class="title-sub-wrap leancloud_visitors" data-flag-title="ctfshow-java">
               <em>文章访问量</em>
               <i class="leancloud-visitors-count"></i>
             </h2>
           
           <ul class="wrap-list dark">
   
-    <li><a href="/categories/%E6%A0%A1%E9%99%A2%E8%B5%9B/">📒 校院赛</a></li>
+    <li><a href="/categories/ctfshow%E5%B9%B3%E5%8F%B0/">📒 ctfshow平台</a></li>
     
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/CTF/">🏷️ CTF</a></li>
+    <li><a href="/tags/java/">🏷️ java</a></li>
+  
+    <li><a href="/tags/Web/">🏷️ Web</a></li>
   
 </ul>
         </div>
@@ -152,84 +149,32 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <p>哎校赛，哎没想那么多，哎想偏了，哎不会了…</p>
-<h1><span id="计费系统">计费系统</span></h1>
-<p><img src="image-20240507113355447.png" alt="image-20240507113355447"></p>
-<p>这一页是没有注入的，只能sso登录</p>
-<span id="more"></span>
-<p>登陆之后直接进入<code>/Self/service/myMac</code>路由下寻找信息（前面的信息寻找过程略），发现存在隐写字符</p>
-<p><img src="image-20240507113825768.png" alt="image-20240507113825768"></p>
-<p><img src="image-20240507113835015.png" alt="image-20240507113835015"></p>
-<p>这里要注意一下，零宽隐写字符的加密解密需要在同一个网页进行，说白了，用啥工具加密就用啥工具解密，当时做的时候忙着找各种网站尝试解密了，后面才试出来（所以下面的第一个工具会解出来乱码）</p>
-<p><img src="image-20240507114310864.png" alt="image-20240507114310864"></p>
-<p><img src="image-20240507114415958.png" alt="image-20240507114415958"></p>
-<p>去到<code>/Administrator/Login</code>中查看信息</p>
-<p>这里可能存在sql注入，可以尝试闭合</p>
-<p><img src="image-20240507114627853.png" alt="image-20240507114627853"></p>
-<p>这里试出来是<code>&quot;</code>闭合，根据返回的信息推测是布尔盲注</p>
-<p>直接上payload</p>
-<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs n1ql">1&quot; and updatexml(1,concat(0x7e,(<span class="hljs-keyword">select</span> <span class="hljs-keyword">database</span>()),<span class="hljs-number">0x7e</span>),<span class="hljs-number">1</span>);#  # ChallengeDatabase<br>1&quot; and updatexml(1,concat(0x7e,(<span class="hljs-keyword">select</span> table_name <span class="hljs-keyword">from</span> information_schema.tables <span class="hljs-keyword">where</span> table_schema = <span class="hljs-string">&#x27;ChallengeDatabase&#x27;</span> <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span>,<span class="hljs-number">1</span>),<span class="hljs-number">0x7e</span>),<span class="hljs-number">1</span>);# # users<br>1&quot; and updatexml(1,concat(0x7e,(<span class="hljs-keyword">select</span> column_name <span class="hljs-keyword">from</span> information_schema.columns <span class="hljs-keyword">where</span> table_name = <span class="hljs-string">&#x27;users&#x27;</span> <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span>,<span class="hljs-number">1</span>),<span class="hljs-number">0x7e</span>),<span class="hljs-number">1</span>);# # id,loginip,name,password,sso<br>1&quot; and updatexml(1,concat(0x7e,substring((<span class="hljs-keyword">select</span> <span class="hljs-keyword">password</span> <span class="hljs-keyword">from</span> users <span class="hljs-keyword">limit</span> <span class="hljs-number">0</span>,<span class="hljs-number">1</span>),<span class="hljs-number">0</span>,<span class="hljs-number">40</span>),<span class="hljs-number">0x7e</span>),<span class="hljs-number">1</span>);# 这里由于最大长度的限制，所以用到了substring来截取密码，把起始点和截取长度改一下就行 得到05d1b851-ef06-4460-9c30-4249086631d3<br></code></pre></td></tr></table></figure>
-<p><img src="image-20240507120047258.png" alt="image-20240507120047258"></p>
-<p><img src="image-20240507120400327.png" alt="image-20240507120400327"></p>
-<p><img src="image-20240507120450857.png" alt="image-20240507120450857"></p>
-<p>得到账户名和密码后发现以下界面</p>
-<p><img src="image-20240507121550360.png" alt="image-20240507121550360"></p>
-<p>抓个包看看</p>
-<p>注意到一个dashboard跳转，发现一个之前界面中没有的aes.js</p>
-<p><img src="image-20240507121754961.png" alt="image-20240507121754961"></p>
-<p>查看发现有以下脚本</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// const aes256cbcDecrypt = (encryptedData, key, iv) =&gt; &#123;</span><br><span class="hljs-comment">//     const decipher = crypto.createDecipheriv(&#x27;aes-256-cbc&#x27;, key, iv);</span><br><span class="hljs-comment">//     return decryptedData;</span><br><span class="hljs-comment">// &#125;;</span><br><span class="hljs-comment">// const key = &quot;a1e7091c4f39e1571f5d4eaf08c7b28c&quot;;</span><br><span class="hljs-comment">// const iv = &quot;e8d4f92b75f64e7c&quot;;</span><br><span class="hljs-comment">// function readtokens(token) &#123;</span><br><span class="hljs-comment">//     return aes256cbcDecrypt(token, key, iv);</span><br><span class="hljs-comment">// &#125;</span><br></code></pre></td></tr></table></figure>
-<p>这里用到了aes256cbc方式加密，可能在之前的界面中有输出，回去看一下</p>
-<p><img src="image-20240507122039872.png" alt="image-20240507122039872"></p>
-<p>发现一串可疑字符串，猜测就是该加密方式下的密文，拿去解密一下</p>
-<p><img src="image-20240507122803080.png" alt="image-20240507122803080"></p>
-<p>根据题目描述，所有账户的密码相同，flag为flag账户的密码，因此我们的账户密码也是flag，上面一串字符串就是</p>
-<p>脚本如下：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">decipher_sssctf</span>(<span class="hljs-params"><span class="hljs-built_in">str</span></span>):<br>    PRIMENUM1_SSSCTF = <span class="hljs-number">100537</span><br>    KEYWORD_SSSCTF = <span class="hljs-number">45452</span><br>    MIN_ASC = <span class="hljs-number">32</span><br>    MAX_ASC = <span class="hljs-number">126</span><br>    NUM_ASC = MAX_ASC - MIN_ASC + <span class="hljs-number">1</span><br><br>    result = <span class="hljs-string">&quot;&quot;</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(<span class="hljs-built_in">str</span>) - <span class="hljs-number">1</span>):<br>        ch = <span class="hljs-built_in">ord</span>(<span class="hljs-built_in">str</span>[i])<br>        <span class="hljs-keyword">if</span> MIN_ASC &lt;= ch &lt;= MAX_ASC:<br>            ch -= MIN_ASC<br>            offset = <span class="hljs-built_in">round</span>((NUM_ASC + <span class="hljs-number">1</span>) * ((KEYWORD_SSSCTF * (i + <span class="hljs-number">1</span>)) % PRIMENUM1_SSSCTF) / PRIMENUM1_SSSCTF - <span class="hljs-number">0.5</span>)<br>            ch = (ch - offset) % NUM_ASC<br>            <span class="hljs-keyword">if</span> ch &lt; <span class="hljs-number">0</span>:<br>                ch += NUM_ASC<br>            ch += MIN_ASC<br>            result += <span class="hljs-built_in">chr</span>(ch)<br>    <span class="hljs-keyword">return</span> result<br><br><span class="hljs-comment"># 示例用法</span><br>decrypted_string = decipher_sssctf(<span class="hljs-string">&quot;~Ju1m++tij_^%R!Cz@;e\/(TOutE&gt;9.`.XSLKt@nf8asa&quot;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Decrypted String:&quot;</span>, decrypted_string)<br><br></code></pre></td></tr></table></figure>
-<p><img src="image-20240507123225385.png" alt="image-20240507123225385"></p>
-<p>根据之前出题人的提示，说可以爆出来。当时也尝试过，可惜的是解密算法没有写对，所以没有爆出来。。。</p>
-<p>（当时考虑了keyword有可能是字符串的原因，所以后面就没怎么想了）</p>
-<h1><span id="scr1wgpt">scr1wgpt</span></h1>
-<p>这里根据提示，发现过滤了or和and，考虑用||和&amp;&amp;绕过；由于登录界面只有login failed，所以考虑时间注入</p>
-<p>脚本如下：（环境有点问题，略)</p>
-<p>得到用户名密码分别为：<code>Scr1w_admin</code>，<code>sssctf2024_P@ssvv0rd</code></p>
-<p>GPT那有一个CVE漏洞，为<code>CVE-2023-49785</code></p>
-<h2><span id="cve-2023-49785">CVE-2023-49785</span></h2>
-<p>ChatGPT-Next-Web 的 API Endpoint <code>/api/cors</code> 上存在 SSRF 漏洞，可被用于从服务器端发起任意网络请求并取得响应内容。</p>
-<p><code>/api/cors</code>用于开放代理，允许未经身份验证的用户通过它发送任意HTTP请求，不过这会存在一个问题：<strong>它允许客户端通过服务器端端点访问跨域资源，从而绕过内置的浏览器保护以访问跨域资源。</strong></p>
-<p>例如下图：</p>
-<p><img src="image-20240508144550526.png" alt="image-20240508144550526"></p>
-<p>由于题目告诉我们flag是被藏在scr1wgpt-web里，所以直接访问<code>/api/cors/http/scr1wgpt-web/generator</code></p>
-<p><img src="image-20240508144705490.png" alt="image-20240508144705490"></p>
-
+        <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="密码不对哈" data-whm="这文章有点问题，不能检验还是咋的，看看其他内容吧">
+  <script id="hbeData" type="hbeData" data-hmacdigest="c0ad8dae667c69016b70ae8fd0b098902e32f5270d9b5842bfae0483dada811f">b03745f47423227835be85f6966a1eaeffeea4d6c746cb445d27f84a85181f03220d6cfe2cd38855d6e9bd924be85d7ebd6736f72d2ca4fe284854379c5b8250adbe7b0bd598b979807ba9b027ce45a2c0bdbf36fc0e2bfa6205803ce5119a59ce45363b437a2a6195f6c5b2b150df93c4415d4463f4ec8211bca8f605c0bcd3e03bf0756b460726c6e5db3cfdb371ac8ffe941e76c726ce384ac70e7d9619bcbb4577e47f8956bb185ed99a31ed092241eb936ddea330bc1a0185438891335e820e189bc0069ce6c311d7f2213536bb63f1fb4d7c076470118a15baffab13fda504b227fde9c03d85a84922a9e0b114cc2b15059bc173be71a6df603fde69f4784ac5a71efc958b414062aea5548c400d6e270cd4a67d9a01fe223ca0e67308fb9016dc59ee1bcbe02a16d192fa221631e916beb1f64d99c888b8a42163f47ff74c3fcf5c740e97f9813e0145efb02f4769624dfd30d52c1fdcac9c31511066ca314be15d0283ebab544efdf581913de0a5bc40136b28922fcf8699ab689707de9bf9ab144586ba684e74113bd12d4df8d908d297ecac5d7728fff9077a7c4be7a46f77d98ed9193fce9fb4f3b9cb8fec8f3cd7e7150be66369ba3896b826dbd568cee935f96d05fcf80026a57bd629491324506622433aae7ac5ad0d5e6fd0a05a5ac417b347cff26a13835d218e6c63b7f04c1f92792891e9adda8bd1cd4c072c13861407eb9c027c7d2e96411a137c30b7bd64c8a57bc21747f9da131ac264c703bfa2368b6ae9dce28a3a783e15e603ebaff196bb9a5dcec278a29431d159b74acda7d8de412fcb12c9a6d2d78b9f2e5718da41345358dbcccdd1dd2690e2be97c1135af1433b51be1ba29b606477c5b9a30cf133f7948c712b3c08392a2a5aca0100c402cb0586de29be3840d30f0f67af218b368bb42e91d86b475127956b97fb440058bdaa64b56a328a758e334edb20b420078cba5bfb745ccf99f4282917f68a2685cb8291304d266c3d709317819bbfabb3dc7bd0597213e150fbcf4bef2cc41d23faf646165161e21c42421a5acae2b667c6648b6c84dd0561911f9da691743569caa35fd4fb15615968b007c6bd00c62520e70cf991e2e3d4f86587b6758ced1fd507d5026c66718c554700361e32a3b5f876c8b9f0b76b289a1f3e3cc3305d8ab423ce171078f6afcf123e0428e8cbb4091f0f3a2772f6f2f1c714c91e46fbbec723c90469f2c19076a3242c98c7fb1fd2b6fd435e026421b40ba5ee50acdbeb2e87ccb180e7d467745c6c99841979924869637d6c4db6c62ca12b4623f9e51ad203fb6d0fd85531208ec22346929a5be19249fb13d5f6473e4e825090860a61cc375cddde2ae39e58468024cda8e4e9a5f6eeda692f1c47cbad9d72cee7fb6fb2aac1da5c8ce1063a6e6af81b6af3cc7ec0195e69b27008f83594d768b376375075c47d0dbd3f4e2d2b92c52b10dd56e3f0a20be2cd53293dd2647df19846616c57299caffa4373529b0554172959a7888c1fde3cb28f7ae308fc7ae9cbe184ece655658fe5f5a55d578c9f766d90ec8da51ca9ac81f5148ed5f1fd8dc9ca7282e73f9e91d6fae255350e2ba7606b55f76d583c1975144ff59b7b4ea58c3663eb56b4ee6f3fa62b9c8189bb3052a5f36e3c5e585385d32a395a6f71be85793a19eccf856a45bcefae1530041fae64c9a758989dee3f268d8566e22bef8a805098f048ff524221280509fac053fae23ba8d4c423e97c4b089206911a159d1352d7be2646cb2af8ead8b1258fd2d96a9495833dfbd8a4a4fafc40a87d6ca9507e924c4e7bf783db67ea70e3f4fa161c32ec0c6753aa6fe3f4ebe1c59d1fd68de7765692f30c1c1d8e4f7f2135877b8f4cb92f643609dd1264f11d90d13ece8295ec9f6ff21aef202191526cd2f5e3dc31bc9731b91e776b3f0bed9c34bb8180cee1865c3943d7793aa97abdd095c07f95e78dfb66353f9f4abfaf9842ce5a2bf39a36bf61c81cc5dadd89dbda345df9764243b82c9e9f94bc84e887f332dac2476d971b6938a546b3e4e6f0197b8d91fedd1830f2e6e0e9e6abaac3bb56453cc6d5118b25e450c79808023eb6b333b7eb970cddef18e89b686007f5ea80cb121a8b50c2ab1104009a5764f3622efb40b4e9b932e26518cdf9653f0f0c69100b74ad8c8180848eac6fce70d6b9fb869998ff904e1412b1cf5bb880914bab4c159536baa4a1acf10f6cbcab7841222e67fe1da8ee4b54a4ece1139109b5c140c736a43dbec6b167b5912c6ec06b7b9c90250e2f300aecafcb2a76589e730128bde860a0b5fa41e1327a313f8181b54878043cbba0a7c67ec615c0a2f34e6733054d512b4631ffaac3310b6f66b1de6da4440e3e7a7e7750348123916c8f428b047f186e1815c298f71ed9a56ee9fd8087ce826e7b99bd0ab4366a3ffe5e987ec83f2556e8b8aa4af54e81cd3195b6e2025213312b41768cf645e734dfbf754f52b1e82f1601d97a0642892a93e2e198b400cbe9d69586eba2976a5f564aca7a91788af4dccd4936cd5a40147d376ce5c251ec41d1e1e6235f7a142fe64fb82976e0f0dd1d93668343b7f42f14e1833b9eea6646e961f08c39bba3f1a148be686fcf72a1fc38dcb78e71e7496bac2479f334896a7c9e9e67bfc912cebad703abe3e8635d48429f7661daf17496836367b7306292ed7f8e1ec7173143412d817d11b4b4867e91a4d093e8527fd29b610fccd35590d1d0ec8c7cca7b21825dcb306ed58b4d9c5b51c9521a2bcfaea70d893448a070a7e7a27f549f593578e14268285fdfafa098e40388d22cb92e5f8c97e1915caefa72b48008b547ee1a8787c52119fac6805271a622bd657872921301eba044544d9e52842f19ed38c4299938c78b3367e6cb41d11614352f5e73e29991cd3f64a84bf210e4e1a28b23196af9da1bbe5750ddd109c05b361b477d0b0044279e9b82eb13829d7f4c4903f1f8080adee3687a4287f5d176a80e9a9efc50794d7bc016d501b0c2dd5592aa39fdebeffe333ac642fec39d0f277ca3293867fed050dd3f3e24aebabc020caa59cc5b09aeeae2f53029d471804eae28975b23a46886ab7816d64953c385c65d37ff65fd17c6d6d0e26278ac3f4172cd6e1ed8c2a6dbbeb161cf310dc34ae03ac4db68e778adb393dc170de2043e5d651fd7db5c1b520f64155ffc844d62c556aca24d74449ed03e63bb4dac019b30f65b910431f27fb9355a6ef5ac2d56a3be0a0769abe76d4c2cc6a105c36230c5444fab62ba95f3416b8736a321bf868e313ea483f350420eb063605f775b2772a1dc4c91cfce4c68a243c17c15c318b6a0b8d44fa9b6e7ff7839f90ea758c30f1afb59f6d911a3eb278da3bfdb51f973bb665280262da4b46b321446949a809dabd03e42227cc85350e3b48e39f76125a70831ceee3b68beb260ecda840e2a8eb35ede3f6118f1b48e3325646a6cf035d293c36d2a6434b5458babe5e67b13836602dec01590ba39adefe4568d3ad92722072631970302f530c24b8e95e70fc0edebd57ef1638e4060cd1185b8a70a787e8c1eac2a64cd9685fb28137f23fc8fce993547d825a1f8e046f61ddbba436c22d0d0a641cb07bc0e4609b027b0a00712b402e6e25d3b39d9600e93a8edba34e0f572dcebc51a262682f1cb008732f375c7dd82ce856c957e6d4d2954a156ebf1cbfc308dbe236e3aa0b5fe19b5c579e8e43eac8e67bbb663c460191a3120580c0c5922802bee0dd7a7548a38d84b24f0721a9b6d7daa78475dbf5a9917ed47fe12ea9029a0674c8e1fbfc2d52f7ea84cf87c08b12cf130d75029117944b91713b6e0562aaca233fd0d80f62e638ad7bc5f0cfe1f040e5e5d5d9a1813414541ebb37722d42eea99b47135a3f4d9d612786e105236daaca60aaa2caebf9f8dcffede554a45faaa18f1a70a9de9915bdfa490543458ba572a1a2f53869f397e2742c3097622ffa3b6a8f08a8cd4d61d66c5573507227b0b7a88fc2f598072381e5d964a37033dae6a16e4d1965e67f0a1764c4ea2aac1f0e92a30039ce0ee3e0958a40d761ae922d4b0652fa8720b7fb6186ea629beec02f5160f73d370df9ec48fff26e2b36b44f4a855cbb2f17585ed6172f75f0a4250f71ab92910793d1bd19f2c2d8984bc772c392c9fb59cc0aef2bd863c88fa0f6a35941534fe4d639ee28795cb1aaa267a4b424c9c1fca3a8d6b1e57084da629d9605d9f5824bd80e940d232ea7a85fe6a9cbbc98a1679306d0d7eba319ed374784d14530aee167ecdd71349749ef0bcdefb0ab2a8a973f797be25bb0df4dc596304cf4c987d1ca3877d74aa29578b914b57dca48086e0835a0e5bb03de8a2da6fcae384bbb9c758b1ef398d738fb4e1c5fbd7205c4309c42259be934522b2ad18215c974d2eb72f60465518603e4c8cc80211a040a2655365ed63e28d9a93d25880f67ceeb102f7fb01202661cd41df8180f70cf0db8c44aef9ee11ed98c4cd1e560c87ceb87f3546a14ed751980e24f098d585e15481635ffe0c564113881970e244fa1304e8a0f7cbd4b5c7f5fd9b6582ad5872975539ce358feae467ec9ed4a218db79b468665512704376fdbfd5971a60e9a8c2c9f7197c632737f7117b2e2f8841253d0e7770297e35e4913be76123f2935ef8ecc9927be6d6d89b3c15aaa27c093e5f20afa456771f15e29dfe08e605bfff60eab9f2e16dbeb153cb29df260ae560589c41ae5ed0b8e3e7684a025033d092238ffdad8dabab9ba9613d1173bda64aa4c4ac5ecdf4d9dd318cda021ec7ec0a79f77a85ce1f1fd952811de3a18e657f1b4081088f36c4707b0bf2831c8f00d0ae84286bd32c166c27806aecb69e73e007c30b59f352c77349b5aa217bbecbb2a4e2aa54f455cdf202e498dd383ed73fd6159ec0d7dbfa2fd999bcacef7417a38e46b28ac35e35d1388209678637e8652d540d60ee2de8c4093d620db059c01dd10e19fff88a2744a77c135e94d66f650ec4414ff683fb9ef85ea828a49fa738cc5de0fb7574d8286b8e68300dec4036f739c8050eccc164267c89beca733c922c9440a265edb5a8a70c38a7347431fd355f973d250b669c729eec7c257b13bf51812bdc72ed150c3b987837111d3554123d6c793821c76ab844ed360477ba838a6c4f55b7c91eabc326f8d4e4ecd105b0e77cc1e36da9b9e4f78f9d2bce80f320d818eabb6c24bf4868e11e9f29dae69364c35f124516edd21f550755371fe12351f055fbbdd39e89c292c3fc23c8a27d9a4832bbb58dcd59267a1de1f3437d6cd0ad54b76e396c2142730cb5168db4278e796070413e9b28ff3684884b899b7397a9525e54a962a37ed8db1bc99a9c35982840822e7850d716ce4c86bcc6bfa1404fbaa8f19b2b9f69bed6f05e23e8a18bb646d46417e69cc8adb04d51ee8aee42e020dbe085d5d90e06f87a68b39c01710c0673e7f41ac84dde90b1d4bf1c3ae348f73af9e779b1bd8be38fc298b78b6a64c952305190bcd6d6154e68bebfab6114c0d6d95ce6ea7f44b763be7ddcc6d64f674022d3e412731064bc254b7056aa55e83570bda72bd81369c79c49e03b661ea29d761b8c8b29870da0e53638ac00e489cd8bd525e73873238355242fc265133bc12fd4abae5b7d559267ad2298d1d80bad32196a447e953e638d10a4ca1845a74cbdf9ab8cbad8294c8fe4a77d71aff7c748eade70756eb009f55e00c1f7d851557e9006017e2bce0dfea13b07428bcd63601f56b0c1823ca526d2c2623003075bcb377780889a41427fa5d553e07941326fa4ebc8d35556c2163f7e2c60a74f9a1803cde3b7ca1f549dd4370e869e9e2af101baeba06f713f0d222af9f8c2b6fdb50bc0042c331348a9d73d28434fe5d77e0f3991c827ffb4cc433e24d0f78049ed06a335dac21712faf45efbece587a8dee9c75d1403017a278e79a1cdfc72b2099c682bb68c7b5aca3a70f0153f51f19bbcf5d35c23a092f9c00186e6d497c4960ce841081170b59936884c08ac5f2a27cb815c2be97008f8d4a650716d683aff49714edf56ce241e7e4abd721681c8ff358021006abf3316783b589aeeafe6dec7515d5d6a616e0a7f3c0a638d43112ab11a46da29debb73317cc9c7a080fba4a161e1dda70f6f8ecfb3f151a9c067a51f074d3a628f97b71d3e5ee85f49738c362b9a25e5dbc158607d73693c1c8c2e97149d5dbdabb4f83c299df74a7a32c3758dd539f2ed36cb0e6d5bac6611d658654a96a83feb44786abb5d1d543b7d79f0c156d7bb7df195d3a0bf7f598edb33805909c4bacb1408fd28532c6bc6b06041850d7c0bc807018776e93c91673a9e155b35ae4a5a21f5d51429ee771ac8d7ae3b64a9280ff91c90bb25efdcf86f634f19e945d655dd7295428c3c530f44c041b0f5c615422a6f58a7a298f3822723e886d9a3b685227729655173b68ec619e3daa834facad00f043007d92d91815be0105d66b4b4df04a9dc0950e3e89f000819d70793a1f0c0e4ceedc592ba5a4e73c3db1781f85e773716a3ff2c3b1e9d644ce052bad0c4dfcc00f7096dc5e64d740f948d4ce4b589666a0383cb880a0b2199281b7c2e7bbd4d5c541dd5748af0dcb16e734ea3ff6386efb558afd9dc4954a225cda1de217480466b49a214ecf22deaa6a1ec13e806c7807f8f06708e05b2bc22052d5ca9022998a2fa0dd92bcaeb2dfa8817c1c7a26c61c64f6590628e2a7f1b6978a9dbc5fbcd14abdfe14392de39920203f513831cf20cba13acd78698d69413fb5560e7053d3d65d8a3be77c66db05aad420bde6bd7c60343a37f87d51c50315c03dda016347a6859fbb5bd86972f8ab7b37ec7f0fc22ffe58883c54674f8d5369cba2e481e939405daeeebe0383ff817afc2a2ce4af2e7408058efa438b09cb1ba140c3fa9d99b8d258487fb53473e2b8df5a06c69af3848fb8c7420f8a36293b769c431f7be61adde00fa7b198ae1f81d9c40f1d697279f6516402e5db24e4e8f432acccdff0e92b9b1d0b559ece742838bd6b915e71baa4c88f4539849e82fcc0bea30468360845da50d51e9840fe80e744cb7cc32d810ee7b8fa90b88f10dd3fb3690e1940702e19a1287ed79bdc49a2bd4e7a3150f5d04e69c1a28bc1c7efef1ce850f4ac275067c2764e5b8d9a36f2cfa383226a43d6408d7d7ffc50fe5c114383a6d84e3cf9eb7defd2c23c1b88623a73caf403ad1530060b0d60b0684b5b6066b52f2f45a434ee75032eaed450937ef8f9a8dc666751bfb55e08295c327be104f382dc9b6b7fbe74d5b98893d34801dda988169168ab9dd38fe56855e0bd2b09f9c85291e44b8eb373931dc8c459f3a75432a8c81245d73a7c2cb2d509fdc7b6eed08dbc6a3560b6927b3ed04bebfa272c4719901a4cc5a5c1aba972c49df511726c967ea5e672b9ab69b6741b6e5e9090cc2dbb6941f7c0b1058d914368b65a198fd8273e1b4105e6680674231647b920b509f1c6425f54e89aeb12fc3409b77d0c08337025075ec3a7aba40afd7e6b0b1036f3f71a8c6d1efcb4869a38000e68cf794ea38c6d6f968d0b91ede9f596657f277cfae1d20e8cb1ca7a3749d7d512117e322a8217153fae66d021b0bc106c4bebdd33bc98f4cfa2d46aeb10bb4ad65955a5dd7373d231eb7c33968f90d577ba1d42abad670718cbcccf85f8e977997aafce6956ee7a2297254cdb330eb39a79adcade970184ad6076a9b8beda85c1fc4904ed56bf1a84706994a5e110ad11eebcc516bbf90c83451a6d97062265636ab1dcc92e41a3dd5a8730c3e5bc4839b81582035ba6f6c4c2b03c81be73b0b6d565bdd6fbd47aa68c0df50119954210ed57a18e1c0e19d2c4181e3b5a2204931648b674e39f57f05fc4ccbf10073439cfb3d34534172451c94b214347ea54adb6d1e9a5c4f115cf45ab4ccecfa76f05dfec1c03e9006a6e8a60d2a5cd831c39dfe1ea7e772d0ab2b4f1c8b38155470576cb37c124cb6b64b07436e91fc1342aff9235126084dcd9127b61e676067fe85622859af8fe5fb15d379d86dda5d881e42543e6ac58728aaa7cfb1dc6d61b45def82afb4d48aba6045b159589eb138cdc8c1bdf9b3b02ff0a48d1a7bed9f960f76def18eab13255dd97a9ea63f760938c9ab5e1aaaeafbe4811eba7637a5a60d3de9623f35f690739865d300f5a91979745c22121c67920a985a2417d5f9764c6c44301e893b093fb9d5ae04809140333bfbde4280ecdbe5dadbfcf3237a34dce16254fd984a8291494d0c70783e2610aebebf8301c7a980f3d74a2db75a4f446535aa777a7672441d5f0b15b2b88e48c3d09ee0ea28e797032ac731efa9852243591b81e06c52528b3e692cf051324d5873f2782b6599f2b8cceb3ecceccd20692bb5d888cc5ce93e8b6b42348d4b2dfa029549407b597ec406b9e793ba614c77d5b458b0d79600803e46994bf17a58ef2e2f26e33ba8b80614acd86f04c609f8a279f2c3400c392c7b5f524819c274799601abebd11ba833f1314875049f22cb4a673609aef0076edaac263136783c2c45b7e7380d611de77deb05c7bea58faa6d5133748d6b4c82b67a2790c2e8f0686a048b424c18e38fa104bacb5b19d24ddf1e8480b096ac3961af16ffb817559f2319b623c8642fa236ad2b013489e55d2acd3c28daacc888f6078df1603ab8879e59d380f437fbaa101ede624051e9b80ce10d677743fac04d88d7e9e71f64293dac53a5fc992760fb91bd3ce0d82b4ff42ca5061cff8595e3b0722eca47138239e8d844f56031f94c790d74010fc65db14f9c624d92576c69cea1d72493f34eb40a85a1270ee305ec64e7b8c977da653d09125af9ff8b47815bbee55acccddc881c59e068ab867c23bd9d817d03bacad8e86599d3af0ae6d19674d577d20c2d1bfedcb272966e36ed9652f63a34db0c702f423b7fc589d21e8721d651857c4d9d5ec26962d6db2fedcaa374db9eab466e923ec0dab680cb736bec16f8a43c36ed0e92e953a84d421be0aabfe8f6dca60d7afbde050307c5c63be1760983f98695742f267e9f3e20e4b7349bd2dcf53a31cd5f5f334efbf1c5af85713d102c18738991836d6bee2baa723ca354cd69c878fda3</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">四道普，输入password</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
       </section>
 
       
       
         <nav class="article-nav">
           
-            <div class="article-nav-item layout-padding">
-  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
-    
-    <div class="card-text">
-      
-        <a href="/2024/09/02/XGCTF/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">XGCTF</h2>
-        </a>
-      
-      <div class="card-text--row">Newer</div>
-    </div>
-  </article>
-</div>
-          
           
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
     <div class="card-text">
       
-        <a href="/2024/04/22/dasctf-gfctf/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">dasctf_gfctf四月赛复现</h2>
+        <a href="/2024/12/07/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84docker%E9%85%8D%E7%BD%AE/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">CTFd服务器的docker配置</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -506,7 +451,7 @@
     <span>TOC</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">计费系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">scr1wgpt</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.1.</span> <span class="toc-text">CVE-2023-49785</span></a></li></ol></li></ol>
+    
   </div>
 </section>
 
