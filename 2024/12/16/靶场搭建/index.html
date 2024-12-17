@@ -110,6 +110,11 @@
             <time  class="article-date" datetime="2024-12-16T07:05:56.000Z" itemprop="datePublished">2024-12-16</time>
           </h2>
           
+            <h2 class="last-time">
+              <span>最后更新于</span>
+              <time  class="article-updated" datetime="2024-12-17T01:24:32.044Z" itemprop="dateUpdated">2024-12-17</time>
+            </h2>
+          
           
             <h2 id="/2024/12/16/%E9%9D%B6%E5%9C%BA%E6%90%AD%E5%BB%BA/" class="title-sub-wrap leancloud_visitors" data-flag-title="靶场搭建">
               <em>文章访问量</em>
@@ -263,6 +268,23 @@
 <li>靶场配置中环境是首位，先明确靶场的相关信息，再根据其选择合适的php环境</li>
 <li>phpstudy的数据库的用户名密码一般为root:root，如果需要创建一个数据库，则需更改root密码才能创建，那么后续还需要对dvwa与sqli-labs靶场进行重装（改个配置文件的事儿）</li>
 <li>本次安装对环境的编辑以及靶场的搭建有了一定认识，能够通过报错信息找到报错点并将其解决，对我来说是审计能力的又一次锻炼</li>
+</ul>
+<h1><span id="附课上笔记">附：课上笔记</span></h1>
+<p>一些计网的知识：</p>
+<ul>
+<li>Web，互联网总称，即World Wide Web</li>
+<li>我们能够访问网页是因为有服务器；而我们输入指定域名时能够跳转到指定页面，是因为有DNS解析，将域名解析到指定的ip地址上</li>
+</ul>
+<p>漏洞初识与靶场：</p>
+<ul>
+<li>什么是Web安全？一个网站可能会出现什么漏洞？怎么找？如何用？</li>
+<li>常规漏洞介绍：注入，敏感信息泄露，跨站攻击，未经授权访问……</li>
+<li>Web安全相关靶场有DVWA（OWAP官方编写的一个php靶场），sqli-labs，upload-labs等</li>
+<li>Windows在配置靶场所需的环境时一般为WAMP，即Windows系统，Apache服务，Mysql数据库，PHP语言</li>
+</ul>
+<p>其他需要注意的：</p>
+<ul>
+<li>一定要遵守法律，不能在未经授权的情况下对漏洞进行利用！</li>
 </ul>
 
       </section>
@@ -569,7 +591,7 @@
     <span>TOC</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">先来说说phpstudy的安装吧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">安装前的注意事项与说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">安装过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">说说靶场的安装吧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.1.</span> <span class="toc-text">sqli-labs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.1.1.</span> <span class="toc-text">安装步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.1.2.</span> <span class="toc-text">改装完后的sqli-labs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.2.</span> <span class="toc-text">upload-labs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.2.1.</span> <span class="toc-text">安装步骤</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.3.</span> <span class="toc-text">DVWA</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.3.1.</span> <span class="toc-text">安装步骤</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">说说cms的安装吧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.1.</span> <span class="toc-text">安装步骤</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">额外的docker与docker-compose安装</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">先来说说phpstudy的安装吧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.1.</span> <span class="toc-text">安装前的注意事项与说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">1.2.</span> <span class="toc-text">安装过程</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">说说靶场的安装吧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.1.</span> <span class="toc-text">sqli-labs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.1.1.</span> <span class="toc-text">安装步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.1.2.</span> <span class="toc-text">改装完后的sqli-labs</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.2.</span> <span class="toc-text">upload-labs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.2.1.</span> <span class="toc-text">安装步骤</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">2.3.</span> <span class="toc-text">DVWA</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.3.1.</span> <span class="toc-text">安装步骤</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">说说cms的安装吧</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link"><span class="toc-number">3.1.</span> <span class="toc-text">安装步骤</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">额外的docker与docker-compose安装</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">附：课上笔记</span></a></li></ol>
   </div>
 </section>
 
@@ -693,6 +715,8 @@
      
     <p>&copy; 2024 <a href="/" target="_blank">Ins0mn1a93</a></p>
 
+    
+      <p><a href="https://beian.miit.gov.cn" target="_blank">黔ICP备2024042022号</a></p>
     
 
     <p>Powered by <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> Theme - <a href="https://github.com/miiiku/flex-block" target="_blank" rel="noopener noreferrer author">flex-block</a></p>
